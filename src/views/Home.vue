@@ -1,8 +1,9 @@
 <template>
   <div class="home">
     <div>
+      <h1>Welcome!!</h1>
       <a-button type="primary" @click="login">Login</a-button>
-      
+
       <a-button type="primary" @click="ajax">Ajax test</a-button>
     </div>
   </div>
@@ -17,7 +18,7 @@ export default {
     },
     ajax() {
       this.$http.post('https://api.lab.bun.dev/v1/ids/guids').then(res => {
-        this.$message.info(`guid: ${res.data.guid}`)
+        this.$message.success(`guid: ${res.data.guid}`)
       })
     }
   },
@@ -25,3 +26,9 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+h1
+  color: red
+  font-weight: 800
+</style>
