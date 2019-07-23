@@ -1,7 +1,10 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div>
+      <a-button type="primary" @click="displayMessage">My button</a-button>
+    </div>
+
+    <HelloWorld msg="Welcome to My Vue.js App" />
   </div>
 </template>
 
@@ -11,6 +14,11 @@ import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
   name: 'home',
+  methods: {
+    displayMessage() {
+      this.$message.info('button clicked')
+    }
+  },
   components: {
     HelloWorld
   }
