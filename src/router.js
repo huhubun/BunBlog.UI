@@ -11,7 +11,18 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/post/List')
+        },
+        {
+          path: '/post/detail',
+          name: 'post-detail',
+          component: () => import('@/views/post/Detail')
+        }
+      ]
     },
     {
       path: '/admin/login',
