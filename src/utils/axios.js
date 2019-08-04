@@ -8,6 +8,11 @@ const BunAxios = {
         Vue.axios = instance
 
         Object.defineProperties(Vue.prototype, {
+            axios: {
+                get() {
+                    return instance
+                }
+            },
             $http: {
                 get() {
                     return instance
