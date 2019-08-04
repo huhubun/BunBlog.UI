@@ -8,7 +8,7 @@
       <div>
         <span>
           <a-icon type="calendar" />
-          {{ item.publishedOn }}
+          {{ formatDate(item.publishedOn) }}
           <a-divider type="vertical" />
         </span>
         <span>
@@ -32,6 +32,7 @@
 
 <script>
 import { getVisits } from '@/helper/post'
+import dayjs from 'dayjs'
 
 export default {
   name: 'PostList',
@@ -47,6 +48,10 @@ export default {
   methods: {
     getPostVisits(metadataList) {
       return getVisits(metadataList)
+    },
+    formatDate(datetime) {
+      let dayjsObj = dayjs(datetime)
+      return `${dayjsObj.format('YYYY-MM-DD HH:mm')} (${dayjsObj.fromNow()})`
     }
   }
 }

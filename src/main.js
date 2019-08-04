@@ -7,6 +7,10 @@ import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Di
 
 import { BunAxios } from './utils/request'
 
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import 'dayjs/locale/zh-cn'
+
 Vue.config.productionTip = false
 
 Vue.use(Button)
@@ -25,6 +29,9 @@ Vue.use(Tag)
 Vue.use(BunAxios)
 
 Vue.prototype.$message = message
+
+dayjs.extend(relativeTime)
+dayjs.locale('zh-cn')
 
 new Vue({
   router,
