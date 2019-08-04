@@ -10,9 +10,9 @@
           <a-icon type="home" />
           {{ item.category.displayName }}
         </span>
-        <span v-if="item.tags != null">
+        <span v-if="item.tagList != null && item.tagList.length > 0">
           <a-icon type="home" />tags:
-          <span v-for="tag in item.tags" v-bind:key="tag.linkName">{{ tag.displayName }}</span>
+          <span v-for="tag in item.tagList" v-bind:key="tag.linkName">{{ tag.displayName }}</span>
         </span>
         <span>
           <a-icon type="home" />
@@ -21,7 +21,7 @@
       </template>
 
       <h2>
-        <router-link to="/post/detail">{{item.title}}</router-link>
+        <router-link :to="{ name:'post-detail', params: { id: item.id } }">{{item.title}}</router-link>
       </h2>
       <p>{{ item.excerpt }}</p>
     </a-list-item>

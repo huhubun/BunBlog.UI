@@ -6,3 +6,17 @@ export function getList() {
         method: 'get'
     })
 }
+
+export function getDetail(id) {
+    return axios({
+        url: `/posts/${id}`,
+        method: 'get'
+    })
+}
+
+export function UpdateVisits(id) {
+    return axios({
+        url: `/posts/${id}/visits`,
+        method: 'put'
+    })
+}

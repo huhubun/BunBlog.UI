@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, message } from 'ant-design-vue'
+import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, message } from 'ant-design-vue'
 
 import { BunAxios } from './utils/request'
 
@@ -17,6 +17,7 @@ Vue.use(Layout)
 Vue.use(Menu)
 Vue.use(Breadcrumb)
 Vue.use(List)
+Vue.use(Skeleton)
 
 // axios -> Vue.$http or this.$http
 Vue.use(BunAxios)
