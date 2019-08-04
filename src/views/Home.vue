@@ -2,9 +2,12 @@
   <a-layout>
     <a-layout-header>
       <a-menu mode="horizontal" theme="light">
-        <a-menu-item style="float: left;">bun.dev</a-menu-item>
-        <a-menu-item>首页</a-menu-item>
-        <a-menu-item>关于</a-menu-item>
+        <a-menu-item style="float: left;">
+          <router-link to="/">bun.dev</router-link>
+        </a-menu-item>
+        <a-menu-item>
+          <router-link to="/about">关于</router-link>
+        </a-menu-item>
         <a-menu-item>
           <a-input-search placeholder="Search" />
         </a-menu-item>
@@ -43,6 +46,11 @@ export default {
 <style lang="stylus" scoped>
 .ant-layout-header
   text-align: right
+  background-color: #FFF
+
+.ant-layout-content
+  background-color: #FFF
+  padding: 0 50px
 
 .ant-layout-footer a
   color: black
