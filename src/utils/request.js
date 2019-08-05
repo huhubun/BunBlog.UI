@@ -3,7 +3,7 @@ import axios from 'axios'
 import { BunAxios } from './axios'
 
 const service = axios.create({
-    baseURL: 'http://localhost:52000/api',
+    baseURL: process.env.VUE_APP_BUN_BLOG_API_BASE_URL,
     timeout: 6000
 })
 

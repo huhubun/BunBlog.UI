@@ -2,21 +2,21 @@ import { axios } from '@/utils/request'
 
 export function getList() {
     return axios({
-        url: '/posts',
+        url: '/api/posts',
         method: 'get'
     })
 }
 
 export function getDetail(id) {
     return axios({
-        url: `/posts/${id}`,
+        url: `/api/posts/${id}`,
         method: 'get'
     })
 }
 
 export function UpdateVisits(id) {
     return axios({
-        url: `/posts/${id}/visits`,
+        url: `/api/posts/${id}/visits`,
         method: 'put'
     })
 }
