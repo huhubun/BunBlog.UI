@@ -22,7 +22,22 @@
       <div>
         <router-link to="/admin/login">admin</router-link>
       </div>
-      <div>&copy; 2019 huhubun</div>
+      <div class="bun-margin-top powered-by">
+        <span class="bun-margin-right">
+          <a-icon type="thunderbolt" />Powered by
+        </span>
+        <span>
+          <a href="https://github.com/huhubun/BunBlog.UI">BunBlog.UI</a>
+          {{ version }}
+        </span>
+        <a-divider type="vertical" />
+        <span>
+          <a href="https://github.com/huhubun/BunBlog.API">BunBlog.API</a>
+        </span>
+      </div>
+      <div class="bun-margin-top">
+        <span>&copy; 2019 huhubun</span>
+      </div>
     </a-layout-footer>
   </a-layout>
 </template>
@@ -30,6 +45,11 @@
 <script>
 export default {
   name: 'home',
+  data() {
+    return {
+      version: process.env.BUN_BLOG_UI_VERSION
+    }
+  },
   methods: {
     login() {
       this.$router.push({ name: 'login' })
@@ -63,8 +83,14 @@ export default {
   padding: 0 50px
 
 .ant-layout-footer a
-  color: black
+  color: rgba(0, 0, 0, 0.65)
+
+.ant-layout-footer .powered-by a
+  text-decoration: underline
+
+.ant-layout-footer .powered-by i.anticon, .ant-layout-footer .powered-by a
+  margin-right: 8px
 
 .title
-  font-size: 1.6em;
+  font-size: 1.6em
 </style>
