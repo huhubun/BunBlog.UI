@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import Storage from 'vue-ls'
 
-import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, message } from 'ant-design-vue'
+import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, message, notification } from 'ant-design-vue'
 
 import { BunAxios } from './utils/request'
 
@@ -37,6 +37,7 @@ Vue.use(Affix)
 Vue.use(BunAxios)
 
 Vue.prototype.$message = message
+Vue.prototype.$notification = notification
 
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')

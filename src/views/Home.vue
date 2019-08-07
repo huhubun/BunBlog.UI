@@ -22,37 +22,23 @@
       <div>
         <router-link to="/admin/login">admin</router-link>
       </div>
-      <div class="bun-margin-top powered-by">
-        <span class="bun-margin-right">
-          <a-icon type="thunderbolt" />Powered by
-        </span>
-        <span>
-          <a href="https://github.com/huhubun/BunBlog.UI">BunBlog.UI</a>
-          {{ version }}
-        </span>
-        <a-divider type="vertical" />
-        <span>
-          <a href="https://github.com/huhubun/BunBlog.API">BunBlog.API</a>
-        </span>
-      </div>
-      <div class="bun-margin-top">
-        <span>&copy; 2019 huhubun</span>
-      </div>
+      <powered-by />
+      <copyright />
     </a-layout-footer>
   </a-layout>
 </template>
 
 <script>
+import PoweredBy from '@/components/layout/PoweredBy'
+import Copyright from '@/components/layout/Copyright'
+
 export default {
   name: 'home',
-  data() {
-    return {
-      version: process.env.BUN_BLOG_UI_VERSION
-    }
-  },
   methods: {
   },
   components: {
+    PoweredBy,
+    Copyright
   }
 }
 </script>
@@ -76,12 +62,6 @@ export default {
 
 .ant-layout-footer a
   color: rgba(0, 0, 0, 0.65)
-
-.ant-layout-footer .powered-by a
-  text-decoration: underline
-
-.ant-layout-footer .powered-by i.anticon, .ant-layout-footer .powered-by a
-  margin-right: 8px
 
 .title
   font-size: 1.6em
