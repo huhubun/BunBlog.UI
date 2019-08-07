@@ -51,14 +51,6 @@ export default {
     }
   },
   methods: {
-    login() {
-      this.$router.push({ name: 'login' })
-    },
-    ajax() {
-      this.$http.post('https://api.lab.bun.dev/v1/ids/guids').then(res => {
-        this.$message.success(`guid: ${res.data.guid}`)
-      })
-    }
   },
   components: {
   }

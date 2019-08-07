@@ -31,9 +31,9 @@ export default {
   },
   methods: {
     getPostDetail() {
-      getDetail(this.id).then(res => {
-        console.log(res)
-        this.post = res.data
+      getDetail(this.id).then(post => {
+        console.log(post)
+        this.post = post
         this.metadataList = this.post.metadataList
       }).catch(err => {
         console.error(err)

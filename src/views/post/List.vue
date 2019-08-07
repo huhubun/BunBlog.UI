@@ -17,11 +17,12 @@ export default {
   components: { PostList },
   methods: {
     getPostList() {
-      getList().then(res => {
-        console.log(res)
-        this.list = res.data
+      getList().then(posts => {
+        console.log(posts)
+        this.list = posts
       }).catch(err => {
         console.error(err)
+        debugger
       })
     }
   },

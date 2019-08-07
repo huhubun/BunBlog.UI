@@ -28,6 +28,10 @@ export default new Router({
       path: '/admin/login',
       name: 'login',
       component: () => import('@/views/admin/Login')
+    },
+    {
+      path: '/admin/',
+      name: 'admin-home'
     }
   ]
 })
