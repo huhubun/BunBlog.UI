@@ -3,7 +3,7 @@
     <a-affix :offsetTop="0">
       <a-layout-header>
         <a-menu mode="horizontal" theme="light">
-          <a-menu-item style="float: left;" class="title">
+          <a-menu-item class="title bun-left">
             <router-link to="/">呼呼小笼包的博客</router-link>
           </a-menu-item>
           <a-menu-item>

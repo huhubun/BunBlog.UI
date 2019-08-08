@@ -43,6 +43,18 @@ export default new Router({
           name: 'admin-post',
           component: () => import('@/views/admin/post/List')
         }
+        ,
+        {
+          path: 'category',
+          name: 'admin-category',
+          component: () => import('@/views/admin/category/Home')
+        }
+        ,
+        {
+          path: 'tag',
+          name: 'admin-tag',
+          component: () => import('@/views/admin/tag/Home')
+        }
       ]
     }
   ]

@@ -10,4 +10,7 @@
 
 .bun-margin-top
   margin-top: 8px
+
+.bun-left
+  float: left
 </style>
