@@ -7,7 +7,7 @@
     <a-input placeholder="Password" v-model="password" ref="passwordInput" type="password">
       <a-icon slot="prefix" type="key" />
     </a-input>
-    <a-button type="primary" htmlType="submit">登陆</a-button>
+    <a-button type="primary" html-type="submit">登陆</a-button>
   </a-form>
 </template>
 

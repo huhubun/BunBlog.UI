@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import Storage from 'vue-ls'
 
-import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, message, notification } from 'ant-design-vue'
+import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, Row, Col, Table, message, notification } from 'ant-design-vue'
 
 import { BunAxios } from './utils/request'
 
@@ -32,6 +32,9 @@ Vue.use(Skeleton)
 Vue.use(Divider)
 Vue.use(Tag)
 Vue.use(Affix)
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(Table)
 
 // axios -> Vue.$http or this.$http
 Vue.use(BunAxios)

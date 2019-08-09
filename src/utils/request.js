@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import axios from 'axios'
 
 import { BunAxios } from './axios'
@@ -13,13 +14,14 @@ const err = (error) => {
     return Promise.reject(error)
 }
 
-// service.interceptors.request.use(config => {
-//     const token = Vue.ls.get(ACCESS_TOKEN)
-//     if (token) {
-//       config.headers['Access-Token'] = token
-//     }
-//     return config
-//   }, err)
+service.interceptors.request.use(config => {
+    let accessToken = Vue.sessionStorage.get('accessToken')
+    if (accessToken) {
+        config.headers['Authorization'] = `Bearer ${accessToken}`
+    }
+
+    return config
+}, err)
 
 service.interceptors.response.use((response) => {
     return response.data
