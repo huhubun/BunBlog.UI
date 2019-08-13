@@ -143,10 +143,10 @@ export default {
       }).catch(error => {
         console.error(error)
 
-        let message = `删除分类 ${displayName} 失败`
+        let message = `删除失败`
         let errorResponse = error.response
         if (errorResponse.status === 400) {
-          message += ` ${errorResponse.message}`
+          message += ` ${errorResponse.data.message}`
         }
 
         this.$message.error(message)
