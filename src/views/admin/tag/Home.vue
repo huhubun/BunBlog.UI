@@ -49,6 +49,18 @@
           <span slot="linkNameHeader">
             <a-icon type="link" />链接名称
           </span>
+          <span slot="operation" slot-scope="text, record">
+            <a-popconfirm
+              v-if="tagList.length"
+              title="确定要删除该标签吗？"
+              okText="删除"
+              okType="danger"
+              cancelText="取消"
+              @confirm="() => onDelete(record.linkName, record.displayName)"
+            >
+              <a href="javascript:;">Delete</a>
+            </a-popconfirm>
+          </span>
         </a-table>
       </a-col>
     </a-row>
@@ -56,7 +68,7 @@
 </template>
 
 <script>
-import { getList, add } from '@/api/tag'
+import { getList, add, remove } from '@/api/tag'
 
 const tagTableColumns = [
   {
@@ -69,6 +81,13 @@ const tagTableColumns = [
     dataIndex: 'linkName',
     slots: {
       title: 'linkNameHeader'
+    }
+  },
+  {
+    dataIndex: 'operation',
+    title: '操作',
+    scopedSlots: {
+      customRender: 'operation'
     }
   }
 ]
@@ -115,6 +134,22 @@ export default {
             this.$message.error(errorMessage)
           })
         }
+      })
+    },
+    onDelete(linkName, displayName) {
+      remove(linkName).then(res => {
+        this.$message.success(`已删除标签 ${displayName}`)
+        this.fillTagTable()
+      }).catch(error => {
+        console.error(error)
+
+        let message = `删除标签 ${displayName} 失败`
+        let errorResponse = error.response
+        if (errorResponse.status === 400) {
+          message += ` ${errorResponse.message}`
+        }
+
+        this.$message.error(message)
       })
     }
   },
