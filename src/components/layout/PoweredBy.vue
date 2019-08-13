@@ -6,23 +6,32 @@
       </span>
       <span>
         <a href="https://github.com/huhubun/BunBlog.UI">BunBlog.UI</a>
-        {{ version }}
+        {{ uiVersion }}
       </span>
       <a-divider type="vertical" />
       <span>
         <a href="https://github.com/huhubun/BunBlog.API">BunBlog.API</a>
+        {{ apiVersion }}
       </span>
     </div>
   </div>
 </template>
 
 <script>
+import { get as getInformation } from '@/api/information'
+
 export default {
   name: 'PoweredBy',
   data() {
     return {
-      version: process.env.BUN_BLOG_UI_VERSION
+      uiVersion: process.env.BUN_BLOG_UI_VERSION,
+      apiVersion: null
     }
+  },
+  mounted() {
+    getInformation().then(res => {
+      this.apiVersion = res.version
+    })
   }
 }
 </script>

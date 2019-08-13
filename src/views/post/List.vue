@@ -22,7 +22,6 @@ export default {
         this.list = posts
       }).catch(err => {
         console.error(err)
-        debugger
       })
     }
   },
