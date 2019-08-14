@@ -47,7 +47,7 @@
           </a-menu-item>
           <a-menu-item>
             <router-link to="/">
-              <a-icon type="logout" />登出
+              <a-icon type="logout" />登出 {{ username }}
             </router-link>
           </a-menu-item>
         </a-menu>
@@ -64,13 +64,15 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import PoweredBy from '@/components/layout/PoweredBy'
 import Copyright from '@/components/layout/Copyright'
 
 export default {
   data() {
     return {
-      collapsed: false
+      collapsed: false,
+      username: Vue.sessionStorage.get('username')
     }
   },
   components: {

@@ -12,7 +12,8 @@
 </template>
 
 <script>
-import { login } from '@/services/authentication'
+import Vue from 'vue'
+import { loginByPassword } from '@/services/authentication'
 
 export default {
   data() {
@@ -28,10 +29,11 @@ export default {
       this.username = ''
     },
     submit() {
-      login({
+      loginByPassword({
         username: this.username,
         password: this.password
       }).then(res => {
+        Vue.sessionStorage.set('username', this.username)
         this.$router.push({ name: 'admin-home' })
       }).catch(e => {
         this.$message.error(`登陆失败：${e.message}`)

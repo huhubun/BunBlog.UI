@@ -2,6 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 
 import { BunAxios } from './axios'
+import { loginByRefreshToken } from '@/services/authentication'
 
 const service = axios.create({
     baseURL: process.env.VUE_APP_BUN_BLOG_API_BASE_URL,
@@ -11,12 +12,25 @@ const service = axios.create({
 const err = (error) => {
     console.log(error)
 
+    let requestConfig = error.config
+    if (error.response && error.response.status === 401 && !requestConfig._isRetry) {
+        requestConfig._isRetry = true
+
+        return loginByRefreshToken().then(res => {
+            let accessToken = Vue.sessionStorage.get('accessToken')
+            requestConfig.headers['Authorization'] = `Bearer ${accessToken}`
+
+            return axios(requestConfig)
+        })
+    }
+
     return Promise.reject(error)
 }
 
 service.interceptors.request.use(config => {
     let accessToken = Vue.sessionStorage.get('accessToken')
-    if (accessToken) {
+
+    if (accessToken == null) {
         config.headers['Authorization'] = `Bearer ${accessToken}`
     }
 
