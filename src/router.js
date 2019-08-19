@@ -10,7 +10,6 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
       component: Home,
       children: [
         {
@@ -31,7 +30,6 @@ export default new Router({
     },
     {
       path: '/admin/',
-      name: 'admin-home',
       component: () => import('@/views/admin/Home'),
       children: [
         {
@@ -42,14 +40,12 @@ export default new Router({
           path: 'post',
           name: 'admin-post',
           component: () => import('@/views/admin/post/List')
-        }
-        ,
+        },
         {
           path: 'category',
           name: 'admin-category',
           component: () => import('@/views/admin/category/Home')
-        }
-        ,
+        },
         {
           path: 'tag',
           name: 'admin-tag',
