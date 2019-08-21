@@ -50,6 +50,11 @@ export default new Router({
           path: 'tag',
           name: 'admin-tag',
           component: () => import('@/views/admin/tag/Home')
+        },
+        {
+          path: 'page',
+          name: 'admin-page',
+          component: () => import('@/views/admin/page/Home')
         }
       ]
     }

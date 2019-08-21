@@ -1,6 +1,6 @@
 <template>
-  <div class="dashboard-container">
-    <h1>Dashboard</h1>
+  <div class="page-container">
+    <h1>页面</h1>
     <a-alert
       message="Coming Soon"
       description="This page is under development and will be available later"
@@ -11,10 +11,11 @@
 
 <script>
 export default {
+
 }
 </script>
 
 <style lang="stylus" scoped>
-.dashboard-container
+.page-container
   margin-top: 10px
 </style>

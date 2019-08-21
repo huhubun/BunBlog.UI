@@ -3,6 +3,13 @@
     <a-layout-sider collapsible v-model="collapsed">
       <div class="logo">BunBlog Admin</div>
       <a-menu theme="dark" :selectedKeys="selectedKeys" mode="inline">
+        <a-menu-item key="/admin/">
+          <router-link to="/admin/">
+            <a-icon type="profile" />
+            <span>仪表盘</span>
+          </router-link>
+        </a-menu-item>
+
         <a-menu-item key="/admin/post">
           <router-link to="/admin/post">
             <a-icon type="profile" />
