@@ -34,7 +34,7 @@ export default {
         password: this.password
       }).then(res => {
         Vue.sessionStorage.set('username', this.username)
-        this.$router.push({ name: 'admin-home' })
+        this.$router.push('/admin')
       }).catch(e => {
         this.$message.error(`登陆失败：${e.message}`)
       })
