@@ -18,6 +18,14 @@ export function getDetail(id) {
     })
 }
 
+export function postNewBlogPost(blogPost) {
+    return axios({
+        url: `/api/posts`,
+        method: 'post',
+        data: blogPost
+    })
+}
+
 export function UpdateVisits(id) {
     return axios({
         url: `/api/posts/${id}/visits`,
