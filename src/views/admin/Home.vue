@@ -48,7 +48,7 @@
             </router-link>
           </a-menu-item>
           <a-menu-item class="bun-left">
-            <router-link to="/">
+            <router-link to="/admin/post/new">
               <a-icon type="edit" />撰写博文
             </router-link>
           </a-menu-item>

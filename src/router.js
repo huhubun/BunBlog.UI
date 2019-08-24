@@ -29,7 +29,7 @@ export default new Router({
       component: () => import('@/views/admin/Login')
     },
     {
-      path: '/admin/',
+      path: '/admin',
       component: () => import('@/views/admin/Home'),
       children: [
         {
@@ -40,6 +40,16 @@ export default new Router({
           path: 'post',
           name: 'admin-post',
           component: () => import('@/views/admin/post/List')
+        },
+        {
+          path: 'post/new',
+          name: 'admin-post-new',
+          component: () => import('@/views/admin/post/New')
+        },
+        {
+          path: 'post/edit/:id',
+          name: 'admin-post-edit',
+          component: () => import('@/views/admin/post/Edit')
         },
         {
           path: 'category',

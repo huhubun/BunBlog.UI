@@ -1,9 +1,13 @@
 import { axios } from '@/utils/request'
 
-export function getList() {
+export function getList(page, pageSize) {
     return axios({
         url: '/api/posts',
-        method: 'get'
+        method: 'get',
+        params: {
+            page,
+            pageSize
+        }
     })
 }
 

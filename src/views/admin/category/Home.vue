@@ -49,7 +49,7 @@
           <span slot="linkNameHeader">
             <a-icon type="link" />链接名称
           </span>
-          <span slot="operation" slot-scope="text, record">
+          <span slot="operation" slot-scope="operation, record">
             <a-popconfirm
               v-if="categoryList.length"
               title="确定要删除该分类吗？"
