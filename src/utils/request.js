@@ -30,7 +30,7 @@ const err = (error) => {
 service.interceptors.request.use(config => {
     let accessToken = Vue.sessionStorage.get('accessToken')
 
-    if (accessToken == null) {
+    if (accessToken != null) {
         config.headers['Authorization'] = `Bearer ${accessToken}`
     }
 

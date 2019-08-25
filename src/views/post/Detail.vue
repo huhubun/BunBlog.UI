@@ -4,7 +4,7 @@
       <h1>{{ post.title }}</h1>
       <div>{{ visits }}</div>
       <hr />
-      <div>{{ post.content }}</div>
+      <div v-html="content"></div>
     </div>
     <div v-else>
       <a-skeleton active :paragraph="{ rows: 10 }" />
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import showdown from 'showdown'
 import { getDetail, UpdateVisits } from '@/api/post'
 import { getVisits } from '@/helper/post'
 
@@ -21,7 +22,8 @@ export default {
     return {
       id: this.$route.params.id,
       post: null,
-      metadataList: null
+      metadataList: null,
+      content: null
     }
   },
   computed: {
@@ -35,6 +37,9 @@ export default {
         console.log(post)
         this.post = post
         this.metadataList = this.post.metadataList
+
+        let converter = new showdown.Converter()
+        this.content = converter.makeHtml(this.post.content)
       }).catch(err => {
         console.error(err)
       })
