@@ -1,14 +1,16 @@
 <template>
-  <a-form :form="form" @submit.prevent="submit">
-    <a-input placeholder="Username" v-model="username" ref="usernameInput">
-      <a-icon slot="prefix" type="user" />
-      <a-icon v-if="username" slot="suffix" type="close-circle" @click="emitEmpty" />
-    </a-input>
-    <a-input placeholder="Password" v-model="password" ref="passwordInput" type="password">
-      <a-icon slot="prefix" type="key" />
-    </a-input>
-    <a-button type="primary" html-type="submit">登陆</a-button>
-  </a-form>
+  <div>
+    <a-form :form="form" @submit.prevent="submit">
+      <a-input placeholder="Username" v-model="username" ref="usernameInput">
+        <a-icon slot="prefix" type="user" />
+        <a-icon v-if="username" slot="suffix" type="close-circle" @click="emitEmpty" />
+      </a-input>
+      <a-input placeholder="Password" v-model="password" ref="passwordInput" type="password">
+        <a-icon slot="prefix" type="key" />
+      </a-input>
+      <a-button type="primary" html-type="submit">登录</a-button>
+    </a-form>
+  </div>
 </template>
 
 <script>
@@ -36,7 +38,7 @@ export default {
         Vue.sessionStorage.set('username', this.username)
         this.$router.push('/admin')
       }).catch(e => {
-        this.$message.error(`登陆失败：${e.message}`)
+        this.$message.error(`登录失败：${e.message}`)
       })
     }
   }

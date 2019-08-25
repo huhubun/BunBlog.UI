@@ -2,7 +2,13 @@
   <div>
     <div v-if="post">
       <h1>{{ post.title }}</h1>
-      <div>{{ visits }}</div>
+      <div>
+        <span>{{ visits }}</span>
+        <span v-if="isAlreadyLoggedIn">
+          <a-divider type="vertical" />
+          <router-link :to="{name:'admin-post-edit', params: {id: post.id}}">编辑</router-link>
+        </span>
+      </div>
       <hr />
       <div v-html="content"></div>
     </div>
@@ -13,6 +19,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import showdown from 'showdown'
 import { getDetail, UpdateVisits } from '@/api/post'
 import { getVisits } from '@/helper/post'
@@ -29,6 +36,9 @@ export default {
   computed: {
     visits() {
       return getVisits(this.metadataList)
+    },
+    isAlreadyLoggedIn() {
+      return Vue.sessionStorage.get('refreshToken')
     }
   },
   methods: {

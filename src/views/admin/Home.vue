@@ -53,10 +53,10 @@
             </router-link>
           </a-menu-item>
           <a-menu-item>
-            <router-link to="/">
+            <span @click="logout">
               <a-icon type="logout" />
               登出 {{ username }}
-            </router-link>
+            </span>
           </a-menu-item>
         </a-menu>
       </a-layout-header>
@@ -75,6 +75,7 @@
 import Vue from 'vue'
 import PoweredBy from '@/components/layout/PoweredBy'
 import Copyright from '@/components/layout/Copyright'
+import { clearLoginInfo } from '@/services/authentication'
 
 export default {
   data() {
@@ -88,6 +89,10 @@ export default {
     selectedMenuKeys() {
       const routes = this.$route.matched.concat()
       this.selectedKeys = [routes.pop().path]
+    },
+    logout() {
+      clearLoginInfo()
+      this.$router.push('/admin/login')
     }
   },
   components: {

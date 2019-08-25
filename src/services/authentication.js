@@ -35,3 +35,9 @@ export function login(userInfo) {
         })
     })
 }
+
+export function clearLoginInfo() {
+    Vue.sessionStorage.remove('accessToken')
+    Vue.sessionStorage.remove('refreshToken')
+    Vue.sessionStorage.remove('username')
+}

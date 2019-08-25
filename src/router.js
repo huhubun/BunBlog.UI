@@ -4,7 +4,7 @@ import Home from './views/Home.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -70,3 +70,27 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  let isLoginPage = /^\/admin\/login/.test(to.path)
+  let isAdminPage = /^\/admin/.test(to.path)
+  let isAlreadyLoggedIn = Vue.sessionStorage.get('refreshToken')
+
+  if (isLoginPage) {
+    if (isAlreadyLoggedIn) {
+      next('/admin')
+    } else {
+      next()
+    }
+  } else if (isAdminPage) {
+    if (isAlreadyLoggedIn) {
+      next()
+    } else {
+      next('/admin/login')
+    }
+  } else {
+    next()
+  }
+})
+
+export default router
