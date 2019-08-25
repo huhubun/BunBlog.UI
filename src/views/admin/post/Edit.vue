@@ -1,14 +1,12 @@
 <template>
   <div class="post-edit-container">
     <h1>编辑博文</h1>
-
-    <div v-if="post">{{ post.title }}</div>
-    <div v-if="post">{{ post.excerpt }}</div>
-    <div v-if="post">{{ post.content }}</div>
+    <post-editor v-bind:post="post" v-if="post"></post-editor>
   </div>
 </template>
 
 <script>
+import PostEditor from '@/components/post/PostEditor'
 import { getDetail } from '@/api/post'
 
 export default {
@@ -31,6 +29,9 @@ export default {
   },
   mounted() {
     this.getPostDetail()
+  },
+  components: {
+    PostEditor
   }
 }
 </script>

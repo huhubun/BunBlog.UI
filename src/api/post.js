@@ -26,6 +26,14 @@ export function postNewBlogPost(blogPost) {
     })
 }
 
+export function editBlogPost(blogPost) {
+    return axios({
+        url: `/api/posts/${blogPost.id}`,
+        method: 'put',
+        data: blogPost
+    })
+}
+
 export function UpdateVisits(id) {
     return axios({
         url: `/api/posts/${id}/visits`,
