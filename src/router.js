@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import { message } from 'ant-design-vue'
 
 Vue.use(Router)
 
@@ -86,6 +87,7 @@ router.beforeEach((to, from, next) => {
     if (isAlreadyLoggedIn) {
       next()
     } else {
+      message.info('请先登录')
       next('/admin/login')
     }
   } else {
