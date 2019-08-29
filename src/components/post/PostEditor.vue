@@ -82,7 +82,17 @@ export default {
 
     },
     preview() {
+      if (this.isNewPost) {
+        this.$message.warning('暂不支持')
+      } else {
+        let id = this.post.id
+        let link = this.$router.resolve({
+          name: 'post-detail',
+          params: { id: id }
+        })
 
+        window.open(link.href)
+      }
     }
   }
 }
