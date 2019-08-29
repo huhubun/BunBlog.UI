@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="post-list-container">
     <post-list v-bind:list="list"></post-list>
   </div>
 </template>
@@ -31,4 +31,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+.post-list-container
+  padding: 0 100px
+</style>

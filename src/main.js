@@ -4,13 +4,14 @@ import router from './router'
 import store from './store'
 import Storage from 'vue-ls'
 
-import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, Row, Col, Table, Popconfirm, Alert, message, notification } from 'ant-design-vue'
+import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, Row, Col, Table, Popconfirm, Alert, Tooltip, message, notification } from 'ant-design-vue'
 
 import { BunAxios } from './utils/request'
 
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
+import '@babel/polyfill'
 
 Vue.config.productionTip = false
 
@@ -37,6 +38,7 @@ Vue.use(Col)
 Vue.use(Table)
 Vue.use(Popconfirm)
 Vue.use(Alert)
+Vue.use(Tooltip)
 
 // axios -> Vue.$http or this.$http
 Vue.use(BunAxios)

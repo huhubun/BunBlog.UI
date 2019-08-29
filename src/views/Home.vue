@@ -10,7 +10,9 @@
             <router-link to="/about">关于</router-link>
           </a-menu-item>
           <a-menu-item>
-            <a-input-search placeholder="Search" />
+            <a-tooltip placement="bottom" title="(lll￢ω￢) 该功能尚未实装">
+              <a-input-search placeholder="搜索" />
+            </a-tooltip>
           </a-menu-item>
         </a-menu>
       </a-layout-header>
@@ -58,7 +60,6 @@ export default {
 
 .ant-layout-content
   background-color: #FFF
-  padding: 0 50px
 
 .ant-layout-footer a
   color: rgba(0, 0, 0, 0.65)
