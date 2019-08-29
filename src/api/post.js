@@ -37,6 +37,6 @@ export function editBlogPost(blogPost) {
 export function UpdateVisits(id) {
     return axios({
         url: `/api/posts/${id}/visits`,
-        method: 'put'
+        method: 'post'
     })
 }
