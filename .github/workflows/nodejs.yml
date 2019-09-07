@@ -20,6 +20,6 @@ jobs:
     - name: npm install and build
       run: |
         npm install
-        npm run serve
+        npm run build
       env:
         CI: true
