@@ -1,6 +1,5 @@
 <template>
   <div class="post-new-container">
-    <h1>撰写博文</h1>
     <post-editor></post-editor>
   </div>
 </template>

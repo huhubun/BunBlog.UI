@@ -9,19 +9,19 @@
         <span>
           <a-icon type="calendar" />
           {{ formatDate(item.publishedOn) }}
-          <a-divider type="vertical" />
         </span>
         <span>
+          <a-divider type="vertical" />
           <a-icon type="eye" />
           {{ getPostVisits(item.metadataList) }}
-          <a-divider type="vertical" />
         </span>
         <span v-if="item.category != null">
+          <a-divider type="vertical" />
           <a-icon type="inbox" />
           {{ item.category.displayName }}
-          <a-divider type="vertical" />
         </span>
         <span v-if="item.tagList != null && item.tagList.length > 0">
+          <a-divider type="vertical" />
           <a-icon type="tags" />
           <a-tag v-for="tag in item.tagList" v-bind:key="tag.linkName">{{ tag.displayName }}</a-tag>
         </span>

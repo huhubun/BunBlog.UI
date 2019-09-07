@@ -2,32 +2,40 @@
   <div>
     <div v-if="post">
       <div class="header">
-        <h1 class="title">{{ post.title }}</h1>
+        <div>
+          <div class="category">
+            <a-button
+              v-if="post.category != null"
+              size="small"
+              ghost
+            >{{ post.category.displayName }}</a-button>
+          </div>
+          <h1 class="title">{{ post.title }}</h1>
+        </div>
         <div class="info">
-          <span>
-            <a-icon type="calendar" />
-            发表于
-            {{ formatDate(post.publishedOn) }}
-            <a-divider type="vertical" />
-          </span>
-          <span>
-            <a-icon type="eye" />
-            浏览
-            {{ visits }} 次
-            <a-divider type="vertical" />
-          </span>
-          <!-- <span v-if="item.category != null">
-            <a-icon type="inbox" />
-            {{ item.category.displayName }}
-            <a-divider type="vertical" />
-          </span>
-          <span v-if="item.tagList != null && item.tagList.length > 0">
+          <div>
+            <span>
+              <a-icon type="calendar" />
+              发表于
+              {{ formatDate(post.publishedOn) }}
+            </span>
+            <span class="bun-margin-left">
+              <a-icon type="eye" />
+              浏览
+              {{ visits }} 次
+            </span>
+          </div>
+          <div v-if="post.tagList != null && post.tagList.length > 0" class="tag-container">
             <a-icon type="tags" />
-            <a-tag v-for="tag in item.tagList" v-bind:key="tag.linkName">{{ tag.displayName }}</a-tag>
-          </span>-->
-          <span v-if="isAlreadyLoggedIn">
-            <router-link :to="{name:'admin-post-edit', params: {id: post.id}}">编辑</router-link>
-          </span>
+            <span class="bun-margin-left">
+              <router-link
+                v-for="tag in post.tagList"
+                :to="{ 'name': 'tags-view', params: { linkName: tag.linkName }  }"
+                v-bind:key="tag.linkName"
+                class="bun-margin-right"
+              >{{ tag.displayName }}</router-link>
+            </span>
+          </div>
         </div>
       </div>
       <div class="content-container">
@@ -105,18 +113,40 @@ export default {
 .header
   background-color: rgba(0, 0, 0, 0.1)
   margin-bottom: 16px
+  padding: 8px 0
 
-.header .title
-  text-align: center
-  font-size: 44px
-  padding: 100px 0
-  margin: 0
+  .category
+    padding-top: 100px
+    text-align: center
 
-.header .info
-  text-align: right
-  padding-right: 50px
+    button
+      color: #000
+      border-color: #000
+
+    button:hover
+      text-shadow: 0px 0px 1px #000
+      box-shadow: 0px 0px 8px 0 #999, inset 0px 0px 5px 0 #999
+
+    button:after
+      border-color: #000
+
+  .title
+    text-align: center
+    font-size: 44px
+    padding-bottom: 100px
+    margin: 0
+
+  .info
+    text-align: right
+    padding-right: 50px
+
+    .tag-container
+      a
+        color: black
+
+      a:hover
+        text-decoration: underline
 
 .content-container
   padding: 0 16px
-
 </style>

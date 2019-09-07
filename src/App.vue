@@ -5,17 +5,29 @@
 </template>
 
 <style lang="stylus">
+.bun-margin-top
+  margin-top: 8px
+
+.bun-margin-top-2x
+  margin-top: 16px
+
 .bun-margin-right
   margin-right: 8px
 
 .bun-margin-right-2x
   margin-right: 16px
 
-.bun-margin-top
-  margin-top: 8px
+.bun-margin-bottom
+  margin-bottom: 8px
 
-.bun-margin-top-2x
-  margin-top: 16px
+.bun-margin-bottom-2x
+  margin-bottom: 16px
+
+.bun-margin-left
+  margin-left: 8px
+
+.bun-margin-left-2x
+  margin-left: 16px
 
 .bun-left
   float: left
