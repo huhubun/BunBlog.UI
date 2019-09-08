@@ -1,6 +1,5 @@
 <template>
   <div class="post-edit-container">
-    <h1>编辑博文</h1>
     <post-editor v-bind:post="post" v-if="post"></post-editor>
   </div>
 </template>

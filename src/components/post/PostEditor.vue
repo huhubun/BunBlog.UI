@@ -18,7 +18,7 @@
             <a-menu-divider />
             <a-menu-item @click="view">查看已发布…</a-menu-item>
           </a-menu>
-          <a-button @click="openPublishDrawer">
+          <a-button @click="publishRevised">
             发布修订版
             <a-icon type="down" />
           </a-button>
