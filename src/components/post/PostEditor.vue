@@ -18,7 +18,7 @@
             <a-menu-divider />
             <a-menu-item @click="view">查看已发布…</a-menu-item>
           </a-menu>
-          <a-button>
+          <a-button @click="openPublishDrawer">
             发布修订版
             <a-icon type="down" />
           </a-button>
@@ -30,11 +30,11 @@
       </div>
     </div>
     <div id="title-container">
-      <a-input v-model="post.title" placeholder="标题"></a-input>
+      <a-input v-model="editorPost.title" placeholder="标题"></a-input>
     </div>
     <div id="content-container">
       <a-textarea
-        v-model="post.content"
+        v-model="editorPost.content"
         placeholder="博文内容"
         :autosize="{ minRows: 18, maxRows: 30 }"
       ></a-textarea>
@@ -45,12 +45,12 @@
       :closable="true"
       :visible="isPublishDrawerOpened"
       :width="400"
-      @close="onPublishDrawerClose"
+      @close="closePublishDrawer"
       wrapClassName="publish-drawer"
     >
       <div>
         <a-divider dashed>链接名称</a-divider>
-        <a-input v-model="post.linkName">
+        <a-input v-model="editorPost.linkName">
           <a-icon slot="prefix" type="link" />
         </a-input>
       </div>
@@ -60,8 +60,7 @@
         </a-divider>
         <a-select
           :loading="isCategoryListLoading"
-          :defaultValue="selectedCategory"
-          v-model="selectedCategory"
+          v-model="editorPost.category"
           style="width: 100%"
         >
           <a-select-option
@@ -77,8 +76,7 @@
         </a-divider>
         <a-select
           :loading="isTagListLoading"
-          :defaultValue="selectedTagList"
-          v-model="selectedTagList"
+          v-model="editorPost.tagList"
           mode="multiple"
           style="width: 100%"
         >
@@ -91,7 +89,11 @@
       </div>
       <div>
         <a-divider dashed>摘要</a-divider>
-        <a-textarea v-model="post.excerpt" placeholder="摘要" :autosize="{ minRows: 4, maxRows: 10 }"></a-textarea>
+        <a-textarea
+          v-model="editorPost.excerpt"
+          placeholder="摘要"
+          :autosize="{ minRows: 4, maxRows: 10 }"
+        ></a-textarea>
       </div>
 
       <div class="bun-margin-top-2x" v-if="isNewPost">
@@ -112,6 +114,7 @@ import { getList as getTagList } from '@/api/tag'
 export default {
   name: 'PostEditor',
   props: {
+    // 传入的 post 对象
     post: {
       type: Object,
       default: function () {
@@ -130,6 +133,9 @@ export default {
   },
   data() {
     return {
+      // 编辑器使用的 post 对象
+      editorPost: {},
+
       // 博文设置
       isPublishDrawerOpened: false,
 
@@ -137,44 +143,37 @@ export default {
 
       categoryList: [],
       isCategoryListLoading: true,
-      selectedCategory: '',
 
       tagList: [],
-      isTagListLoading: true,
-      selectedTagList: []
+      isTagListLoading: true
     }
   },
   computed: {
     isNewPost() {
-      return !this.post.id
+      return !this.editorPost.id
     }
   },
   methods: {
     openPublishDrawer() {
       this.isPublishDrawerOpened = true
     },
-    onPublishDrawerClose() {
+    closePublishDrawer() {
       this.isPublishDrawerOpened = false
     },
     publish() {
-      this.post.category = this.selectedCategory
-      this.post.tagList = this.selectedTagList
-
-      postNewBlogPost(this.post).then(res => {
+      this.closePublishDrawer()
+      postNewBlogPost(this.editorPost).then(res => {
         this.$message.success('博文发布成功')
 
-        this.isNewPost = false
-        this.post.id = res.id
+        this.editorPost.id = res.id
       }).catch(error => {
         console.error(error)
         this.$message.error('博文发布失败')
       })
     },
     publishRevised() {
-      this.post.category = this.selectedCategory
-      this.post.tagList = this.selectedTagList
-
-      editBlogPost(this.post).then(res => {
+      this.closePublishDrawer()
+      editBlogPost(this.editorPost).then(res => {
         this.$message.success('修订版博文发布成功')
       }).catch(error => {
         console.error(error)
@@ -185,7 +184,7 @@ export default {
 
     },
     view() {
-      let id = this.post.id
+      let id = this.editorPost.id
       let link = this.$router.resolve({
         name: 'post-detail',
         params: { id: id }
@@ -193,18 +192,31 @@ export default {
 
       window.open(link.href)
     },
-    refreshSelectedCategory() {
-      this.selectedCategory = this.post.category ? this.post.category.linkName : null
-    },
-    refreshSelectedTagList() {
-      this.selectedTagList = this.post.tagList.map((item, index) => {
+    initEditorPost() {
+      let post = this.post
+      let editorPost = {
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        linkName: post.linkName,
+        category: null,
+        tagList: []
+      }
+
+      if (post.category) {
+        editorPost.category = post.category.linkName
+      }
+
+      editorPost.tagList = post.tagList.map((item, index) => {
         return item.linkName
       })
+
+      this.editorPost = editorPost
     }
   },
   mounted() {
-    this.refreshSelectedCategory()
-    this.refreshSelectedTagList()
+    this.initEditorPost()
 
     getCategoryList().then(categoryList => {
       this.categoryList = categoryList
