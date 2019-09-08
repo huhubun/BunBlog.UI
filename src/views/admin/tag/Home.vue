@@ -127,7 +127,13 @@ export default {
             let errorResponse = error.response
             if (errorResponse.status === 400) {
               let errorData = errorResponse.data
-              errorMessage += ` ${errorData.message}`
+
+              let modelValidationErrorMessage = this.$bunHelper.tryParseModelValidationError(errorData)
+              if (modelValidationErrorMessage) {
+                errorMessage += ` ${modelValidationErrorMessage}`
+              } else {
+                errorMessage += ` ${errorData.message}`
+              }
             }
 
             console.error(errorMessage)

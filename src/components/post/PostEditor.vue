@@ -166,19 +166,31 @@ export default {
         this.$message.success('博文发布成功')
 
         this.editorPost.id = res.id
-      }).catch(error => {
-        console.error(error)
-        this.$message.error('博文发布失败')
-      })
+      }).catch(error => this.publishFailHandler(error))
     },
     publishRevised() {
       this.closePublishDrawer()
       editBlogPost(this.editorPost).then(res => {
         this.$message.success('修订版博文发布成功')
-      }).catch(error => {
-        console.error(error)
-        this.$message.error('修订版博文发布失败')
-      })
+      }).catch(error => this.publishFailHandler(error))
+    },
+    publishFailHandler(error) {
+      console.error(error)
+
+      let messageContent = '博文发布失败'
+
+      if (!this.isNewPost) {
+        messageContent = '修订版博文发布失败'
+      }
+
+      let modelValidationErrorMessage = this.$bunHelper.tryParseModelValidationError(error.response.data)
+      if (modelValidationErrorMessage) {
+        messageContent += ` ${modelValidationErrorMessage}`
+      }
+
+      console.error(messageContent)
+
+      this.$message.error(messageContent, 6)
     },
     saveAsDraft() {
 

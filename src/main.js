@@ -7,6 +7,7 @@ import Storage from 'vue-ls'
 import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, Row, Col, Table, Popconfirm, Alert, Tooltip, Dropdown, Drawer, Select, message, notification } from 'ant-design-vue'
 
 import { BunAxios } from './utils/request'
+import { BunHelper } from './utils/bunHelper'
 
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -45,6 +46,8 @@ Vue.use(Select)
 
 // axios -> Vue.$http or this.$http
 Vue.use(BunAxios)
+// bunHelper -> Vue.$bunHelper or this.$bunHelper
+Vue.use(BunHelper)
 
 Vue.prototype.$message = message
 Vue.prototype.$notification = notification
