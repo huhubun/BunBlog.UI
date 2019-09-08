@@ -18,7 +18,7 @@ const router = new Router({
           component: () => import('@/views/post/List')
         },
         {
-          path: '/post/:id',
+          path: '/post/:linkName',
           name: 'post-detail',
           component: () => import('@/views/post/Detail')
         }

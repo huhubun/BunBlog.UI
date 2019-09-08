@@ -18,6 +18,20 @@ export function getDetail(id) {
     })
 }
 
+export function getDetailByLinkName(linkName) {
+    return axios({
+        url: `/api/posts/${linkName}`,
+        method: 'get'
+    })
+}
+
+export function getDetailHeadByLinkName(linkName) {
+    return axios({
+        url: `/api/posts/${linkName}`,
+        method: 'head'
+    })
+}
+
 export function postNewBlogPost(blogPost) {
     return axios({
         url: `/api/posts`,

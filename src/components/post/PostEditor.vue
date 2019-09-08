@@ -184,10 +184,10 @@ export default {
 
     },
     view() {
-      let id = this.editorPost.id
+      let linkName = this.editorPost.linkName
       let link = this.$router.resolve({
         name: 'post-detail',
-        params: { id: id }
+        params: { linkName: linkName }
       })
 
       window.open(link.href)

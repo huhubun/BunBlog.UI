@@ -18,7 +18,7 @@
         <template slot="operation" slot-scope="operation, row">
           <router-link :to="{ name:'admin-post-edit', params: { id: row.id } }">编辑</router-link>
           <a-divider type="vertical" />
-          <router-link :to="{ name:'post-detail', params: { id: row.id } }">查看</router-link>
+          <router-link :to="{ name:'post-detail', params: { linkName: row.linkName } }">查看</router-link>
         </template>
       </a-table>
     </div>

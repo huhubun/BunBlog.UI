@@ -57,13 +57,13 @@
 import Vue from 'vue'
 import dayjs from 'dayjs'
 import showdown from 'showdown'
-import { getDetail, UpdateVisits } from '@/api/post'
+import { getDetailByLinkName, UpdateVisits } from '@/api/post'
 import { getVisits } from '@/helper/post'
 
 export default {
   data() {
     return {
-      id: this.$route.params.id,
+      linkName: this.$route.params.linkName,
       post: null,
       metadataList: null,
       content: null
@@ -79,10 +79,12 @@ export default {
   },
   methods: {
     getPostDetail() {
-      getDetail(this.id).then(post => {
+      getDetailByLinkName(this.linkName).then(post => {
         console.log(post)
         this.post = post
         this.metadataList = this.post.metadataList
+
+        this.updatePostVisits()
 
         let converter = new showdown.Converter()
         this.content = converter.makeHtml(this.post.content)
@@ -91,7 +93,7 @@ export default {
       })
     },
     updatePostVisits() {
-      UpdateVisits(this.id).then(res => {
+      UpdateVisits(this.post.id).then(res => {
         console.log(res)
       }).catch(err => {
         console.error(err)
@@ -104,7 +106,6 @@ export default {
   },
   mounted() {
     this.getPostDetail()
-    this.updatePostVisits()
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <a-list itemLayout="vertical" :dataSource="list">
     <a-list-item slot="renderItem" slot-scope="item" key="item.id">
       <h2>
-        <router-link :to="{ name:'post-detail', params: { id: item.id } }">{{item.title}}</router-link>
+        <router-link :to="{ name:'post-detail', params: { linkName: item.linkName } }">{{item.title}}</router-link>
       </h2>
       <p>{{ item.excerpt }}</p>
       <div>
