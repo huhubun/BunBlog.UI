@@ -10,7 +10,13 @@
         <div id="post-operation">
           <span style="float: left">
             <a-button-group>
-              <a-button @click="onUploadImageClick" icon="picture" type="primary" ghost></a-button>
+              <a-button
+                @click="onUploadImageClick"
+                icon="picture"
+                type="primary"
+                ghost
+                class="bun-btn-upload-image bun-btn-post-editor"
+              ></a-button>
             </a-button-group>
           </span>
 
@@ -18,7 +24,12 @@
             <a-menu slot="overlay">
               <a-menu-item>暂存</a-menu-item>
             </a-menu>
-            <a-button @click="openPublishDrawer">
+            <a-button
+              @click="openPublishDrawer"
+              type="primary"
+              ghost
+              class="bun-btn-publish-new bun-btn-post-editor"
+            >
               发布
               <a-icon type="down" />
             </a-button>
@@ -31,25 +42,35 @@
                 <a-menu-divider />
                 <a-menu-item @click="view">查看已发布…</a-menu-item>
               </a-menu>
-              <a-button @click="publishRevised">
+              <a-button
+                @click="publishRevised"
+                type="primary"
+                ghost
+                class="bun-btn-publish-revised bun-btn-post-editor"
+              >
                 发布修订版
                 <a-icon type="down" />
               </a-button>
             </a-dropdown>
 
-            <a-button @click="openPublishDrawer">
+            <a-button
+              @click="openPublishDrawer"
+              type="primary"
+              ghost
+              class="bun-btn-open-publish-drawer bun-btn-post-editor"
+            >
               <a-icon type="setting"></a-icon>
             </a-button>
           </div>
         </div>
         <div id="title-container">
-          <a-input v-model="editorPost.title" placeholder="标题"></a-input>
+          <a-input v-model="editorPost.title" placeholder="标题" :autoFocus="autoFocusTitle"></a-input>
         </div>
         <div id="content-container">
           <a-textarea
             v-model="editorPost.content"
             placeholder="博文内容"
-            :autosize="{ minRows: 18, maxRows: 30 }"
+            v-bind:style="{ height: editorTextareaHeight + 'px' }"
           ></a-textarea>
         </div>
       </a-col>
@@ -119,7 +140,7 @@
         <a-button @click="publish" type="primary" block>确认发布</a-button>
       </div>
       <div class="bun-margin-top-2x" v-else>
-        <a-button @click="publishRevised" type="primary" block>确认发布修订版</a-button>
+        <a-button @click="publishRevised" type="primary" block>确认并发布修订版</a-button>
       </div>
     </a-drawer>
 
@@ -139,7 +160,7 @@
           :action="uploadImageUrl"
           :multiple="false"
           :showUploadList="false"
-          accept="image/png,image/jpg"
+          accept="image/png, image/jpg"
           @change="onUploadImageChange"
         >
           <p class="ant-upload-drag-icon">
@@ -182,6 +203,9 @@ export default {
     return {
       // 编辑器使用的 post 对象
       editorPost: {},
+      // 编辑器 textarea 的高度
+      editorTextareaHeight: 300,
+      autoFocusTitle: false,
 
       // 博文设置
       isPublishDrawerOpened: false,
@@ -194,13 +218,17 @@ export default {
       tagList: [],
       isTagListLoading: true,
 
+      // 图片上传
       isUploadImageModalDisplayed: false,
       uploadImageUrl: getUploadImageUrl(),
       uploadImage: {
         inputUrl: '',
         image: '',
         uploadUrl: ''
-      }
+      },
+
+      // 浏览器窗体
+      windowHeight: 0
     }
   },
   computed: {
@@ -322,6 +350,22 @@ export default {
       let urlMarkdown = `\n![图片描述](${url})`
 
       this.editorPost.content += urlMarkdown
+    },
+    onWindowResize() {
+      this.windowHeight = window.innerHeight
+    },
+    calcEditorTextareaHeight() {
+      // .post-new-container padding-top 8px
+      // container margin-top 8px
+      // .content-container margin-top 8px
+      // 底部留 16px 空白
+      let otherHeight = 8 + 8 + 8 + 16 +
+        32 +
+        45
+
+      let autoHeight = this.windowHeight - otherHeight
+
+      return autoHeight > 300 ? autoHeight : 300
     }
   },
   mounted() {
@@ -332,6 +376,13 @@ export default {
     bodyStyle.height = 'auto'
 
     this.initEditorPost()
+
+    window.addEventListener('resize', this.onWindowResize)
+    this.onWindowResize()
+
+    if (this.isNewPost) {
+      this.autoFocusTitle = true
+    }
 
     getCategoryList().then(categoryList => {
       this.categoryList = categoryList
@@ -353,20 +404,46 @@ export default {
     let bodyStyle = document.getElementsByTagName('body')[0].style
     bodyStyle.backgroundColor = null
     bodyStyle.height = null
+
+    window.removeEventListener('resize', this.onWindowResize)
+  },
+  watch: {
+    windowHeight(newValue) {
+      this.editorTextareaHeight = this.calcEditorTextareaHeight()
+    }
   }
 }
 </script>
 
 <style lang="stylus" scoped>
+.bun-btn-post-editor
+  border-color: rgb(123, 131, 125)
+  color: rgb(51, 51, 51)
+
+.bun-btn-post-editor:hover
+  border-color: rgb(51, 51, 51)
+  color: #000
+
 #post-editor
+  margin-top: 8px
+
   .left-container
     text-align: center
 
 #post-operation
   text-align: right
 
+  .bun-btn-publish-revised
+    border-top-right-radius: 0
+    border-bottom-right-radius: 0
+    border-right: 0
+
+  .bun-btn-open-publish-drawer
+    border-top-left-radius: 0
+    border-bottom-left-radius: 0
+
 #title-container
-  margin-top: 16px
+  margin-top: 8px
 
   input
     font-size: 1.8em
@@ -374,17 +451,24 @@ export default {
     border-top: 0
     border-right: 0
     border-left: 0
+    border-color: rgb(253, 246, 227)
+    border-radius: 0
+    box-shadow: none /* 消除 antd 给 hover 的文本框增加的蓝色边框 */
+
+  input:hover
+    border-color: rgb(201, 200, 186)
 
 #content-container
-  margin-top: 16px
+  margin-top: 8px
 
   textarea
     font-size: 1.2em
     border: 1px solid rgb(253, 246, 227)
     resize: none
+    box-shadow: none /* 消除 antd 给 hover 的文本框增加的蓝色边框 */
 
   textarea:hover
-    border: 1px solid #000
+    border: 1px solid rgb(201, 200, 186)
 
 #title-container input, #content-container textarea
   background-color: rgb(253, 246, 227)

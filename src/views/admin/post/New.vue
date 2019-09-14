@@ -24,6 +24,5 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.post-new-container
-  padding-top: 32px
+
 </style>

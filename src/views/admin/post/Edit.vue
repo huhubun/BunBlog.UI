@@ -36,6 +36,5 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.post-edit-container
-  margin-top: 10px
+
 </style>
