@@ -1,44 +1,63 @@
 <template>
   <div>
-    <div id="post-operation">
-      <a-dropdown v-if="isNewPost">
-        <a-menu slot="overlay">
-          <a-menu-item>暂存</a-menu-item>
-        </a-menu>
-        <a-button @click="openPublishDrawer">
-          发布
-          <a-icon type="down" />
-        </a-button>
-      </a-dropdown>
+    <a-row id="post-editor">
+      <a-col :span="5" class="left-container">
+        <div>
+          <a-button @click="goToAdminPostList" type="link" icon="left">返回博文列表</a-button>
+        </div>
+      </a-col>
+      <a-col :span="14" class="editor-container">
+        <div id="post-operation">
+          <span style="float: left">
+            <a-button-group>
+              <a-button @click="onUploadImageClick" icon="picture" type="primary" ghost></a-button>
+            </a-button-group>
+          </span>
 
-      <div v-if="!isNewPost">
-        <a-dropdown>
-          <a-menu slot="overlay">
-            <a-menu-item>暂存</a-menu-item>
-            <a-menu-divider />
-            <a-menu-item @click="view">查看已发布…</a-menu-item>
-          </a-menu>
-          <a-button @click="publishRevised">
-            发布修订版
-            <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
+          <a-dropdown v-if="isNewPost">
+            <a-menu slot="overlay">
+              <a-menu-item>暂存</a-menu-item>
+            </a-menu>
+            <a-button @click="openPublishDrawer">
+              发布
+              <a-icon type="down" />
+            </a-button>
+          </a-dropdown>
 
-        <a-button @click="openPublishDrawer">
-          <a-icon type="setting"></a-icon>
-        </a-button>
-      </div>
-    </div>
-    <div id="title-container">
-      <a-input v-model="editorPost.title" placeholder="标题"></a-input>
-    </div>
-    <div id="content-container">
-      <a-textarea
-        v-model="editorPost.content"
-        placeholder="博文内容"
-        :autosize="{ minRows: 18, maxRows: 30 }"
-      ></a-textarea>
-    </div>
+          <div v-if="!isNewPost">
+            <a-dropdown>
+              <a-menu slot="overlay">
+                <a-menu-item>暂存</a-menu-item>
+                <a-menu-divider />
+                <a-menu-item @click="view">查看已发布…</a-menu-item>
+              </a-menu>
+              <a-button @click="publishRevised">
+                发布修订版
+                <a-icon type="down" />
+              </a-button>
+            </a-dropdown>
+
+            <a-button @click="openPublishDrawer">
+              <a-icon type="setting"></a-icon>
+            </a-button>
+          </div>
+        </div>
+        <div id="title-container">
+          <a-input v-model="editorPost.title" placeholder="标题"></a-input>
+        </div>
+        <div id="content-container">
+          <a-textarea
+            v-model="editorPost.content"
+            placeholder="博文内容"
+            :autosize="{ minRows: 18, maxRows: 30 }"
+          ></a-textarea>
+        </div>
+      </a-col>
+      <a-col :span="5" class="right-container">
+        <div class="word-count-container">0 字</div>
+      </a-col>
+    </a-row>
+
     <a-drawer
       title="博文设置"
       placement="right"
@@ -103,6 +122,33 @@
         <a-button @click="publishRevised" type="primary" block>确认发布修订版</a-button>
       </div>
     </a-drawer>
+
+    <a-modal
+      :visible="isUploadImageModalDisplayed"
+      title="插入图片"
+      @ok="onUploadImageModalClickOk"
+      @cancel="onUploadImageModalClickCancel"
+    >
+      <div>
+        <a-input v-model="uploadImage.inputUrl" placeholder="输入 URL"></a-input>
+      </div>
+      <a-divider dashed />
+      <div>
+        <a-upload-dragger
+          name="image"
+          :action="uploadImageUrl"
+          :multiple="false"
+          :showUploadList="false"
+          accept="image/png,image/jpg"
+          @change="onUploadImageChange"
+        >
+          <p class="ant-upload-drag-icon">
+            <a-icon type="inbox" />
+          </p>
+          <p class="ant-upload-text">点击或者将图片拖动到此处进行上传</p>
+        </a-upload-dragger>
+      </div>
+    </a-modal>
   </div>
 </template>
 
@@ -110,6 +156,7 @@
 import { postNewBlogPost, editBlogPost } from '@/api/post'
 import { getList as getCategoryList } from '@/api/category'
 import { getList as getTagList } from '@/api/tag'
+import { getUploadImageUrl } from '@/api/image'
 
 export default {
   name: 'PostEditor',
@@ -145,7 +192,15 @@ export default {
       isCategoryListLoading: true,
 
       tagList: [],
-      isTagListLoading: true
+      isTagListLoading: true,
+
+      isUploadImageModalDisplayed: false,
+      uploadImageUrl: getUploadImageUrl(),
+      uploadImage: {
+        inputUrl: '',
+        image: '',
+        uploadUrl: ''
+      }
     }
   },
   computed: {
@@ -225,9 +280,57 @@ export default {
       })
 
       this.editorPost = editorPost
+    },
+    goToAdminPostList() {
+      this.$router.push('/admin/post')
+    },
+    onUploadImageClick() {
+      this.isUploadImageModalDisplayed = true
+    },
+    onUploadImageModalClickOk() {
+      let inputUrl = this.uploadImage.inputUrl
+      if (inputUrl) {
+        this.addImageUrlToEditorTextarea(inputUrl)
+      }
+
+      this.closeUploadImageModal()
+    },
+    onUploadImageModalClickCancel() {
+      this.closeUploadImageModal()
+    },
+    closeUploadImageModal() {
+      this.uploadImage.inputUrl = ''
+      this.isUploadImageModalDisplayed = false
+    },
+    onUploadImageChange(info) {
+      let status = info.file.status
+      if (status === 'done') {
+        this.$message.success('图片上传成功')
+
+        let response = info.file.response
+        this.addImageUrlToEditorTextarea(response.url)
+
+        this.closeUploadImageModal()
+      }
+
+      if (status === 'error') {
+        this.$message.error('图片上传失败')
+        console.log(info)
+      }
+    },
+    addImageUrlToEditorTextarea(url) {
+      let urlMarkdown = `\n![图片描述](${url})`
+
+      this.editorPost.content += urlMarkdown
     }
   },
   mounted() {
+    let bodyStyle = document.getElementsByTagName('body')[0].style
+    // 进入博文编辑器后使用护眼的黄色背景
+    bodyStyle.backgroundColor = 'rgb(253, 246, 227)'
+    // 修正 100% 高度导致滚动条一直显示的问题
+    bodyStyle.height = 'auto'
+
     this.initEditorPost()
 
     getCategoryList().then(categoryList => {
@@ -245,19 +348,46 @@ export default {
       console.log(error)
       this.$message.error('获取标签列表失败')
     })
+  },
+  beforeDestroy() {
+    let bodyStyle = document.getElementsByTagName('body')[0].style
+    bodyStyle.backgroundColor = null
+    bodyStyle.height = null
   }
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
+#post-editor
+  .left-container
+    text-align: center
+
 #post-operation
   text-align: right
 
 #title-container
-  margin-top: 8px
+  margin-top: 16px
+
+  input
+    font-size: 1.8em
+    height: 1.8em
+    border-top: 0
+    border-right: 0
+    border-left: 0
 
 #content-container
-  margin-top: 8px
+  margin-top: 16px
+
+  textarea
+    font-size: 1.2em
+    border: 1px solid rgb(253, 246, 227)
+    resize: none
+
+  textarea:hover
+    border: 1px solid #000
+
+#title-container input, #content-container textarea
+  background-color: rgb(253, 246, 227)
 
 .publish-drawer
   .ant-drawer-body

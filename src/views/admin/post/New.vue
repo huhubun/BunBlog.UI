@@ -25,5 +25,5 @@ export default {
 
 <style lang="stylus" scoped>
 .post-new-container
-  margin-top: 10px
+  padding-top: 32px
 </style>

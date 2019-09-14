@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import Storage from 'vue-ls'
 
-import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, Row, Col, Table, Popconfirm, Alert, Tooltip, Dropdown, Drawer, Select, message, notification } from 'ant-design-vue'
+import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, Row, Col, Table, Popconfirm, Alert, Tooltip, Dropdown, Drawer, Select, Modal, Upload, message, notification } from 'ant-design-vue'
 
 import { BunAxios } from './utils/request'
 import { BunHelper } from './utils/bunHelper'
@@ -43,6 +43,8 @@ Vue.use(Tooltip)
 Vue.use(Dropdown)
 Vue.use(Drawer)
 Vue.use(Select)
+Vue.use(Modal)
+Vue.use(Upload)
 
 // axios -> Vue.$http or this.$http
 Vue.use(BunAxios)

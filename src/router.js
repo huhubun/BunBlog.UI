@@ -43,16 +43,6 @@ const router = new Router({
           component: () => import('@/views/admin/post/List')
         },
         {
-          path: 'post/new',
-          name: 'admin-post-new',
-          component: () => import('@/views/admin/post/New')
-        },
-        {
-          path: 'post/edit/:id',
-          name: 'admin-post-edit',
-          component: () => import('@/views/admin/post/Edit')
-        },
-        {
           path: 'category',
           name: 'admin-category',
           component: () => import('@/views/admin/category/Home')
@@ -68,6 +58,16 @@ const router = new Router({
           component: () => import('@/views/admin/page/Home')
         }
       ]
+    },
+    {
+      path: '/admin/post/new',
+      name: 'admin-post-new',
+      component: () => import('@/views/admin/post/New')
+    },
+    {
+      path: '/admin/post/edit/:id',
+      name: 'admin-post-edit',
+      component: () => import('@/views/admin/post/Edit')
     }
   ]
 })
