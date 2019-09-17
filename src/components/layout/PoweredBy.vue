@@ -13,6 +13,10 @@
         <a href="https://github.com/huhubun/BunBlog.API">BunBlog.API</a>
         {{ apiVersion }}
       </span>
+      <span v-if="os">
+        <a-divider type="vertical" />
+        <span>{{ runtimeFramework }} on {{ os }}</span>
+      </span>
     </div>
   </div>
 </template>
@@ -24,14 +28,31 @@ export default {
   name: 'PoweredBy',
   data() {
     return {
-      uiVersion: process.env.BUN_BLOG_UI_VERSION,
-      apiVersion: null
+      uiVersion: process.env.BUN_BLOG_UI_VERSION
+    }
+  },
+  computed: {
+    apiVersion() {
+      return this.$store.state.apiInformation.version
+    },
+    os() {
+      return this.$store.state.apiInformation.os
+    },
+    runtimeFramework() {
+      return this.$store.state.apiInformation.runtimeFramework
+    }
+  },
+  methods: {
+    getApiInformation() {
+      getInformation().then(res => {
+        this.$store.commit('setApiInformation', res)
+      })
     }
   },
   mounted() {
-    getInformation().then(res => {
-      this.apiVersion = res.version
-    })
+    if (this.os === null) {
+      this.getApiInformation()
+    }
   }
 }
 </script>
