@@ -93,6 +93,9 @@ const categoryTableColumns = [
 ]
 
 export default {
+  metaInfo: {
+    title: '分类管理'
+  },
   data() {
     return {
       form: this.$form.createForm(this),

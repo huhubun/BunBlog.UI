@@ -4,6 +4,19 @@
   </div>
 </template>
 
+<script>
+import store from './store'
+
+export default {
+  metaInfo: {
+    titleTemplate: (titleChunk) => {
+      let baseTitle = store.state.blog.title
+      return titleChunk ? `${titleChunk} - ${baseTitle}` : baseTitle
+    }
+  }
+}
+</script>
+
 <style lang="stylus">
 .bun-margin-top
   margin-top: 8px

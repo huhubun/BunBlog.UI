@@ -93,6 +93,9 @@ const tagTableColumns = [
 ]
 
 export default {
+  metaInfo: {
+    title: '标签管理'
+  },
   data() {
     return {
       form: this.$form.createForm(this),

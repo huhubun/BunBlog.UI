@@ -9,6 +9,9 @@ import PostEditor from '@/components/post/PostEditor'
 import { getDetail } from '@/api/post'
 
 export default {
+  metaInfo: {
+    title: '修订博文'
+  },
   data() {
     return {
       id: this.$route.params.id,

@@ -48,6 +48,9 @@ const postTableColumns = [
 ]
 
 export default {
+  metaInfo: {
+    title: '博文管理'
+  },
   data() {
     return {
       postList: [],

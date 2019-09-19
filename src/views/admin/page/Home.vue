@@ -11,7 +11,9 @@
 
 <script>
 export default {
-
+  metaInfo: {
+    title: '页面管理'
+  }
 }
 </script>
 

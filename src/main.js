@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import Storage from 'vue-ls'
+import VueMeta from 'vue-meta'
 
 import { Button, Form, Input, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Divider, Tag, Affix, Row, Col, Table, Popconfirm, Alert, Tooltip, Dropdown, Drawer, Select, Modal, Upload, message, notification } from 'ant-design-vue'
 
@@ -50,6 +51,8 @@ Vue.use(Upload)
 Vue.use(BunAxios)
 // bunHelper -> Vue.$bunHelper or this.$bunHelper
 Vue.use(BunHelper)
+
+Vue.use(VueMeta)
 
 Vue.prototype.$message = message
 Vue.prototype.$notification = notification

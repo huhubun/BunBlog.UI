@@ -9,6 +9,9 @@ export default new Vuex.Store({
       os: null,
       runtimeFramework: null,
       version: null
+    },
+    blog: {
+      title: '呼呼小笼包的博客 bun.dev'
     }
   },
   mutations: {

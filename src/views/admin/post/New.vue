@@ -8,6 +8,9 @@
 import PostEditor from '@/components/post/PostEditor'
 
 export default {
+  metaInfo: {
+    title: '撰写博文'
+  },
   data() {
     return {
       post: {

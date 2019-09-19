@@ -57,6 +57,9 @@ import PoweredBy from '@/components/layout/PoweredBy'
 import Copyright from '@/components/layout/Copyright'
 
 export default {
+  metaInfo: {
+    title: '登录'
+  },
   data() {
     return {
       form: this.$form.createForm(this)

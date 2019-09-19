@@ -61,6 +61,22 @@ import { getDetailByLinkName, UpdateVisits } from '@/api/post'
 import { getVisits } from '@/helper/post'
 
 export default {
+  metaInfo() {
+    return {
+      title: this.metaInfo.title,
+      meta: [
+        {
+          vmid: 'description',
+          name: 'description',
+          content: this.metaInfo.description
+        },
+        {
+          vmid: 'keywords',
+          name: 'keywords',
+          content: this.metaInfo.keywords
+        }]
+    }
+  },
   data() {
     return {
       linkName: this.$route.params.linkName,
@@ -75,6 +91,19 @@ export default {
     },
     isAlreadyLoggedIn() {
       return Vue.sessionStorage.get('refreshToken')
+    },
+    metaInfo() {
+      if (this.post) {
+        let post = this.post
+
+        return {
+          title: post.title,
+          description: post.excerpt,
+          keywords: post.tagList.map(t => t.displayName).join(',')
+        }
+      }
+
+      return {}
     }
   },
   methods: {
