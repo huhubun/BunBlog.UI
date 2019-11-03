@@ -24,7 +24,11 @@ module.exports = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.16.2/build/styles/solarized-light.min.css' },
+    ],
+    script: [
+      { src: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.16.2/build/highlight.min.js' }
     ]
   },
   /*
@@ -33,7 +37,7 @@ module.exports = {
   css: [
     'ant-design-vue/dist/antd.css'
   ],
-  styleResources:{
+  styleResources: {
     stylus: './assets/style.styl'
   },
   /*

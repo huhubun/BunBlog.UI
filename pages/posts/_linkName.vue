@@ -99,6 +99,11 @@ export default {
       ]
     }
   },
+  mounted() {
+    document.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightBlock(block)
+    })
+  },
   components: {
     eof
   }
