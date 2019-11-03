@@ -1,9 +1,15 @@
 {
-    "vetur.format.defaultFormatter.js": "vscode-typescript",
-
     // https://vuejs.github.io/vetur/formatting.html#stylus-supremacy
     "stylusSupremacy.insertColons": true,
     "stylusSupremacy.insertBraces": false,
-    "stylusSupremacy.insertSemicolons": false
-  
+    "stylusSupremacy.insertSemicolons": false,
+
+    "vetur.format.defaultFormatterOptions": {
+        "prettier": {
+            "singleQuote": true,
+            "semi": false
+        }
+    },
+    
+    "editor.tabSize": 2
 }
