@@ -5,7 +5,7 @@
         <a-icon type="thunderbolt" />Powered by
       </span>
       <span>
-        <a href="https://github.com/huhubun/BunBlog.UI.Front">BunBlog.UI.Front</a>
+        <a href="https://github.com/huhubun/BunBlog.UI">BunBlog.UI</a>
         {{ uiVersion }}
       </span>
       <a-divider type="vertical" />

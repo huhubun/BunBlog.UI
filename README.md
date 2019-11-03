@@ -1,4 +1,4 @@
-# BunBlog.UI.Front
+# BunBlog.UI
 
 > My amazing Nuxt.js project
 
