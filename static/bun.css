@@ -7,6 +7,15 @@ kbd {
   padding: 0.1rem 0.2rem;
 }
 
+p code {
+  background: #fcf2f2;
+  border-radius: 0.1rem;
+  color: #d73e48;
+  font-size: 85%;
+  line-height: 1.25;
+  padding: 0.1rem 0.2rem;
+}
+
 mark {
   background: #ffe9b3;
   border-bottom: 0.05rem solid #ffd367;
@@ -27,4 +36,13 @@ blockquote p:last-child {
 
 p {
   text-align: justify;
+}
+
+.bun-post-content a {
+  color: rgba(0, 0, 0, 0.6);
+  text-decoration: underline;
+}
+
+.bun-post-content a:hover {
+  color: rgba(0, 0, 0, 0.85);
 }

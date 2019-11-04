@@ -4,46 +4,43 @@
       <div class="header">
         <div>
           <div class="category">
-            <a-button
-              v-if="post.category != null"
-              size="small"
-              ghost
-            >{{ post.category.displayName }}</a-button>
+            <n-link v-if="post.category != null" size="small" to="#">{{ post.category.displayName }}</n-link>
           </div>
           <h1 class="title">{{ post.title }}</h1>
         </div>
         <div class="info">
-          <div>
-            <span>
-              <a-icon type="calendar" />
-              发表于
-              {{ formatDate(post.publishedOn) }}
-            </span>
-            <span class="bun-margin-left">
-              <a-icon type="eye" />
-              浏览
-              {{ getVisits(post.metadataList) }} 次
-            </span>
-          </div>
-          <div v-if="post.tagList != null && post.tagList.length > 0" class="tag-container">
-            <a-icon type="tags" />
-            <span class="bun-margin-left">
-              <n-link
-                v-for="tag in post.tagList"
-                :to="`/tags/${tag.linkName}`"
-                v-bind:key="tag.linkName"
-                class="bun-margin-right"
-              >{{ tag.displayName }}</n-link>
-            </span>
-          </div>
+          <a-row>
+            <a-col :xs="0" :md="3"></a-col>
+            <a-col :xs="24" :md="17">
+              <div>
+                <span>
+                  <a-icon type="calendar" />
+                  {{ formatDate(post.publishedOn) }}
+                </span>
+                <span class="bun-margin-left">
+                  <a-icon type="eye" />
+                  {{ getVisits(post.metadataList) }}
+                </span>
+
+                <span v-if="post.tagList != null && post.tagList.length > 0" class="tag-container">
+                  <n-link v-for="tag in post.tagList" v-bind:key="tag.linkName" to="#">
+                    <a-tag color="rgb(89,89,89)">{{ tag.displayName }}</a-tag>
+                  </n-link>
+                </span>
+              </div>
+            </a-col>
+            <a-col :xs="0" :md="4"></a-col>
+          </a-row>
         </div>
       </div>
       <div class="content-container">
         <a-row>
           <a-col :xs="0" :md="3"></a-col>
           <a-col :xs="24" :md="16">
+            <blockquote>
+              <p>{{post.excerpt}}</p>
+            </blockquote>
             <div v-highlight v-html="content" class="bun-post-content"></div>
-            <eof />
           </a-col>
           <a-col :xs="0" :md="1"></a-col>
           <a-col :xs="0" :md="4">
@@ -64,6 +61,7 @@
             </a-anchor>
           </a-col>
         </a-row>
+        <eof />
       </div>
     </div>
     <div v-else>
@@ -140,6 +138,15 @@ export default {
     padding-top: 100px
     text-align: center
 
+    a
+      color: rgba(0, 0, 0, 0.65)
+      border: 1px solid rgba(0, 0, 0, 0.65)
+      padding: 2px 6px
+      border-radius: 4px
+
+    a:hover
+      color: #333
+
     button
       color: #000
       border-color: #000
@@ -158,12 +165,14 @@ export default {
     margin: 0
 
   .info
-    text-align: right
-    padding-right: 50px
+    text-align: left
+    padding: 0 0 0 16px
 
     .tag-container
+      float: right
+
       a
-        color: black
+        color: rgba(0, 0, 0, 0.65)
 
       a:hover
         text-decoration: underline

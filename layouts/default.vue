@@ -24,6 +24,7 @@
       <powered-by />
       <follow />
       <copyright />
+      <a-back-top />
     </a-layout-footer>
   </a-layout>
 </template>
