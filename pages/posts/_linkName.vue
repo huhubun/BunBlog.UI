@@ -41,9 +41,27 @@
       <div class="content-container">
         <a-row>
           <a-col :xs="0" :md="3"></a-col>
-          <a-col :xs="24" :md="18">
-            <div v-highlight v-html="content"></div>
+          <a-col :xs="24" :md="16">
+            <div v-highlight v-html="content" class="bun-post-content"></div>
             <eof />
+          </a-col>
+          <a-col :xs="0" :md="1"></a-col>
+          <a-col :xs="0" :md="4">
+            <a-anchor wrapperClass="anchor-margin" :offsetTop="84">
+              <a-anchor-link
+                v-for="anchor in anchors"
+                v-bind:key="`${anchor.href}_${anchor.title}`"
+                :href="anchor.href"
+                :title="anchor.title"
+              >
+                <a-anchor-link
+                  v-for="subAnchor in anchor.subList"
+                  v-bind:key="`${subAnchor.href}_${subAnchor.title}`"
+                  :href="subAnchor.href"
+                  :title="subAnchor.title"
+                />
+              </a-anchor-link>
+            </a-anchor>
           </a-col>
         </a-row>
       </div>
@@ -62,7 +80,8 @@ import eof from '~/components/layout/EOF.vue'
 export default {
   data() {
     return {
-      visits: 0
+      visits: 0,
+      anchors: []
     }
   },
   async asyncData({ $axios, params }) {
@@ -98,6 +117,11 @@ export default {
         { hid: 'description', name: 'description', content: this.post.excerpt }
       ]
     }
+  },
+  mounted() {
+    this.anchors = this.$bunHelper.generateAnchors(
+      document.querySelector('.bun-post-content')
+    )
   },
   components: {
     eof
@@ -146,5 +170,4 @@ export default {
 
 .content-container
   padding: 0 16px
-
 </style>

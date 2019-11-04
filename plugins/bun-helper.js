@@ -18,6 +18,47 @@ const BunHelperImpl = {
     }
 
     return null
+  },
+
+  generateAnchors(rootElement) {
+    if (rootElement === null) {
+      return []
+    }
+
+    let elements = rootElement.querySelectorAll('h1,h2')
+
+    if (elements === null) {
+      return []
+    }
+
+    let anchors = []
+
+    for (let i = 0; i < elements.length; i++) {
+      let header = elements[i]
+      let anchor = header.querySelector('a')
+
+      if (anchor === null) {
+        continue
+      }
+
+      let content = {
+        title: header.textContent,
+        href: `#${anchor.id}`,
+        subList: []
+      }
+
+      if (header.nodeName === 'H1') {
+        anchors.push(content)
+      } else if (header.nodeName === 'H2') {
+        if (anchors.length === 0) {
+          continue
+        }
+
+        anchors[anchors.length - 1].subList.push(content)
+      }
+    }
+
+    return anchors
   }
 }
 
