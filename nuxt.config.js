@@ -35,7 +35,8 @@ module.exports = {
   ** Global CSS
   */
   css: [
-    'ant-design-vue/dist/antd.css'
+    'ant-design-vue/dist/antd.css',
+    '@/static/bun.css'
   ],
   styleResources: {
     stylus: './assets/style.styl'
@@ -47,7 +48,8 @@ module.exports = {
     '@/plugins/antd-ui',
     '@/plugins/axios',
     '@/plugins/bun-helper',
-    '@/plugins/dayjs'
+    '@/plugins/dayjs',
+    '@/plugins/highlight'
   ],
   /*
   ** Nuxt.js dev-modules

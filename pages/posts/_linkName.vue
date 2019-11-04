@@ -42,7 +42,7 @@
         <a-row>
           <a-col :xs="0" :md="3"></a-col>
           <a-col :xs="24" :md="18">
-            <div v-html="content"></div>
+            <div v-highlight v-html="content"></div>
             <eof />
           </a-col>
         </a-row>
@@ -99,11 +99,6 @@ export default {
       ]
     }
   },
-  mounted() {
-    document.querySelectorAll('pre code').forEach(block => {
-      hljs.highlightBlock(block)
-    })
-  },
   components: {
     eof
   }
@@ -151,4 +146,5 @@ export default {
 
 .content-container
   padding: 0 16px
+
 </style>
