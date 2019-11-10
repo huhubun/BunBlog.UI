@@ -1,22 +1,36 @@
 # BunBlog.UI
 
-> My amazing Nuxt.js project
+> A blog front end site developed using [Nuxt.js](https://nuxtjs.org). Welcome to my Blog(Bun Dev Blog) https://bun.dev
 
-## Build Setup
-
-``` bash
+## Development
+```bash
 # install dependencies
-$ npm run install
+$ npm install
 
-# serve with hot reload at localhost:3000
+# serve with hot reload at localhost:17088
 $ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+## Build and deploy
+First, run `npm run build` to generate client and server code
+
+``` bash
+$ npm run install
+$ npm run build
+```
+
+You will see the `.nuxt` folder generated.  
+
+Then copy the following to the server
+- `.nuxt` folder
+- `static` folder
+- `server` folder
+- `package.json` file
+- `nuxt.config.js` file
+
+Finally, execute the following code on the server
+
+```bash
+npm install
+npm run start
+```
