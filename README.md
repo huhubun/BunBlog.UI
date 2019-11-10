@@ -1,29 +1,36 @@
-# bunblog.ui
+# BunBlog.UI
 
-## Project setup
+> A blog front end site developed using [Nuxt.js](https://nuxtjs.org). Welcome to my Blog(Bun Dev Blog) https://bun.dev
+
+## Development
+```bash
+# install dependencies
+$ npm install
+
+# serve with hot reload at localhost:17088
+$ npm run dev
 ```
+
+## Build and deploy
+First, run `npm run build` to generate client and server code
+
+``` bash
+$ npm run install
+$ npm run build
+```
+
+You will see the `.nuxt` folder generated.  
+
+Then copy the following to the server
+- `.nuxt` folder
+- `static` folder
+- `server` folder
+- `package.json` file
+- `nuxt.config.js` file
+
+Finally, execute the following code on the server
+
+```bash
 npm install
+npm run start
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
