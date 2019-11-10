@@ -13,10 +13,10 @@
         @change="fillPostTable"
       >
         <template slot="post-title" slot-scope="title, row">
-          <n-link :to="`/admin/post/edit/${row.id}`">{{title}}</n-link>
+          <n-link :to="`/admin/posts/edit/${row.id}`">{{title}}</n-link>
         </template>
         <template slot="operation" slot-scope="operation, row">
-          <n-link :to="`/admin/post/edit/${row.id}`">编辑</n-link>
+          <n-link :to="`/admin/posts/edit/${row.id}`">编辑</n-link>
           <a-divider type="vertical" />
           <n-link :to="`/posts/${row.linkName}`">查看</n-link>
         </template>
@@ -93,7 +93,7 @@ export default {
         })
     },
     goToNewPost() {
-      this.$router.push('/admin/post/new')
+      this.$router.push('/admin/posts/new')
     }
   },
   mounted() {

@@ -11,22 +11,22 @@
             </n-link>
           </a-menu-item>
 
-          <a-menu-item key="/admin/post">
-            <n-link to="/admin/post">
+          <a-menu-item key="/admin/posts">
+            <n-link to="/admin/posts">
               <a-icon type="profile" />
               <span>博文</span>
             </n-link>
           </a-menu-item>
 
-          <a-menu-item key="/admin/category">
-            <n-link to="/admin/category">
+          <a-menu-item key="/admin/categories">
+            <n-link to="/admin/categories">
               <a-icon type="inbox" />
               <span>分类</span>
             </n-link>
           </a-menu-item>
 
-          <a-menu-item key="/admin/tag">
-            <n-link to="/admin/tag">
+          <a-menu-item key="/admin/tags">
+            <n-link to="/admin/tags">
               <a-icon type="tags" />
               <span>标签</span>
             </n-link>
@@ -42,7 +42,7 @@
               </n-link>
             </a-menu-item>
             <a-menu-item class="bun-left">
-              <n-link to="/admin/post/new">
+              <n-link to="/admin/posts/new">
                 <a-icon type="edit" />撰写博文
               </n-link>
             </a-menu-item>
