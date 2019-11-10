@@ -7,13 +7,19 @@ kbd {
   padding: 0.1rem 0.2rem;
 }
 
-p code {
+code {
   background: #fcf2f2;
   border-radius: 0.1rem;
   color: #d73e48;
   font-size: 85%;
   line-height: 1.25;
   padding: 0.1rem 0.2rem;
+}
+
+pre code {
+  font-size: initial;
+  line-height: initial;
+  color: initial;
 }
 
 mark {
@@ -37,6 +43,79 @@ blockquote p:last-child {
 p {
   text-align: justify;
 }
+
+
+.bun-tooltip {
+  position: relative;
+}
+
+.bun-tooltip::after {
+  background: rgba(48, 55, 66, .95);
+  border-radius: .1rem;
+  bottom: 100%;
+  color: #fff;
+  content: attr(data-tooltip);
+  display: block;
+  font-size: .7rem;
+  left: 50%;
+  max-width: 320px;
+  opacity: 0;
+  overflow: hidden;
+  padding: .2rem .4rem;
+  pointer-events: none;
+  position: absolute;
+  text-overflow: ellipsis;
+  transform: translate(-50%, .4rem);
+  transition: opacity .2s, transform .2s;
+  white-space: pre;
+  z-index: 300;
+}
+
+.bun-tooltip:focus::after,
+.bun-tooltip:hover::after {
+  opacity: 1;
+  transform: translate(-50%, -.2rem);
+}
+
+.bun-tooltip[disabled],
+.bun-tooltip.bun-disabled {
+  pointer-events: auto;
+}
+
+.bun-tooltip.bun-tooltip-right::after {
+  bottom: 50%;
+  left: 100%;
+  transform: translate(-.2rem, 50%);
+}
+
+.bun-tooltip.bun-tooltip-right:focus::after,
+.bun-tooltip.bun-tooltip-right:hover::after {
+  transform: translate(.2rem, 50%);
+}
+
+.bun-tooltip.bun-tooltip-bottom::after {
+  bottom: auto;
+  top: 100%;
+  transform: translate(-50%, -.4rem);
+}
+
+.bun-tooltip.bun-tooltip-bottom:focus::after,
+.bun-tooltip.bun-tooltip-bottom:hover::after {
+  transform: translate(-50%, .2rem);
+}
+
+.bun-tooltip.bun-tooltip-left::after {
+  bottom: 50%;
+  left: auto;
+  right: 100%;
+  transform: translate(.4rem, 50%);
+}
+
+.bun-tooltip.bun-tooltip-left:focus::after,
+.bun-tooltip.bun-tooltip-left:hover::after {
+  transform: translate(-.2rem, 50%);
+}
+
 
 .bun-post-content a {
   color: rgba(0, 0, 0, 0.6);
