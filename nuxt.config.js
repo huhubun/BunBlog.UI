@@ -49,7 +49,8 @@ module.exports = {
     '@/plugins/axios',
     '@/plugins/bun-helper',
     '@/plugins/dayjs',
-    '@/plugins/highlight'
+    '@/plugins/highlight',
+    '@/plugins/hotkeys'
   ],
   /*
   ** Nuxt.js dev-modules

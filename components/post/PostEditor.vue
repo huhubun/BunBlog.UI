@@ -160,7 +160,9 @@
           :action="uploadImageUrl"
           :multiple="false"
           :showUploadList="false"
-          :headers="{Authorization: `Bearer ${$store.state.currentUser.accessToken}`}"
+          :headers="{
+            Authorization: `Bearer ${$store.state.currentUser.accessToken}`
+          }"
           accept="image/png, image/jpg"
           @change="onUploadImageChange"
         >
@@ -175,6 +177,8 @@
 </template>
 
 <script>
+import hotkeys from 'hotkeys-js'
+
 export default {
   name: 'PostEditor',
   props: {
@@ -376,7 +380,23 @@ export default {
       let autoHeight = this.windowHeight - otherHeight
 
       return autoHeight > 300 ? autoHeight : 300
+    },
+    initHotkey() {
+      var that = this
+      
+      hotkeys('ctrl+s', 'post-editor', function() {
+        that.$message.error('saved')
+        return false
+      })
+
+      hotkeys.setScope('post-editor')
     }
+  },
+  destroyed() {
+    hotkeys.deleteScope('post-editor')
+  },
+  beforeDestroy() {
+    console.log('beforeDestroy')
   },
   mounted() {
     let bodyStyle = document.getElementsByTagName('body')[0].style
@@ -386,6 +406,7 @@ export default {
     bodyStyle.height = 'auto'
 
     this.initEditorPost()
+    this.initHotkey()
 
     window.addEventListener('resize', this.onWindowResize)
     this.onWindowResize()
