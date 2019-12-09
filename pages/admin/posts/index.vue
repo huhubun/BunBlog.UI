@@ -14,6 +14,7 @@
       >
         <template slot="post-title" slot-scope="title, row">
           <n-link :to="`/admin/posts/edit/${row.id}`">{{title}}</n-link>
+          <a-tag v-if="row.type === 1">草稿</a-tag>
         </template>
         <template slot="operation" slot-scope="operation, row">
           <n-link :to="`/admin/posts/edit/${row.id}`">编辑</n-link>

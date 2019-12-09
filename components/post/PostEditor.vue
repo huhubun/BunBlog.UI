@@ -3,7 +3,11 @@
     <a-row id="post-editor">
       <a-col :span="5" class="left-container">
         <div>
-          <a-button @click="goToAdminPostList" type="link" icon="left">返回博文列表</a-button>
+          <a-button
+            @click="goToAdminPostList"
+            type="link"
+            icon="left"
+          >返回博文列表 {{ this.editorPost.type }}, {{ isDraft }}</a-button>
         </div>
       </a-col>
       <a-col :span="14" class="editor-container">
@@ -20,9 +24,9 @@
             </a-button-group>
           </span>
 
-          <a-dropdown v-if="isNewPost">
+          <a-dropdown v-if="isNewPost || isDraft">
             <a-menu slot="overlay">
-              <a-menu-item>暂存</a-menu-item>
+              <a-menu-item @click="saveAsDraft">暂存</a-menu-item>
             </a-menu>
             <a-button
               @click="openPublishDrawer"
@@ -35,10 +39,10 @@
             </a-button>
           </a-dropdown>
 
-          <div v-if="!isNewPost">
+          <div v-if="!isNewPost && !isDraft">
             <a-dropdown>
               <a-menu slot="overlay">
-                <a-menu-item>暂存</a-menu-item>
+                <a-menu-item @click="saveAsDraft">暂存</a-menu-item>
                 <a-menu-divider />
                 <a-menu-item @click="view">查看已发布…</a-menu-item>
               </a-menu>
@@ -136,7 +140,7 @@
         ></a-textarea>
       </div>
 
-      <div class="bun-margin-top-2x" v-if="isNewPost">
+      <div class="bun-margin-top-2x" v-if="isNewPost || isDraft">
         <a-button @click="publish" type="primary" block>确认发布</a-button>
       </div>
       <div class="bun-margin-top-2x" v-else>
@@ -234,6 +238,9 @@ export default {
   computed: {
     isNewPost() {
       return !this.editorPost.id
+    },
+    isDraft() {
+      return this.editorPost.type === 1
     }
   },
   methods: {
@@ -249,6 +256,9 @@ export default {
     editBlogPost(blogPost) {
       return this.$axios.put(`/api/posts/${blogPost.id}`, blogPost)
     },
+    editBlogPostByLinkName(blogPost) {
+      return this.$axios.put(`/api/posts/${blogPost.linkName}`, blogPost)
+    },
     getUploadImageUrl() {
       return `${process.env.BUN_BLOG_API_BASE_URL}/api/images`
     },
@@ -259,20 +269,54 @@ export default {
       this.isPublishDrawerOpened = false
     },
     publish() {
+      // 避免改变 editorPost 的值，这里相当于深拷贝
+      var requestData = JSON.parse(JSON.stringify(this.editorPost))
+      // todo 用常量表示 0 为 博文
+      requestData.type = 0
+
       this.closePublishDrawer()
-      this.postNewBlogPost(this.editorPost)
+      this.postNewBlogPost(requestData)
         .then(res => {
           this.$message.success('博文发布成功')
 
           this.editorPost.id = res.data.id
+
+          this.deleteDraft(this.editorPost.linkName)
         })
-        .catch(error => this.publishFailHandler(error))
+        .catch(error => {
+          let errorData = error.response.data
+          if (
+            errorData &&
+            errorData.code === 'LINK_NAME_ALREADY_EXISTS' &&
+            this.isDraft
+          ) {
+            // 如果是草稿，并且发布失败，说明 linkname 已经存在
+            // 则改为调用修改协议，并且删除草稿
+            this.editBlogPostByLinkName(requestData)
+              .then(res => this.deleteDraft(this.editorPost.linkName))
+              .then(res => {
+                this.$axios
+                  .get(`/api/posts/${this.editorPost.linkName}`)
+                  .then(getPostRes => {
+                    this.post = getPostRes.data
+                    this.initEditorPost()
+                  })
+              })
+          } else {
+            this.publishFailHandler(error)
+          }
+        })
     },
     publishRevised() {
+      var requestData = JSON.parse(JSON.stringify(this.editorPost))
+      requestData.type = 0
+
       this.closePublishDrawer()
-      this.editBlogPost(this.editorPost)
+      this.editBlogPost(requestData)
         .then(res => {
           this.$message.success('修订版博文发布成功')
+
+          this.deleteDraft(this.editorPost.linkName)
         })
         .catch(error => this.publishFailHandler(error))
     },
@@ -296,7 +340,38 @@ export default {
 
       this.$message.error(messageContent, 6)
     },
-    saveAsDraft() {},
+    saveAsDraft() {
+      var requestData = JSON.parse(JSON.stringify(this.editorPost))
+      // todo 用常量表示 1 为 草稿
+      requestData.type = 1
+
+      this.postNewBlogPost(requestData)
+        .then(res => {
+          this.$message.success('草稿保存成功')
+        })
+        .catch(error => {
+          console.log(error)
+
+          let errorData = error.response.data
+
+          // 保存草稿时得到 LINK_NAME_ALREADY_EXISTS
+          // 说明已经存在草稿，改为调用修改草稿协议
+          if (errorData && errorData.code === 'LINK_NAME_ALREADY_EXISTS') {
+            this.$axios
+              .put(
+                `/api/posts/${this.editorPost.linkName}/draft`,
+                this.editorPost
+              )
+              .then(res => {
+                this.$message.success('草稿保存成功')
+              })
+              .catch(putError => {
+                console.error(error)
+                this.$message.error('草稿保存失败')
+              })
+          }
+        })
+    },
     view() {
       let linkName = this.editorPost.linkName
       let link = this.$router.resolve(`/posts/${linkName}`)
@@ -312,7 +387,8 @@ export default {
         content: post.content,
         linkName: post.linkName,
         category: null,
-        tagList: []
+        tagList: [],
+        type: post.type
       }
 
       if (post.category) {
@@ -383,13 +459,16 @@ export default {
     },
     initHotkey() {
       var that = this
-      
+
       hotkeys('ctrl+s', 'post-editor', function() {
-        that.$message.error('saved')
+        that.saveAsDraft()
         return false
       })
 
       hotkeys.setScope('post-editor')
+    },
+    deleteDraft(linkName) {
+      return this.$axios.delete(`/api/posts/${linkName}/draft`)
     }
   },
   destroyed() {
