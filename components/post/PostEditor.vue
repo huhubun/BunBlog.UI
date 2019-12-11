@@ -7,7 +7,7 @@
             @click="goToAdminPostList"
             type="link"
             icon="left"
-          >返回博文列表 {{ this.editorPost.type }}, {{ isDraft }}</a-button>
+          >返回博文列表</a-button>
         </div>
       </a-col>
       <a-col :span="14" class="editor-container">
@@ -80,6 +80,9 @@
       </a-col>
       <a-col :span="5" class="right-container">
         <div class="word-count-container">0 字</div>
+        <div v-if="isDraft">
+          当前为草稿
+        </div>
       </a-col>
     </a-row>
 
@@ -300,6 +303,8 @@ export default {
                   .then(getPostRes => {
                     this.post = getPostRes.data
                     this.initEditorPost()
+
+                    this.$message.success('发布成功，草稿已自动删除')
                   })
               })
           } else {
