@@ -402,7 +402,7 @@ export default {
       this.editorPost = editorPost
     },
     goToAdminPostList() {
-      this.$router.push('/admin/post')
+      this.$router.push('/admin/posts')
     },
     onUploadImageClick() {
       this.isUploadImageModalDisplayed = true
