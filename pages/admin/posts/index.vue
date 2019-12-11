@@ -20,6 +20,18 @@
           <n-link :to="`/admin/posts/edit/${row.id}`">编辑</n-link>
           <a-divider type="vertical" />
           <n-link :to="`/posts/${row.linkName}`">查看</n-link>
+          <template v-if="row.type === 1">
+            <a-divider type="vertical" />
+            <a-popconfirm
+              title="确定要删除该草稿吗？"
+              okText="删除"
+              okType="danger"
+              cancelText="取消"
+              @confirm="() => deleteDraft(row.linkName, row.title)"
+            >
+              <a href="javascript:;">删除</a>
+            </a-popconfirm>
+          </template>
         </template>
       </a-table>
     </div>
@@ -91,6 +103,18 @@ export default {
         .catch(error => {
           console.log(error)
           this.$message.error('获取博文列表失败')
+        })
+    },
+    deleteDraft(linkName, title) {
+      this.$axios
+        .delete(`/api/posts/${linkName}/draft`)
+        .then(res => {
+          this.$message.success(`已删除《${title}》的草稿`)
+          this.fillPostTable()
+        })
+        .catch(error => {
+          console.log(error)
+          this.$message.error(`删除《${title}》的草稿失败`)
         })
     },
     goToNewPost() {
