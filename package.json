@@ -1,6 +1,6 @@
 {
   "name": "bunblog.ui",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "呼呼小笼包的博客",
   "author": "huhubun",
   "private": true,
@@ -11,12 +11,12 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.8.0",
-    "ant-design-vue": "^1.4.4",
-    "dayjs": "^1.8.16",
+    "@nuxtjs/axios": "^5.9.3",
+    "ant-design-vue": "^1.4.10",
+    "dayjs": "^1.8.19",
     "hotkeys-js": "^3.7.3",
     "koa": "^2.11.0",
-    "nuxt": "^2.10.2",
+    "nuxt": "^2.11.0",
     "showdown": "^1.9.0"
   },
   "devDependencies": {
