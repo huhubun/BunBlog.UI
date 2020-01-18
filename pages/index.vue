@@ -12,7 +12,11 @@ export default {
     return {}
   },
   async asyncData({ $axios }) {
-    const list = await $axios.$get('/api/posts')
+    const list = await $axios.$get('/api/posts', {
+      params: {
+        type: 'post'
+      }
+    })
 
     return { list }
   },
