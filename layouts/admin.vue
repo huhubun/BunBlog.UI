@@ -31,6 +31,13 @@
               <span>标签</span>
             </n-link>
           </a-menu-item>
+
+          <a-menu-item key="/admin/settings">
+            <n-link to="/admin/settings">
+              <a-icon type="setting" />
+              <span>设置</span>
+            </n-link>
+          </a-menu-item>
         </a-menu>
       </a-layout-sider>
       <a-layout>

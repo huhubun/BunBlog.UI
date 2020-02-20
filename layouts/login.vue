@@ -7,6 +7,7 @@
       <a-layout-footer>
         <powered-by />
         <copyright />
+        <custom-footer />
       </a-layout-footer>
     </a-layout>
   </client-only>
@@ -15,12 +16,15 @@
 <script>
 import PoweredBy from '~/components/layout/PoweredBy.vue'
 import Copyright from '~/components/layout/Copyright.vue'
+import CustomFooter from '~/components/layout/CustomFooter.vue'
 
 export default {
   components: {
     PoweredBy,
-    Copyright
-  }
+    Copyright,
+    CustomFooter
+  },
+  middleware: 'loadSettings'
 }
 </script>
 

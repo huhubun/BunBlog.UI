@@ -20,10 +20,12 @@
     <a-layout-content>
       <nuxt />
     </a-layout-content>
-    <a-layout-footer>
-      <powered-by />
+    <a-layout-footer style="text-align: center;">
       <follow />
+      <powered-by />
+      <links />
       <copyright />
+      <custom-footer />
       <a-back-top />
     </a-layout-footer>
   </a-layout>
@@ -33,13 +35,16 @@
 import PoweredBy from '~/components/layout/PoweredBy.vue'
 import Follow from '~/components/layout/Follow.vue'
 import Copyright from '~/components/layout/Copyright.vue'
+import CustomFooter from '~/components/layout/CustomFooter.vue'
 
 export default {
   components: {
     PoweredBy,
     Follow,
-    Copyright
-  }
+    Copyright,
+    CustomFooter
+  },
+  middleware: 'loadSettings'
 }
 </script>
 

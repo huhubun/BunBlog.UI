@@ -1,7 +1,7 @@
 <template>
   <div class="bun-margin-top follow">
     <span>
-      <a-popover trigger="hover" placement="topLeft" arrowPointAtCenter>
+      <a-popover trigger="hover" placement="bottom" arrowPointAtCenter>
         <template slot="content">
           <img src="https://img.bun.dev/wechat_qr.png" alt="wechat qr" style="width: 250px; height: 250px" />
         </template>
