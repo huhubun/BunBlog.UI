@@ -32,6 +32,13 @@
             </n-link>
           </a-menu-item>
 
+          <a-menu-item key="/admin/siteLinks">
+            <n-link to="/admin/siteLinks">
+              <a-icon type="link" />
+              <span>友情链接</span>
+            </n-link>
+          </a-menu-item>
+
           <a-menu-item key="/admin/settings">
             <n-link to="/admin/settings">
               <a-icon type="setting" />

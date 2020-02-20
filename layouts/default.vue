@@ -23,7 +23,7 @@
     <a-layout-footer style="text-align: center;">
       <follow />
       <powered-by />
-      <links />
+      <site-links />
       <copyright />
       <custom-footer />
       <a-back-top />
@@ -36,15 +36,17 @@ import PoweredBy from '~/components/layout/PoweredBy.vue'
 import Follow from '~/components/layout/Follow.vue'
 import Copyright from '~/components/layout/Copyright.vue'
 import CustomFooter from '~/components/layout/CustomFooter.vue'
+import SiteLinks from '~/components/layout/SiteLinks.vue'
 
 export default {
   components: {
     PoweredBy,
     Follow,
     Copyright,
-    CustomFooter
+    CustomFooter,
+    SiteLinks
   },
-  middleware: 'loadSettings'
+  middleware: ['loadSettings', 'loadSiteLinks']
 }
 </script>
 
