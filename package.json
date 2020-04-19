@@ -11,12 +11,12 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.9.5",
-    "ant-design-vue": "^1.4.11",
-    "dayjs": "^1.8.20",
-    "hotkeys-js": "^3.7.3",
+    "@nuxtjs/axios": "^5.9.7",
+    "ant-design-vue": "^1.5.3",
+    "dayjs": "^1.8.24",
+    "hotkeys-js": "^3.7.6",
     "koa": "^2.11.0",
-    "nuxt": "^2.11.0",
+    "nuxt": "^2.12.2",
     "showdown": "^1.9.0"
   },
   "devDependencies": {
