@@ -1,5 +1,5 @@
 <template>
-  <a-divider dashed class="bun-eof">
+  <a-divider dashed orientation="right" class="bun-eof">
     <i class="anticon">
       <svg
         viewBox="0 0 1024 1024"
