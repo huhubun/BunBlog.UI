@@ -28,13 +28,13 @@ export default {
           hid: 'description',
           name: 'description',
           content:
-            '欢迎访问呼呼小笼包 huhubun 的个人博客。这里包含软件开发技术、精品软件推荐、日常等内容。'
+            '欢迎访问呼呼小笼包 (huhubun) 的个人博客。这里的文章包含了前后端软件开发技术博文、精品软件推荐等内容。欢迎大家一起学习、成长。也欢迎关注微信公众号 bundev 交流！'
         },
         {
           hid: 'keywords',
           name: 'keywords',
           content:
-            '呼呼小笼包,huhubun,bun.dev,技术,软件,开发,个人博客,博客,文章,精品软件,推荐'
+            '呼呼小笼包,huhubun,bun,bun.dev,bun.plus,技术,软件,开发,个人博客,博客,文章,精品软件,推荐'
         }
       ]
     }
@@ -46,6 +46,5 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.post-list-container
-  padding: 0 100px
+
 </style>

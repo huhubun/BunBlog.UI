@@ -1,6 +1,6 @@
 # BunBlog.UI
 
-> A blog front end site developed using [Nuxt.js](https://nuxtjs.org). Welcome to my Blog(Bun Dev Blog) https://bun.dev
+> A blog front end site developed using [Nuxt.js](https://nuxtjs.org). Welcome to my Blog(Bun Dev Blog) https://bun.plus
 
 ## Development
 ```bash
@@ -23,10 +23,10 @@ You will see the `.nuxt` folder generated.
 
 Then copy the following to the server
 - `.nuxt` folder
-- `static` folder
 - `server` folder
-- `package.json` file
+- `static` folder
 - `nuxt.config.js` file
+- `package.json` file
 
 Finally, execute the following code on the server
 

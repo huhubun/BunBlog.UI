@@ -18,6 +18,16 @@
       </a-layout-header>
     </a-affix>
     <a-layout-content>
+      <div>
+        <a-alert type="info" banner id="domain-migration-notification">
+          <div
+            slot="description"
+          >本博客域名已由 https://bun.dev 更换为 https://bun.plus ，并将服务器迁回国内，大大提高了访问速度，希望大家继续支持，收藏了的小伙伴们请记得更新地址哦~</div>
+          <template slot="icon">
+            <a-icon type="notification" />
+          </template>
+        </a-alert>
+      </div>
       <nuxt />
     </a-layout-content>
     <a-layout-footer style="text-align: center;">
@@ -79,7 +89,7 @@ export default {
   color: rgba(0, 0, 0, 0.65)
 
 .title
-  font-size: 1.6em
+  font-size: 1.5em
   /* 消除 ant menu item 底部的蓝线效果 */
   transition: none
 
@@ -94,4 +104,11 @@ export default {
 
 .title.ant-menu-item-selected a:hover
   color: #1890ff
+
+@media (max-width: 576px)
+  .ant-layout-header
+    padding: 0 16px
+
+  .title
+    padding: 0
 </style>

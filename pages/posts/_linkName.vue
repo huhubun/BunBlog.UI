@@ -35,8 +35,7 @@
       </div>
       <div class="content-container">
         <a-row>
-          <a-col :xs="0" :md="3"></a-col>
-          <a-col :xs="24" :md="16">
+          <a-col :xs="{ span: 24 }" :md="{ span: 20, offset: 2 }" :lg="{ span: 16, offset: 3 }">
             <blockquote>
               <p>{{post.excerpt}}</p>
             </blockquote>
@@ -61,6 +60,34 @@
             </a-anchor>
           </a-col>
         </a-row>
+        <div id="cc-container" style>
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">
+            <img
+              alt="知识共享许可协议"
+              style="border-width:0"
+              src="https://img.bun.plus/cc/by-nc-nd_80x15.png"
+            />
+          </a>
+          <br />
+          <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">{{ post.title }}</span> 由
+          <a
+            xmlns:cc="http://creativecommons.org/ns#"
+            href="https://bun.plus"
+            property="cc:attributionName"
+            rel="cc:attributionURL"
+          >huhubun</a>
+          采用
+          <a
+            rel="license"
+            href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
+          >知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议</a> 进行许可。
+          <br />基于
+          <a
+            xmlns:dct="http://purl.org/dc/terms/"
+            :href="'https://bun.plus/posts/' + post.linkName"
+            rel="dct:source"
+          >https://bun.plus/posts/{{ post.linkName }}</a> 上的作品创作。
+        </div>
         <eof />
       </div>
     </div>
@@ -179,4 +206,19 @@ export default {
 
 .content-container
   padding: 0 16px
+
+#cc-container
+  text-align: right
+  padding-right: 5%
+  font-size: 0.9em
+  line-height: 1.6em
+  margin-top: 48px
+
+  img
+    margin-bottom: 16px
+    box-shadow: 0px 0px 12px 0 #999
+
+  a
+    color: rgba(0, 0, 0, 1)
+    text-decoration: underline
 </style>

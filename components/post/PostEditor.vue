@@ -243,7 +243,7 @@ export default {
       return !this.editorPost.id
     },
     isDraft() {
-      return this.editorPost.type === 1
+      return this.editorPost.type === 'draft'
     }
   },
   methods: {
@@ -274,8 +274,8 @@ export default {
     publish() {
       // 避免改变 editorPost 的值，这里相当于深拷贝
       var requestData = JSON.parse(JSON.stringify(this.editorPost))
-      // todo 用常量表示 0 为 博文
-      requestData.type = 0
+      // type = 'post' 表示 正式发布
+      requestData.type = 'post'
 
       this.closePublishDrawer()
       this.postNewBlogPost(requestData)
@@ -285,6 +285,8 @@ export default {
           this.editorPost.id = res.data.id
 
           this.deleteDraft(this.editorPost.linkName)
+          
+          this.editorPost.type = 'post'
         })
         .catch(error => {
           let errorData = error.response.data
@@ -314,7 +316,8 @@ export default {
     },
     publishRevised() {
       var requestData = JSON.parse(JSON.stringify(this.editorPost))
-      requestData.type = 0
+      // type = 'post' 表示 正式发布
+      requestData.type = 'post'
 
       this.closePublishDrawer()
       this.editBlogPost(requestData)
@@ -347,12 +350,14 @@ export default {
     },
     saveAsDraft() {
       var requestData = JSON.parse(JSON.stringify(this.editorPost))
-      // todo 用常量表示 1 为 草稿
-      requestData.type = 1
+      // type = 'draft' 表示 草稿
+      requestData.type = 'draft'
 
       this.postNewBlogPost(requestData)
         .then(res => {
           this.$message.success('草稿保存成功')
+
+          this.editorPost.type = 'draft'
         })
         .catch(error => {
           console.log(error)
