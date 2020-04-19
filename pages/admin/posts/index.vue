@@ -14,13 +14,13 @@
       >
         <template slot="post-title" slot-scope="title, row">
           <n-link :to="`/admin/posts/edit/${row.id}`">{{title}}</n-link>
-          <a-tag v-if="row.type === 1">草稿</a-tag>
+          <a-tag v-if="isDraft(row)">草稿</a-tag>
         </template>
         <template slot="operation" slot-scope="operation, row">
           <n-link :to="`/admin/posts/edit/${row.id}`">编辑</n-link>
           <a-divider type="vertical" />
           <n-link :to="`/posts/${row.linkName}`">查看</n-link>
-          <template v-if="row.type === 1">
+          <template v-if="isDraft(row)">
             <a-divider type="vertical" />
             <a-popconfirm
               title="确定要删除该草稿吗？"
@@ -119,6 +119,9 @@ export default {
     },
     goToNewPost() {
       this.$router.push('/admin/posts/new')
+    },
+    isDraft(post) {
+      return post.type === "draft"
     }
   },
   mounted() {
