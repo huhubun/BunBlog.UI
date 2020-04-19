@@ -15,7 +15,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - 呼呼小笼包的博客 bun.dev',
+    titleTemplate: '%s - 呼呼小笼包的博客 bun.plus',
     htmlAttrs: {
       lang: 'zh-cmn-Hans'
     },
@@ -50,7 +50,8 @@ module.exports = {
     '@/plugins/bun-helper',
     '@/plugins/dayjs',
     '@/plugins/highlight',
-    '@/plugins/hotkeys'
+    '@/plugins/hotkeys',
+    {src: '@/plugins/cnzz', ssr: false}
   ],
   /*
   ** Nuxt.js dev-modules
@@ -70,7 +71,7 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:52000' : 'https://api.bun.dev'
+    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:52000' : 'https://api.bun.plus'
   },
   /*
   ** Build configuration
@@ -82,7 +83,7 @@ module.exports = {
     plugins: [
       new webpack.DefinePlugin({
         'process.env.BUN_BLOG_UI_VERSION': JSON.stringify(require('./package.json').version),
-        'process.env.BUN_BLOG_API_BASE_URL': JSON.stringify(process.env.NODE_ENV === 'development' ? 'http://localhost:52000' : 'https://api.bun.dev')
+        'process.env.BUN_BLOG_API_BASE_URL': JSON.stringify(process.env.NODE_ENV === 'development' ? 'http://localhost:52000' : 'https://api.bun.plus')
       })
     ],
     extend(config, ctx) {
