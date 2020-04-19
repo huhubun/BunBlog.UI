@@ -35,8 +35,7 @@
       </div>
       <div class="content-container">
         <a-row>
-          <a-col :xs="0" :md="3"></a-col>
-          <a-col :xs="24" :md="16">
+          <a-col :xs="{ span: 24 }" :md="{ span: 20, offset: 2 }" :lg="{ span: 16, offset: 3 }">
             <blockquote>
               <p>{{post.excerpt}}</p>
             </blockquote>

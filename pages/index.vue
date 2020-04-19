@@ -46,6 +46,5 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.post-list-container
-  padding: 0 100px
+
 </style>

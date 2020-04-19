@@ -1,33 +1,37 @@
 <template>
-  <a-list itemLayout="vertical" :dataSource="list">
-    <a-list-item slot="renderItem" slot-scope="item" key="item.id">
-      <h2>
-        <n-link :to="`/posts/${item.linkName}`">{{item.title}}</n-link>
-      </h2>
-      <p>{{ item.excerpt }}</p>
-      <div>
-        <span>
-          <a-icon type="calendar" />
-          {{ formatDate(item.publishedOn) }}
-        </span>
-        <span>
-          <a-divider type="vertical" />
-          <a-icon type="eye" />
-          {{ getPostVisits(item.metadataList) }}
-        </span>
-        <span v-if="item.category != null">
-          <a-divider type="vertical" />
-          <a-icon type="inbox" />
-          {{ item.category.displayName }}
-        </span>
-        <span v-if="item.tagList != null && item.tagList.length > 0">
-          <a-divider type="vertical" />
-          <a-icon type="tags" />
-          <a-tag v-for="tag in item.tagList" v-bind:key="tag.linkName">{{ tag.displayName }}</a-tag>
-        </span>
-      </div>
-    </a-list-item>
-  </a-list>
+  <a-row>
+    <a-col :xs="{ span: 22, offset: 1 }">
+      <a-list itemLayout="vertical" :dataSource="list">
+        <a-list-item slot="renderItem" slot-scope="item" key="item.id">
+          <h2>
+            <n-link :to="`/posts/${item.linkName}`">{{item.title}}</n-link>
+          </h2>
+          <p>{{ item.excerpt }}</p>
+          <div>
+            <span>
+              <a-icon type="calendar" />
+              {{ formatDate(item.publishedOn) }}
+            </span>
+            <span>
+              <a-divider type="vertical" />
+              <a-icon type="eye" />
+              {{ getPostVisits(item.metadataList) }}
+            </span>
+            <span v-if="item.category != null">
+              <a-divider type="vertical" />
+              <a-icon type="inbox" />
+              {{ item.category.displayName }}
+            </span>
+            <span v-if="item.tagList != null && item.tagList.length > 0">
+              <a-divider type="vertical" />
+              <a-icon type="tags" />
+              <a-tag v-for="tag in item.tagList" v-bind:key="tag.linkName">{{ tag.displayName }}</a-tag>
+            </span>
+          </div>
+        </a-list-item>
+      </a-list>
+    </a-col>
+  </a-row>
 </template>
 
 <script>
