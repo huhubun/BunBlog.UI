@@ -24,8 +24,8 @@
       <follow />
       <powered-by />
       <site-links />
-      <copyright />
       <custom-footer />
+      <copyright />
       <a-back-top />
     </a-layout-footer>
   </a-layout>

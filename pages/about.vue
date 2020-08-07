@@ -47,13 +47,13 @@
           </a-col>
           <a-col span="8" class="about-me-image-container">
             <div>
-              <img src="https://img.bun.plus/about_me.jpg" alt="about me" />
+              <img src="https://cdn.bun.plus/blog/about_me.jpg" alt="about me" />
               <br />
               <span>博主（于 2016 ignite 大会）</span>
             </div>
 
             <div class="bun-margin-top-2x">
-              <img src="https://img.bun.plus/wechat_qr.png" alt="微信公众号二维码" />
+              <img src="https://cdn.bun.plus/blog/wechat_qr.png" alt="微信公众号二维码" />
               <br />
 
               <span>

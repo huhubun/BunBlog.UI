@@ -3,7 +3,7 @@
     <span>
       <a-popover trigger="hover" placement="bottom" arrowPointAtCenter>
         <template slot="content">
-          <img src="https://img.bun.plus/wechat_qr.png" alt="wechat qr" style="width: 250px; height: 250px" />
+          <img src="https://cdn.bun.plus/blog/wechat_qr.png" alt="wechat qr" style="width: 250px; height: 250px" />
         </template>
         <a-icon type="wechat" class="wechat-qr" />
       </a-popover>
