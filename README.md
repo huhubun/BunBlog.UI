@@ -32,5 +32,5 @@ Finally, execute the following code on the server
 
 ```bash
 npm install
-npm run start
+pm2 start -n bunblog ./node_modules/nuxt/bin/nuxt.js -- start
 ```
