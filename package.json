@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@nuxtjs/style-resources": "^1.0.0",
+    "antd-dayjs-webpack-plugin": "^1.0.1",
     "cross-env": "^5.2.1",
     "nodemon": "^1.19.4",
     "stylus": "^0.54.8",

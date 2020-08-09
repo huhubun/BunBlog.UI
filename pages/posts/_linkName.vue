@@ -65,7 +65,7 @@
             <img
               alt="知识共享许可协议"
               style="border-width:0"
-              src="https://img.bun.plus/cc/by-nc-nd_80x15.png"
+              src="https://cdn.bun.plus/cc/by-nc-nd_80x15.png"
             />
           </a>
           <br />
