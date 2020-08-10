@@ -1,9 +1,11 @@
 export const state = () => ({
-  footerTemplate: null
+  footerTemplate: null,
+  isFooterTemplateHasBeenSet: false
 })
 
 export const mutations = {
   setFooterTemplate(state, template) {
     state.footerTemplate = template
+    state.isFooterTemplateHasBeenSet = true
   }
 }
