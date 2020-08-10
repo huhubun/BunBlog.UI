@@ -17,7 +17,7 @@ $ npm run dev
 First, run `npm run build` to generate client and server code
 
 ```bash
-$ npm run install
+$ npm install
 $ npm run build
 ```
 
