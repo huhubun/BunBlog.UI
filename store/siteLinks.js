@@ -1,11 +1,11 @@
 export const state = () => ({
   siteLinks: [],
-  issiteLinksHasBeenSet: false
+  isSiteLinksHasBeenSet: false
 })
 
 export const mutations = {
   set(state, siteLinks) {
     state.siteLinks = siteLinks || []
-    state.issiteLinksHasBeenSet = true
+    state.isSiteLinksHasBeenSet = true
   }
 }
