@@ -37,9 +37,14 @@
         <a-row>
           <a-col :xs="{ span: 24 }" :md="{ span: 20, offset: 2 }" :lg="{ span: 16, offset: 3 }">
             <blockquote>
-              <p>{{post.excerpt}}</p>
+              <p>{{ post.excerpt }}</p>
             </blockquote>
-            <div v-highlight v-html="content" class="bun-post-content"></div>
+            <div
+              v-highlight
+              v-html="content"
+              v-lazy-container="{ selector: 'img' }"
+              class="bun-post-content"
+            ></div>
           </a-col>
           <a-col :xs="0" :md="1"></a-col>
           <a-col :xs="0" :md="4">
@@ -65,11 +70,12 @@
             <img
               alt="知识共享许可协议"
               style="border-width:0"
-              src="https://cdn.bun.plus/cc/by-nc-nd_80x15.png"
+              v-lazy="'https://cdn.bun.plus/cc/by-nc-nd_80x15.png'"
             />
           </a>
           <br />
-          <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">{{ post.title }}</span> 由
+          <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">{{ post.title }}</span>
+          由
           <a
             xmlns:cc="http://creativecommons.org/ns#"
             href="https://bun.plus"
@@ -80,13 +86,15 @@
           <a
             rel="license"
             href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-          >知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议</a> 进行许可。
+          >知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议</a>
+          进行许可。
           <br />基于
           <a
             xmlns:dct="http://purl.org/dc/terms/"
             :href="'https://bun.plus/posts/' + post.linkName"
             rel="dct:source"
-          >https://bun.plus/posts/{{ post.linkName }}</a> 上的作品创作。
+          >https://bun.plus/posts/{{ post.linkName }}</a>
+          上的作品创作。
         </div>
         <eof />
       </div>
@@ -114,7 +122,7 @@ export default {
 
     $axios.$post(`/api/posts/${post.id}/visits`)
 
-    let converter = new showdown.Converter()
+    let converter = new showdown.Converter({ extensions: ['vue-img-lazy'] })
     let content = converter.makeHtml(post.content)
 
     return { post, content }
@@ -153,7 +161,6 @@ export default {
   }
 }
 </script>
-
 
 <style lang="stylus" scoped>
 .header
