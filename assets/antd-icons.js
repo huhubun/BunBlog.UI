@@ -72,3 +72,12 @@ export {
 export {
   default as PictureOutline
 } from '@ant-design/icons/lib/outline/PictureOutline'
+export {
+  default as CheckCircleOutline
+} from '@ant-design/icons/lib/fill/CheckCircleFill'
+export {
+  default as CloseCircleFill
+} from '@ant-design/icons/lib/fill/CloseCircleFill'
+export {
+  default as CloseOutline
+} from '@ant-design/icons/lib/outline/CloseOutline'
