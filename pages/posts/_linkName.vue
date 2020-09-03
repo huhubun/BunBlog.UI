@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div v-if="post">
-      <div class="header">
+  <section>
+    <article v-if="post">
+      <header class="header">
         <div>
           <div class="category">
             <n-link v-if="post.category != null" size="small" to="#">{{ post.category.displayName }}</n-link>
@@ -22,7 +22,7 @@
                   {{ getVisits(post.metadataList) }}
                 </span>
 
-                <span v-if="post.tagList != null && post.tagList.length > 0" class="tag-container">
+                <span v-if="hasTagList" class="tag-container">
                   <n-link v-for="tag in post.tagList" v-bind:key="tag.linkName" to="#">
                     <a-tag color="rgb(89,89,89)">{{ tag.displayName }}</a-tag>
                   </n-link>
@@ -32,81 +32,59 @@
             <a-col :xs="0" :md="4"></a-col>
           </a-row>
         </div>
-      </div>
+      </header>
       <div class="content-container">
         <a-row>
           <a-col :xs="{ span: 24 }" :md="{ span: 20, offset: 2 }" :lg="{ span: 16, offset: 3 }">
             <blockquote>
               <p>{{post.excerpt}}</p>
             </blockquote>
-            <div v-highlight v-html="content" class="bun-post-content"></div>
+            <!-- 博文正文开始 -->
+            <section v-highlight v-html="content" class="bun-post-content"></section>
+            <!-- 博文正文结束 -->
           </a-col>
           <a-col :xs="0" :md="1"></a-col>
           <a-col :xs="0" :md="4">
-            <a-anchor wrapperClass="anchor-margin" :offsetTop="84">
-              <a-anchor-link
-                v-for="anchor in anchors"
-                v-bind:key="`${anchor.href}_${anchor.title}`"
-                :href="anchor.href"
-                :title="anchor.title"
-              >
+            <aside>
+              <a-anchor wrapperClass="anchor-margin" :offsetTop="84">
                 <a-anchor-link
-                  v-for="subAnchor in anchor.subList"
-                  v-bind:key="`${subAnchor.href}_${subAnchor.title}`"
-                  :href="subAnchor.href"
-                  :title="subAnchor.title"
-                />
-              </a-anchor-link>
-            </a-anchor>
+                  v-for="anchor in anchors"
+                  v-bind:key="`${anchor.href}_${anchor.title}`"
+                  :href="anchor.href"
+                  :title="anchor.title"
+                >
+                  <a-anchor-link
+                    v-for="subAnchor in anchor.subList"
+                    v-bind:key="`${subAnchor.href}_${subAnchor.title}`"
+                    :href="subAnchor.href"
+                    :title="subAnchor.title"
+                  />
+                </a-anchor-link>
+              </a-anchor>
+            </aside>
           </a-col>
         </a-row>
-        <div id="cc-container" style>
-          <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">
-            <img
-              alt="知识共享许可协议"
-              style="border-width:0"
-              src="https://cdn.bun.plus/cc/by-nc-nd_80x15.png"
-            />
-          </a>
-          <br />
-          <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">{{ post.title }}</span> 由
-          <a
-            xmlns:cc="http://creativecommons.org/ns#"
-            href="https://bun.plus"
-            property="cc:attributionName"
-            rel="cc:attributionURL"
-          >huhubun</a>
-          采用
-          <a
-            rel="license"
-            href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-          >知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议</a> 进行许可。
-          <br />基于
-          <a
-            xmlns:dct="http://purl.org/dc/terms/"
-            :href="'https://bun.plus/posts/' + post.linkName"
-            rel="dct:source"
-          >https://bun.plus/posts/{{ post.linkName }}</a> 上的作品创作。
-        </div>
+        <creative-commons v-bind:post="post" />
         <eof />
       </div>
-    </div>
+    </article>
     <div v-else>
       <a-skeleton active :paragraph="{ rows: 10 }" />
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
 import dayjs from 'dayjs'
 import showdown from 'showdown'
 import eof from '~/components/layout/EOF.vue'
+import CreativeCommons from '@/components/layout/CreativeCommons'
 
 export default {
   data() {
     return {
       visits: 0,
-      anchors: []
+      anchors: [],
     }
   },
   async asyncData({ $axios, params }) {
@@ -117,7 +95,13 @@ export default {
     let converter = new showdown.Converter()
     let content = converter.makeHtml(post.content)
 
-    return { post, content }
+    let hasTagList = post.tagList != null && post.tagList.length > 0
+
+    return {
+      post,
+      content,
+      hasTagList,
+    }
   },
   methods: {
     formatDate(datetime) {
@@ -126,22 +110,34 @@ export default {
     },
     getVisits(metadataList) {
       if (metadataList) {
-        let metadata = metadataList.filter(ele => ele.key === 'VISITS')
+        let metadata = metadataList.filter((ele) => ele.key === 'VISITS')
         if (metadata) {
           return metadata[0].value
         }
       }
 
       return 0
-    }
+    },
   },
   head() {
-    return {
+    let head = {
       title: this.post.title,
       meta: [
-        { hid: 'description', name: 'description', content: this.post.excerpt }
-      ]
+        { hid: 'description', name: 'description', content: this.post.excerpt },
+      ],
     }
+
+    if (this.hasTagList) {
+      let keywords = this.post.tagList.map((t) => t.displayName).join(',')
+
+      head.meta.push({
+        hid: 'keywords',
+        name: 'keywords',
+        content: keywords,
+      })
+    }
+
+    return head
   },
   mounted() {
     this.anchors = this.$bunHelper.generateAnchors(
@@ -149,8 +145,9 @@ export default {
     )
   },
   components: {
-    eof
-  }
+    eof,
+    CreativeCommons,
+  },
 }
 </script>
 
@@ -206,19 +203,4 @@ export default {
 
 .content-container
   padding: 0 16px
-
-#cc-container
-  text-align: right
-  padding-right: 5%
-  font-size: 0.9em
-  line-height: 1.6em
-  margin-top: 48px
-
-  img
-    margin-bottom: 16px
-    box-shadow: 0px 0px 12px 0 #999
-
-  a
-    color: rgba(0, 0, 0, 1)
-    text-decoration: underline
 </style>

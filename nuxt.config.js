@@ -27,6 +27,7 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'apple-touch-icon', href: 'https://cdn.bun.plus/blog/icon-512x512.png' },
       { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.16.2/build/styles/solarized-light.min.css' },
       { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/ant-design-vue@1.6.4/dist/antd.css' },
     ],
