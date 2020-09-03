@@ -1,11 +1,11 @@
 <template>
-  <div class="post-list-container">
+  <section class="post-list-container">
     <post-list v-bind:list="list"></post-list>
-  </div>
+  </section>
 </template>
 
 <script>
-import PostList from '~/components/Post/PostList.vue'
+import PostList from '~/components/post/PostList.vue'
 
 export default {
   data() {
@@ -45,6 +45,4 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-
-</style>
+<style lang="stylus" scoped></style>

@@ -25,7 +25,7 @@ const BunHelperImpl = {
       return []
     }
 
-    let elements = rootElement.querySelectorAll('h1,h2')
+    let elements = rootElement.querySelectorAll('h2,h3')
 
     if (elements === null) {
       return []
@@ -47,9 +47,9 @@ const BunHelperImpl = {
         subList: []
       }
 
-      if (header.nodeName === 'H1') {
+      if (header.nodeName === 'H2') {
         anchors.push(content)
-      } else if (header.nodeName === 'H2') {
+      } else if (header.nodeName === 'H3') {
         if (anchors.length === 0) {
           continue
         }

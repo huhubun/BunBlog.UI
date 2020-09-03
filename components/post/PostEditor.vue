@@ -3,11 +3,7 @@
     <a-row id="post-editor">
       <a-col :span="5" class="left-container">
         <div>
-          <a-button
-            @click="goToAdminPostList"
-            type="link"
-            icon="left"
-          >返回博文列表</a-button>
+          <a-button @click="goToAdminPostList" type="link" icon="left">返回博文列表</a-button>
         </div>
       </a-col>
       <a-col :span="14" class="editor-container">
@@ -80,9 +76,7 @@
       </a-col>
       <a-col :span="5" class="right-container">
         <div class="word-count-container">0 字</div>
-        <div v-if="isDraft">
-          当前为草稿
-        </div>
+        <div v-if="isDraft">当前为草稿</div>
       </a-col>
     </a-row>
 
@@ -140,7 +134,13 @@
           v-model="editorPost.excerpt"
           placeholder="摘要"
           :autosize="{ minRows: 4, maxRows: 10 }"
-        ></a-textarea>
+          :maxLength="validExcerptLength"
+        />
+
+        <p v-if="editorPost && editorPost.excerpt" class="bun-margin-top">
+          <a-tag>SEO 提示</a-tag>
+          摘要长度不应超过 {{validExcerptLength}} 个字符，已输入 {{ editorPost.excerpt.length }} 个字符
+        </p>
       </div>
 
       <div class="bun-margin-top-2x" v-if="isNewPost || isDraft">
@@ -192,7 +192,7 @@ export default {
     // 传入的 post 对象
     post: {
       type: Object,
-      default: function() {
+      default: function () {
         return {
           id: null,
           title: '',
@@ -200,11 +200,11 @@ export default {
           content: '',
           linkName: '',
           category: '',
-          tagList: []
+          tagList: [],
         }
       },
-      required: false
-    }
+      required: false,
+    },
   },
   data() {
     return {
@@ -225,17 +225,21 @@ export default {
       tagList: [],
       isTagListLoading: true,
 
+      // 摘要
+      // 摘要允许的最大长度为75个字符
+      validExcerptLength: 75,
+
       // 图片上传
       isUploadImageModalDisplayed: false,
       uploadImageUrl: this.getUploadImageUrl(),
       uploadImage: {
         inputUrl: '',
         image: '',
-        uploadUrl: ''
+        uploadUrl: '',
       },
 
       // 浏览器窗体
-      windowHeight: 0
+      windowHeight: 0,
     }
   },
   computed: {
@@ -244,7 +248,7 @@ export default {
     },
     isDraft() {
       return this.editorPost.type === 'draft'
-    }
+    },
   },
   methods: {
     getCategoryList() {
@@ -279,16 +283,16 @@ export default {
 
       this.closePublishDrawer()
       this.postNewBlogPost(requestData)
-        .then(res => {
+        .then((res) => {
           this.$message.success('博文发布成功')
 
           this.editorPost.id = res.data.id
 
           this.deleteDraft(this.editorPost.linkName)
-          
+
           this.editorPost.type = 'post'
         })
-        .catch(error => {
+        .catch((error) => {
           let errorData = error.response.data
           if (
             errorData &&
@@ -298,11 +302,11 @@ export default {
             // 如果是草稿，并且发布失败，说明 linkname 已经存在
             // 则改为调用修改协议，并且删除草稿
             this.editBlogPostByLinkName(requestData)
-              .then(res => this.deleteDraft(this.editorPost.linkName))
-              .then(res => {
+              .then((res) => this.deleteDraft(this.editorPost.linkName))
+              .then((res) => {
                 this.$axios
                   .get(`/api/posts/${this.editorPost.linkName}`)
-                  .then(getPostRes => {
+                  .then((getPostRes) => {
                     this.post = getPostRes.data
                     this.initEditorPost()
 
@@ -321,12 +325,12 @@ export default {
 
       this.closePublishDrawer()
       this.editBlogPost(requestData)
-        .then(res => {
+        .then((res) => {
           this.$message.success('修订版博文发布成功')
 
           this.deleteDraft(this.editorPost.linkName)
         })
-        .catch(error => this.publishFailHandler(error))
+        .catch((error) => this.publishFailHandler(error))
     },
     publishFailHandler(error) {
       console.error(error)
@@ -354,12 +358,12 @@ export default {
       requestData.type = 'draft'
 
       this.postNewBlogPost(requestData)
-        .then(res => {
+        .then((res) => {
           this.$message.success('草稿保存成功')
 
           this.editorPost.type = 'draft'
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
 
           let errorData = error.response.data
@@ -372,10 +376,10 @@ export default {
                 `/api/posts/${this.editorPost.linkName}/draft`,
                 this.editorPost
               )
-              .then(res => {
+              .then((res) => {
                 this.$message.success('草稿保存成功')
               })
-              .catch(putError => {
+              .catch((putError) => {
                 console.error(error)
                 this.$message.error('草稿保存失败')
               })
@@ -398,7 +402,7 @@ export default {
         linkName: post.linkName,
         category: null,
         tagList: [],
-        type: post.type
+        type: post.type,
       }
 
       if (post.category) {
@@ -470,7 +474,7 @@ export default {
     initHotkey() {
       var that = this
 
-      hotkeys('ctrl+s', 'post-editor', function() {
+      hotkeys('ctrl+s', 'post-editor', function () {
         that.saveAsDraft()
         return false
       })
@@ -479,7 +483,7 @@ export default {
     },
     deleteDraft(linkName) {
       return this.$axios.delete(`/api/posts/${linkName}/draft`)
-    }
+    },
   },
   destroyed() {
     hotkeys.deleteScope('post-editor')
@@ -505,21 +509,21 @@ export default {
     }
 
     this.getCategoryList()
-      .then(categoryList => {
+      .then((categoryList) => {
         this.categoryList = categoryList.data
         this.isCategoryListLoading = false
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error)
         this.$message.error('获取分类列表失败')
       })
 
     this.getTagList()
-      .then(tagList => {
+      .then((tagList) => {
         this.tagList = tagList.data
         this.isTagListLoading = false
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error)
         this.$message.error('获取标签列表失败')
       })
@@ -534,8 +538,8 @@ export default {
   watch: {
     windowHeight(newValue) {
       this.editorTextareaHeight = this.calcEditorTextareaHeight()
-    }
-  }
+    },
+  },
 }
 </script>
 
