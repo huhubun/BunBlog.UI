@@ -37,10 +37,10 @@
         <a-row>
           <a-col :xs="{ span: 24 }" :md="{ span: 20, offset: 2 }" :lg="{ span: 16, offset: 3 }">
             <blockquote>
-              <p>{{post.excerpt}}</p>
+              <p>{{ post.excerpt }}</p>
             </blockquote>
             <!-- 博文正文开始 -->
-            <section v-highlight v-html="content" class="bun-post-content"></section>
+            <section v-highlight v-html="content" v-lazy-container="{ selector: 'img' }" class="bun-post-content"></section>
             <!-- 博文正文结束 -->
           </a-col>
           <a-col :xs="0" :md="1"></a-col>
@@ -84,7 +84,7 @@ export default {
   data() {
     return {
       visits: 0,
-      anchors: [],
+      anchors: []
     }
   },
   async asyncData({ $axios, params }) {
@@ -92,7 +92,7 @@ export default {
 
     $axios.$post(`/api/posts/${post.id}/visits`)
 
-    let converter = new showdown.Converter()
+    let converter = new showdown.Converter({ extensions: ['vue-img-lazy'] })
     let content = converter.makeHtml(post.content)
 
     let hasTagList = post.tagList != null && post.tagList.length > 0
@@ -100,7 +100,7 @@ export default {
     return {
       post,
       content,
-      hasTagList,
+      hasTagList
     }
   },
   methods: {
@@ -117,14 +117,14 @@ export default {
       }
 
       return 0
-    },
+    }
   },
   head() {
     let head = {
       title: this.post.title,
       meta: [
         { hid: 'description', name: 'description', content: this.post.excerpt },
-      ],
+      ]
     }
 
     if (this.hasTagList) {
@@ -146,11 +146,10 @@ export default {
   },
   components: {
     eof,
-    CreativeCommons,
-  },
+    CreativeCommons
+  }
 }
 </script>
-
 
 <style lang="stylus" scoped>
 .header

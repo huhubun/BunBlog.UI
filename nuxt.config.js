@@ -57,6 +57,8 @@ module.exports = {
     '@/plugins/dayjs',
     '@/plugins/highlight',
     '@/plugins/hotkeys',
+    '@/plugins/lazyload',
+    '@/plugins/showdown',
     { src: '@/plugins/cnzz', ssr: false }
   ],
 

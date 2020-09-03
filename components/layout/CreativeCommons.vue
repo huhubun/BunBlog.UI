@@ -3,7 +3,12 @@
     <div id="cc-container" style>
       <h2>许可协议</h2>
       <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">
-        <img alt="知识共享许可协议" style="border-width:0" src="https://cdn.bun.plus/cc/by-nc-nd_80x15.png" />
+        <img
+          alt="知识共享许可协议"
+          style="border-width:0"
+          src="https://cdn.bun.plus/cc/by-nc-nd_80x15.png"
+          v-lazy="'https://cdn.bun.plus/cc/by-nc-nd_80x15.png'"
+        />
       </a>
       <br />
       <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">{{ post.title }}</span> 由
@@ -34,9 +39,9 @@ export default {
   props: {
     post: {
       type: Object,
-      required: true,
-    },
-  },
+      required: true
+    }
+  }
 }
 </script>
 
