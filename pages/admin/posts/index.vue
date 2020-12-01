@@ -73,7 +73,7 @@ export default {
       postTablePagination: {
         current: 1,
         defaultCurrent: 1,
-        total: 100
+        total: 0
       }
     }
   },
@@ -97,7 +97,10 @@ export default {
 
       this.getList(pagination.current, pagination.defaultPageSize)
         .then(postList => {
-          this.postList = postList.data
+          let response = postList.data
+
+          this.postList = response.items
+          this.postTablePagination.total = response.total
           this.postTableLoading = false
         })
         .catch(error => {

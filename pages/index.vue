@@ -1,24 +1,117 @@
 <template>
   <section class="post-list-container">
-    <post-list v-bind:list="list"></post-list>
+    <a-row>
+      <a-col :xs="{ span: 22, offset: 1 }">
+        <a-list
+          itemLayout="vertical"
+          :dataSource="postsData.items"
+          :pagination="pagination"
+        >
+          <a-list-item slot="renderItem" slot-scope="item" key="item.id">
+            <article>
+              <header>
+                <h2>
+                  <n-link :to="`/posts/${item.linkName}`">
+                    {{ item.title }}
+                  </n-link>
+                </h2>
+              </header>
+              <p>{{ item.excerpt }}</p>
+              <footer>
+                <span>
+                  <a-icon type="calendar" />
+                  {{ formatDate(item.publishedOn) }}
+                </span>
+                <span>
+                  <a-divider type="vertical" />
+                  <a-icon type="eye" />
+                  {{ getPostVisits(item.metadataList) }}
+                </span>
+                <span v-if="item.category != null">
+                  <a-divider type="vertical" />
+                  <a-icon type="inbox" />
+                  {{ item.category.displayName }}
+                </span>
+                <span v-if="item.tagList != null && item.tagList.length > 0">
+                  <a-divider type="vertical" />
+                  <a-icon type="tags" />
+                  <a-tag v-for="tag in item.tagList" v-bind:key="tag.linkName">
+                    {{ tag.displayName }}
+                  </a-tag>
+                </span>
+              </footer>
+            </article>
+          </a-list-item>
+        </a-list>
+      </a-col>
+    </a-row>
   </section>
 </template>
 
 <script>
-import PostList from '~/components/post/PostList.vue'
+import dayjs from 'dayjs'
 
 export default {
   data() {
-    return {}
+    return {
+      size: 10
+    }
   },
   async asyncData({ $axios }) {
-    const list = await $axios.$get('/api/posts', {
+    const postsData = await $axios.$get('/api/posts', {
       params: {
-        type: 'post'
+        type: 'post',
+        page: 1,
+        size: 10
       }
     })
 
-    return { list }
+    return { postsData }
+  },
+  computed: {
+    pagination() {
+      let data = this.postsData
+      let that = this
+
+      return {
+        position: 'bottom',
+        pagesize: data.page,
+        total: data.total,
+        async onChange(page) {
+          await that.getPosts(page)
+        }
+      }
+    }
+  },
+  methods: {
+    async getPosts(page) {
+      let data = await this.$axios.$get('/api/posts', {
+        params: {
+          type: 'post',
+          page: page || 1,
+          size: this.size
+        }
+      })
+
+      this.postsData = data
+    },
+    onPageChange(current) {
+      console.log(current)
+    },
+    getPostVisits(metadataList) {
+      if (metadataList) {
+        let metadata = metadataList.filter(ele => ele.key === 'VISITS')
+        if (metadata) {
+          return metadata[0].value
+        }
+      }
+
+      return 0
+    },
+    formatDate(datetime) {
+      let dayjsObj = dayjs(datetime)
+      return `${dayjsObj.format('YYYY-MM-DD HH:mm')} (${dayjsObj.fromNow()})`
+    }
   },
   head() {
     return {
@@ -38,11 +131,14 @@ export default {
         }
       ]
     }
-  },
-  components: {
-    PostList
   }
 }
 </script>
 
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+i.anticon
+  margin-right: 8px
+
+.post-list-container
+  padding-bottom: 1em
+</style>
