@@ -30,6 +30,10 @@ module.exports = {
       { rel: 'apple-touch-icon', href: 'https://cdn.bun.plus/blog/icon-512x512.png' },
       { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.16.2/build/styles/solarized-light.min.css' },
       { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/ant-design-vue@1.6.4/dist/antd.css' },
+      // 解决 Google 字体国内访问慢的问题
+      { rel: 'stylesheet', href: 'https://fonts.loli.net/css?family=Roboto|Roboto+Mono&display=swap' },
+      // 因为 defaultAssets 设为了 false，这里需要手动引入 Material Design Icons
+      { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css' },
     ],
     script: [
       { src: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.16.2/build/highlight.min.js' }
@@ -53,6 +57,7 @@ module.exports = {
   plugins: [
     '@/plugins/antd-ui',
     '@/plugins/axios',
+    '@/plugins/bun-blog-sdk',
     '@/plugins/bun-helper',
     '@/plugins/dayjs',
     '@/plugins/highlight',
@@ -66,6 +71,11 @@ module.exports = {
   ** Nuxt.js dev-modules
   */
   buildModules: [
+    // https://go.nuxtjs.dev/vuetify
+    '@nuxtjs/vuetify',
+    // https://github.com/nuxt-community/dotenv-module
+    // https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-env
+    '@nuxtjs/dotenv'
   ],
 
   /*
@@ -114,6 +124,21 @@ module.exports = {
     extend(config, ctx) {
       // antd icons 按需加载，能大幅降低 antd icons 占用的空间，提高加载速度
       config.resolve.alias['@ant-design/icons/lib/dist$'] = path.resolve(__dirname, './assets/antd-icons.js')
+    }
+  },
+
+  components: true,
+
+  // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
+  vuetify: {
+    customVariables: ['~/assets/variables.scss'],
+    // 关闭默认字体，因为默认字体总是从 Google 获取字体，国内访问很慢，改为在 `head` 里引入国内源的 Roboto 字体
+    // https://github.com/nuxt-community/vuetify-module#defaultassets
+    defaultAssets: false,
+    theme: {
+      dark: false,
+      themes: {
+      }
     }
   }
 }
