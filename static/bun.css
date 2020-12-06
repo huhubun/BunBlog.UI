@@ -221,3 +221,9 @@ highlight.js solarized-light style
   font-weight: normal !important;
   padding: 1em !important;
 }
+
+.blog-post-content img {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}

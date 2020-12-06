@@ -14,9 +14,18 @@
       <v-row>
         <!-- TODO 考虑在这里加个目录（默认折叠）供 < md 的屏幕尺寸查看；或者在返回顶部的按钮上面加个目录按钮 -->
 
+        <!-- 博文内容 -->
         <v-col cols="12" xl="10" lg="9" md="9" sm="12">
-          <section v-highlight v-html="postContent" class="blog-post-content" />
+          <section
+            v-highlight
+            v-html="postContent"
+            v-lazy-container="{ selector: 'img' }"
+            class="blog-post-content"
+          />
+          <creative-commons v-bind:post="post" />
         </v-col>
+
+        <!-- 右侧页内导航 -->
         <v-col cols="12" xl="2" lg="3" md="3" sm="0">
           <div id="AnchorArea" class="d-none d-md-block">
             <v-navigation-drawer floating permanent width="100%">
@@ -74,7 +83,6 @@
 <script>
 import dayjs from 'dayjs'
 import showdown from 'showdown'
-import eof from '~/components/layout/EOF.vue'
 import CreativeCommons from '@/components/layout/CreativeCommons'
 
 export default {
@@ -199,7 +207,6 @@ export default {
     window.removeEventListener('scroll', this.onScroll2)
   },
   components: {
-    eof,
     CreativeCommons
   }
 }
