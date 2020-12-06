@@ -28,7 +28,6 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'apple-touch-icon', href: 'https://cdn.bun.plus/blog/icon-512x512.png' },
-      { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.16.2/build/styles/solarized-light.min.css' },
       { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/ant-design-vue@1.6.4/dist/antd.css' },
       // 解决 Google 字体国内访问慢的问题
       { rel: 'stylesheet', href: 'https://fonts.loli.net/css?family=Roboto|Roboto+Mono&display=swap' },
@@ -36,7 +35,7 @@ module.exports = {
       { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css' },
     ],
     script: [
-      { src: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.16.2/build/highlight.min.js' }
+      { src: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.4.1/build/highlight.min.js' }
     ]
   },
 
@@ -48,7 +47,7 @@ module.exports = {
   ],
 
   styleResources: {
-    stylus: './assets/style.styl'
+    stylus: ['@/assets/style.styl']
   },
 
   /*

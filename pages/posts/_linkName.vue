@@ -1,78 +1,67 @@
 <template>
-  <section>
-    <article v-if="post">
-      <header class="header">
-        <div>
-          <div class="category">
-            <n-link v-if="post.category != null" size="small" to="#">{{ post.category.displayName }}</n-link>
-          </div>
-          <h1 class="title">{{ post.title }}</h1>
-        </div>
-        <div class="info">
-          <a-row>
-            <a-col :xs="0" :md="3"></a-col>
-            <a-col :xs="24" :md="17">
-              <div>
-                <span>
-                  <a-icon type="calendar" />
-                  {{ formatDate(post.publishedOn) }}
-                </span>
-                <span class="bun-margin-left">
-                  <a-icon type="eye" />
-                  {{ getVisits(post.metadataList) }}
-                </span>
+  <article>
+    <header>
+      <v-card flat tile height="400" class="blue-grey darken-1 white--text">
+        <v-card-title class="display-3">
+          <v-container>
+            {{ post.title }}
+          </v-container>
+        </v-card-title>
+      </v-card>
+    </header>
 
-                <span v-if="hasTagList" class="tag-container">
-                  <n-link v-for="tag in post.tagList" v-bind:key="tag.linkName" to="#">
-                    <a-tag color="rgb(89,89,89)">{{ tag.displayName }}</a-tag>
-                  </n-link>
-                </span>
-              </div>
-            </a-col>
-            <a-col :xs="0" :md="4"></a-col>
-          </a-row>
-        </div>
-      </header>
-      <div class="content-container">
-        <a-row>
-          <a-col :xs="{ span: 24 }" :md="{ span: 20, offset: 2 }" :lg="{ span: 16, offset: 3 }">
-            <blockquote>
-              <p>{{ post.excerpt }}</p>
-            </blockquote>
-            <!-- 博文正文开始 -->
-            <section v-highlight v-html="content" v-lazy-container="{ selector: 'img' }" class="bun-post-content"></section>
-            <!-- 博文正文结束 -->
-          </a-col>
-          <a-col :xs="0" :md="1"></a-col>
-          <a-col :xs="0" :md="4">
-            <aside>
-              <a-anchor wrapperClass="anchor-margin" :offsetTop="84">
-                <a-anchor-link
-                  v-for="anchor in anchors"
-                  v-bind:key="`${anchor.href}_${anchor.title}`"
-                  :href="anchor.href"
-                  :title="anchor.title"
-                >
-                  <a-anchor-link
-                    v-for="subAnchor in anchor.subList"
-                    v-bind:key="`${subAnchor.href}_${subAnchor.title}`"
-                    :href="subAnchor.href"
-                    :title="subAnchor.title"
-                  />
-                </a-anchor-link>
-              </a-anchor>
-            </aside>
-          </a-col>
-        </a-row>
-        <creative-commons v-bind:post="post" />
-        <eof />
-      </div>
-    </article>
-    <div v-else>
-      <a-skeleton active :paragraph="{ rows: 10 }" />
-    </div>
-  </section>
+    <v-container class="blog-post-container">
+      <v-row>
+        <v-col cols="12" xl="10" lg="9" md="9" sm="12">
+          <section v-highlight v-html="postContent" class="blog-post-content" />
+        </v-col>
+        <v-col cols="12" xl="2" lg="3" md="3" sm="0">
+          <div id="AnchorArea" class="d-none d-md-block">
+            <v-navigation-drawer floating permanent width="100%">
+              <v-list dense>
+                <template v-for="anchor in anchors">
+                  <v-list-item
+                    :key="anchor.href"
+                    @click="$vuetify.goTo(anchor.href)"
+                  >
+                    <v-list-item-content>
+                      <v-list-item-title>{{ anchor.title }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+
+                  <v-list-item
+                    v-for="sub in anchor.subList"
+                    :key="sub.href"
+                    @click="$vuetify.goTo(sub.href)"
+                    class="pl-8"
+                  >
+                    <v-list-item-content>
+                      <v-list-item-title>{{ sub.title }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </template>
+              </v-list>
+            </v-navigation-drawer>
+          </div>
+
+          <v-slide-y-reverse-transition>
+            <v-btn
+              bottom
+              right
+              fixed
+              fab
+              v-if="showGoToTopButton"
+              @click="$vuetify.goTo(0)"
+            >
+              <v-icon>mdi-chevron-up</v-icon>
+            </v-btn>
+          </v-slide-y-reverse-transition>
+        </v-col>
+      </v-row>
+    </v-container>
+  </article>
 </template>
+
 
 <script>
 import dayjs from 'dayjs'
@@ -81,28 +70,20 @@ import eof from '~/components/layout/EOF.vue'
 import CreativeCommons from '@/components/layout/CreativeCommons'
 
 export default {
-  data() {
-    return {
-      visits: 0,
-      anchors: []
-    }
+  layout: 'vuetify-default',
+  async asyncData({ $bunblog, params }) {
+    const post = await $bunblog.posts.getByLinkName(params.linkName)
+
+    const converter = new showdown.Converter({ extensions: ['vue-img-lazy'] })
+    const postContent = converter.makeHtml(post.content)
+
+    const anchors = []
+
+    return { post, postContent, anchors }
   },
-  async asyncData({ $axios, params }) {
-    let post = await $axios.$get(`/api/posts/${params.linkName}`)
-
-    $axios.$post(`/api/posts/${post.id}/visits`)
-
-    let converter = new showdown.Converter({ extensions: ['vue-img-lazy'] })
-    let content = converter.makeHtml(post.content)
-
-    let hasTagList = post.tagList != null && post.tagList.length > 0
-
-    return {
-      post,
-      content,
-      hasTagList
-    }
-  },
+  data: () => ({
+    showGoToTopButton: false
+  }),
   methods: {
     formatDate(datetime) {
       let dayjsObj = dayjs(datetime)
@@ -110,30 +91,44 @@ export default {
     },
     getVisits(metadataList) {
       if (metadataList) {
-        let metadata = metadataList.filter((ele) => ele.key === 'VISITS')
+        let metadata = metadataList.filter(ele => ele.key === 'VISITS')
         if (metadata) {
           return metadata[0].value
         }
       }
 
       return 0
+    },
+    onScroll() {
+      // TODO 考虑用指令实现？（问题：如何在指令里绑定和移除事件？）
+
+      if (window.scrollY >= 400) {
+        // 右侧页内导航栏浮动效果
+        document.querySelector('#AnchorArea').classList.add('fixed-anchor')
+
+        // 返回顶部按钮
+        this.showGoToTopButton = true
+      } else {
+        document.querySelector('#AnchorArea').classList.remove('fixed-anchor')
+        this.showGoToTopButton = false
+      }
     }
   },
   head() {
     let head = {
       title: this.post.title,
       meta: [
-        { hid: 'description', name: 'description', content: this.post.excerpt },
+        { hid: 'description', name: 'description', content: this.post.excerpt }
       ]
     }
 
     if (this.hasTagList) {
-      let keywords = this.post.tagList.map((t) => t.displayName).join(',')
+      let keywords = this.post.tagList.map(t => t.displayName).join(',')
 
       head.meta.push({
         hid: 'keywords',
         name: 'keywords',
-        content: keywords,
+        content: keywords
       })
     }
 
@@ -141,8 +136,13 @@ export default {
   },
   mounted() {
     this.anchors = this.$bunHelper.generateAnchors(
-      document.querySelector('.bun-post-content')
+      document.querySelector('.blog-post-content')
     )
+
+    window.addEventListener('scroll', this.onScroll)
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.onScroll)
   },
   components: {
     eof,
@@ -152,54 +152,10 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.header
-  background-color: rgba(0, 0, 0, 0.1)
-  margin-bottom: 16px
-  padding: 8px 0
+.blog-post-container
+  font-size: 1rem
 
-  .category
-    padding-top: 100px
-    text-align: center
-
-    a
-      color: rgba(0, 0, 0, 0.65)
-      border: 1px solid rgba(0, 0, 0, 0.65)
-      padding: 2px 6px
-      border-radius: 4px
-
-    a:hover
-      color: #333
-
-    button
-      color: #000
-      border-color: #000
-
-    button:hover
-      text-shadow: 0px 0px 1px #000
-      box-shadow: 0px 0px 8px 0 #999, inset 0px 0px 5px 0 #999
-
-    button:after
-      border-color: #000
-
-  .title
-    text-align: center
-    font-size: 44px
-    padding-bottom: 100px
-    margin: 0
-
-  .info
-    text-align: left
-    padding: 0 0 0 16px
-
-    .tag-container
-      float: right
-
-      a
-        color: rgba(0, 0, 0, 0.65)
-
-      a:hover
-        text-decoration: underline
-
-.content-container
-  padding: 0 16px
+.fixed-anchor
+  position: fixed
+  top: 88px
 </style>

@@ -16,6 +16,18 @@ export default ({ $axios }, inject) => {
     getById(postId) {
       console.log('get id = ' + postId)
 
+    },
+
+    async getByLinkName(linkName) {
+      if (!linkName) {
+        throw 'linkname is required'
+      }
+
+      const post = await $axios.$get(`/api/posts/${linkName}`)
+
+      console.log(post)
+
+      return post
     }
   }
 

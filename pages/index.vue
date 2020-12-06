@@ -3,20 +3,23 @@
     <v-row>
       <v-col
         v-for="post in posts.items"
-        :key="'__post__' + post.linkName"
+        :key="post.linkName"
         cols="12"
-        lg="3"
-        md="4"
+        xl="3"
+        lg="4"
+        md="6"
         sm="6"
       >
         <v-card :to="'/posts/' + post.linkName" hover>
-          <v-card-subtitle v-if="post.category">{{ post.category.displayName }}</v-card-subtitle>
+          <v-card-subtitle v-if="post.category">
+            {{ post.category.displayName }}
+          </v-card-subtitle>
           <v-card-title>{{ post.title }}</v-card-title>
           <v-card-text>{{ post.excerpt }}</v-card-text>
           <v-card-text class="text-right">
             <v-chip
               v-for="tag in post.tagList"
-              :key="'__tag__' + tag.linkName"
+              :key="tag.linkName"
               small
               class="mr-2"
             >
@@ -25,7 +28,9 @@
           </v-card-text>
           <v-card-text>{{ post.publishedOn }}</v-card-text>
           <v-card-text v-if="post.metadataList">
-            <span v-for="metadata in post.metadataList" :key="'__post_metadata__' + metadata.key"> {{ metadata.value }} </span>
+            <span v-for="metadata in post.metadataList" :key="metadata.key">
+              {{ metadata.value }}
+            </span>
           </v-card-text>
         </v-card>
       </v-col>
@@ -40,8 +45,6 @@ export default {
     const posts = await $bunblog.posts.getList({
       type: 'post'
     })
-
-    $bunblog.posts.getById(666)
 
     return { posts }
   },
