@@ -12,6 +12,8 @@
 
     <v-container class="blog-post-container">
       <v-row>
+        <!-- TODO 考虑在这里加个目录（默认折叠）供 < md 的屏幕尺寸查看；或者在返回顶部的按钮上面加个目录按钮 -->
+
         <v-col cols="12" xl="10" lg="9" md="9" sm="12">
           <section v-highlight v-html="postContent" class="blog-post-content" />
         </v-col>
@@ -19,27 +21,33 @@
           <div id="AnchorArea" class="d-none d-md-block">
             <v-navigation-drawer floating permanent width="100%">
               <v-list dense>
-                <template v-for="anchor in anchors">
-                  <v-list-item
-                    :key="anchor.href"
-                    @click="$vuetify.goTo(anchor.href)"
-                  >
-                    <v-list-item-content>
-                      <v-list-item-title>{{ anchor.title }}</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
+                <v-list-item-group v-model="selectedItem">
+                  <template v-for="anchor in anchors">
+                    <v-list-item
+                      :key="anchor.href"
+                      :value="anchor.href"
+                      @click="$vuetify.goTo(anchor.href)"
+                    >
+                      <v-list-item-content>
+                        <v-list-item-title>{{
+                          anchor.title
+                        }}</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
 
-                  <v-list-item
-                    v-for="sub in anchor.subList"
-                    :key="sub.href"
-                    @click="$vuetify.goTo(sub.href)"
-                    class="pl-8"
-                  >
-                    <v-list-item-content>
-                      <v-list-item-title>{{ sub.title }}</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </template>
+                    <v-list-item
+                      v-for="sub in anchor.subList"
+                      :key="sub.href"
+                      :value="sub.href"
+                      @click="$vuetify.goTo(sub.href)"
+                      class="pl-8"
+                    >
+                      <v-list-item-content>
+                        <v-list-item-title>{{ sub.title }}</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-list-item-group>
               </v-list>
             </v-navigation-drawer>
           </div>
@@ -82,7 +90,9 @@ export default {
     return { post, postContent, anchors }
   },
   data: () => ({
-    showGoToTopButton: false
+    showGoToTopButton: false,
+    selectedItem: null,
+    timeout: null
   }),
   methods: {
     formatDate(datetime) {
@@ -112,6 +122,48 @@ export default {
         document.querySelector('#AnchorArea').classList.remove('fixed-anchor')
         this.showGoToTopButton = false
       }
+    },
+    onScroll2() {
+      // 页内导航高亮
+      if (this.timeout != null) {
+        clearTimeout(this.timeout)
+      }
+
+      this.timeout = setTimeout(() => {
+        let currentAnchor = null
+        let scrollY = Math.ceil(window.scrollY)
+
+        for (let i = 0; i < this.anchors.length; i++) {
+          if (
+            scrollY >= document.querySelector(this.anchors[i].href).offsetTop
+          ) {
+            currentAnchor = this.anchors[i]
+          }
+        }
+
+        if (currentAnchor && currentAnchor.subList) {
+          let subAnchor = null
+
+          for (let j = 0; j < currentAnchor.subList.length; j++) {
+            if (
+              scrollY >=
+              document.querySelector(currentAnchor.subList[j].href).offsetTop
+            ) {
+              subAnchor = currentAnchor.subList[j]
+            }
+          }
+
+          if (subAnchor) {
+            currentAnchor = subAnchor
+          }
+        }
+
+        if (currentAnchor) {
+          this.selectedItem = currentAnchor.href
+        } else {
+          this.selectedItem = null
+        }
+      }, 200)
     }
   },
   head() {
@@ -140,9 +192,11 @@ export default {
     )
 
     window.addEventListener('scroll', this.onScroll)
+    window.addEventListener('scroll', this.onScroll2)
   },
   destroyed() {
     window.removeEventListener('scroll', this.onScroll)
+    window.removeEventListener('scroll', this.onScroll2)
   },
   components: {
     eof,
