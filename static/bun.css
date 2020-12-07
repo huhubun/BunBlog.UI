@@ -226,4 +226,7 @@ highlight.js solarized-light style
   max-width: 100%;
   display: block;
   margin: 0 auto;
+  border-radius: 1em;
+  /* #CFD8DC = blue-grey lighten-4 */
+  border: 1px solid #cfd8dc;
 }

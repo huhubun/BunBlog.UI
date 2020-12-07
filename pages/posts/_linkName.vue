@@ -2,11 +2,64 @@
   <article>
     <header>
       <v-card flat tile height="400" class="blue-grey darken-1 white--text">
-        <v-card-title class="display-3">
-          <v-container>
+        <v-container style="height: 400px" class="d-flex flex-column">
+          <v-spacer />
+
+          <v-card-sub-title class="text-center">
+            <v-chip small label color="blue-grey lighten-4">
+              {{ post.category.displayName }}
+            </v-chip>
+          </v-card-sub-title>
+
+          <v-card-title class="justify-center" :class="headerDisplayClass">
             {{ post.title }}
-          </v-container>
-        </v-card-title>
+          </v-card-title>
+
+          <v-spacer />
+
+          <v-card-text class="align-end pa-0">
+            <v-row>
+              <v-col cols="6" class="py-0">
+                <v-chip
+                  small
+                  color="transparent"
+                  class="blue-grey--text text--lighten-5"
+                >
+                  <v-avatar left>
+                    <v-icon small>mdi-calendar-blank-outline</v-icon>
+                  </v-avatar>
+
+                  {{ formatDate(post.publishedOn) }}
+                </v-chip>
+
+                <v-chip
+                  small
+                  color="transparent"
+                  class="blue-grey--text text--lighten-5"
+                >
+                  <v-avatar left>
+                    <v-icon small>mdi-eye-outline</v-icon>
+                  </v-avatar>
+
+                  {{ getVisits(post.metadataList) }}
+                </v-chip>
+              </v-col>
+              <v-col cols="6" class="text-right py-0">
+                <div v-if="post.tagList">
+                  <v-chip
+                    v-for="tag in post.tagList"
+                    :key="tag.linkName"
+                    small
+                    color="blue-grey lighten-2"
+                    class="ml-2"
+                  >
+                    {{ tag.displayName }}
+                  </v-chip>
+                </div>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-container>
       </v-card>
     </header>
 
@@ -105,7 +158,7 @@ export default {
   methods: {
     formatDate(datetime) {
       let dayjsObj = dayjs(datetime)
-      return `${dayjsObj.format('YYYY-MM-DD HH:mm')} (${dayjsObj.fromNow()})`
+      return `${dayjsObj.format('YYYY-MM-DD HH:mm')} ( ${dayjsObj.fromNow()} )`
     },
     getVisits(metadataList) {
       if (metadataList) {
@@ -171,7 +224,7 @@ export default {
         } else {
           this.selectedItem = null
         }
-      }, 200)
+      }, 100)
     }
   },
   head() {
@@ -193,6 +246,20 @@ export default {
     }
 
     return head
+  },
+  computed: {
+    headerDisplayClass() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+        case 'sm':
+          return 'display-1'
+        case 'md':
+          return 'display-2'
+        case 'lg':
+        case 'xl':
+          return 'display-3'
+      }
+    }
   },
   mounted() {
     this.anchors = this.$bunHelper.generateAnchors(
