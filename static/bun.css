@@ -222,6 +222,7 @@ highlight.js solarized-light style
   padding: 1em !important;
 }
 
+/* 博文正文样式 */
 .blog-post-content img {
   max-width: 100%;
   display: block;
@@ -229,4 +230,16 @@ highlight.js solarized-light style
   border-radius: 1em;
   /* #CFD8DC = blue-grey lighten-4 */
   border: 1px solid #cfd8dc;
+}
+
+.blog-post-content a {
+  color: inherit;
+  text-decoration: underline;
+  transition: color 1s;
+}
+
+.blog-post-content a:hover {
+  /* light-blue darken-1 */
+  color: #039be5;
+  transition: color 1s;
 }
