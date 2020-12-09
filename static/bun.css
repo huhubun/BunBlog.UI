@@ -230,16 +230,25 @@ highlight.js solarized-light style
   border-radius: 1em;
   /* #CFD8DC = blue-grey lighten-4 */
   border: 1px solid #cfd8dc;
+  transition: border-color 1s !important;
 }
 
-.blog-post-content a {
-  color: inherit;
-  text-decoration: underline;
-  transition: color 1s;
+.blog-post-content img:hover {
+  /* blue-grey lighten-2 */
+  border-color: #90A4AE;
+  transition: color 1s !important;
 }
 
-.blog-post-content a:hover {
+.blog-post-content a,
+.bun-blog-link a {
+  color: inherit !important;
+  text-decoration: underline !important;
+  transition: color 1s !important;
+}
+
+.blog-post-content a:hover,
+.bun-blog-link a:hover {
   /* light-blue darken-1 */
-  color: #039be5;
-  transition: color 1s;
+  color: #039be5 !important;
+  transition: color 1s !important;
 }

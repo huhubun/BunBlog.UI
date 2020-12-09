@@ -13,13 +13,13 @@
         >
           <v-spacer />
 
-          <v-card-subtitle class="text-center" v-if="post.category">
+          <v-card-subtitle class="text-center pa-0" v-if="post.category">
             <v-chip small label color="blue-grey lighten-4">
               {{ post.category.displayName }}
             </v-chip>
           </v-card-subtitle>
 
-          <v-card-title class="justify-center" :class="headerDisplayClass">
+          <v-card-title class="justify-center text-h5 text-sm-h4 text-md-h3 text-lg-h2">
             {{ post.title }}
           </v-card-title>
 
@@ -66,7 +66,7 @@
         <!-- TODO 考虑在这里加个目录（默认折叠）供 < md 的屏幕尺寸查看；或者在返回顶部的按钮上面加个目录按钮 -->
 
         <!-- 博文内容 -->
-        <v-col cols="12" xl="10" lg="9" md="9" sm="12" class="pt-0">
+        <v-col cols="12" xl="10" lg="9" md="9" sm="12" class="py-0">
           <blockquote>
             <p>{{ post.excerpt }}</p>
           </blockquote>
@@ -77,12 +77,25 @@
             v-lazy-container="{ selector: 'img' }"
             class="blog-post-content"
           />
-          <creative-commons v-bind:post="post" />
+
+          <creative-commons v-bind:post="post" class="bun-blog-link" />
         </v-col>
 
         <!-- 右侧页内导航 -->
-        <v-col cols="12" xl="2" lg="3" md="3" sm="0" id="AnchorContainer" class="pt-0">
-          <div id="AnchorArea" class="d-none d-md-block" :style="{width: `${anchorWidth}px`}">
+        <v-col
+          cols="12"
+          xl="2"
+          lg="3"
+          md="3"
+          sm="0"
+          id="AnchorContainer"
+          class="py-0"
+        >
+          <div
+            id="AnchorArea"
+            class="d-none d-md-block"
+            :style="{ width: `${anchorWidth}px` }"
+          >
             <v-navigation-drawer floating permanent width="100%">
               <v-list dense>
                 <v-list-item-group v-model="anchorActiveItem">
@@ -93,9 +106,9 @@
                       @click="$vuetify.goTo(anchor.href)"
                     >
                       <v-list-item-content>
-                        <v-list-item-title>{{
-                          anchor.title
-                        }}</v-list-item-title>
+                        <v-list-item-title>
+                          {{ anchor.title }}
+                        </v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
 
@@ -233,9 +246,10 @@ export default {
         }
       }, 100)
     },
-    onResizeUpdateAnchorWidth(){
+    onResizeUpdateAnchorWidth() {
       // 24 = container 的 padding，左右各 12px
-      this.anchorWidth = document.querySelector('#AnchorContainer').clientWidth - 24
+      this.anchorWidth =
+        document.querySelector('#AnchorContainer').clientWidth - 24
     }
   },
   head() {
