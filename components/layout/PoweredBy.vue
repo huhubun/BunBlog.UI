@@ -1,23 +1,19 @@
 <template>
-  <div>
-    <div class="bun-margin-top powered-by">
-      <span class="bun-margin-right">
-        <a-icon type="thunderbolt" />Powered by
-      </span>
-      <span>
-        <a href="https://github.com/huhubun/BunBlog.UI">BunBlog.UI</a>
-        {{ uiVersion }}
-      </span>
-      <a-divider type="vertical" />
-      <span>
-        <a href="https://github.com/huhubun/BunBlog.API">BunBlog.API</a>
-        {{ apiVersion }}
-      </span>
-      <span v-if="os">
-        <a-divider type="vertical" />
-        <span>{{ runtimeFramework }} on {{ os }}</span>
-      </span>
-    </div>
+  <div class="py-1">
+    <v-chip
+      v-for="i in by"
+      :key="i.url"
+      :href="i.url"
+      label
+      color="transparent"
+      class="blue-grey--text text--lighten-5"
+    >
+      <v-avatar left>
+        <v-icon small>{{ i.icon }}</v-icon>
+      </v-avatar>
+
+      {{ i.text }}
+    </v-chip>
   </div>
 </template>
 
@@ -38,11 +34,36 @@ export default {
     },
     runtimeFramework() {
       return this.$store.state.apiInformation.runtimeFramework
+    },
+
+    by() {
+      let result = [
+        {
+          icon: 'mdi-palette',
+          text: `BunBlog.UI ${this.uiVersion}`,
+          url: 'https://github.com/huhubun/BunBlog.UI'
+        },
+        {
+          icon: 'mdi-lightning-bolt-outline',
+          text: `BunBlog.API ${this.apiVersion}`,
+          url: 'https://github.com/huhubun/BunBlog.API'
+        }
+      ]
+
+      if (this.os) {
+        result.push({
+          icon: 'mdi-console',
+          text: `${this.runtimeFramework} on ${this.os}`,
+          url: 'https://dot.net/'
+        })
+      }
+
+      return result
     }
   },
   methods: {
     getApiInformation() {
-      this.$axios.get(`/api/information`).then(res => {
+      this.$bunblog.informations.get().then(res => {
         this.$store.commit('apiInformation/set', res.data)
       })
     }
@@ -54,12 +75,3 @@ export default {
   }
 }
 </script>
-
-<style lang="stylus" scoped>
-.powered-by a
-  text-decoration: underline
-  color: rgba(0, 0, 0, 0.65)
-
-.powered-by i.anticon, .powered-by a
-  margin-right: 8px
-</style>

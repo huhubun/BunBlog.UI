@@ -78,7 +78,7 @@
             class="blog-post-content"
           />
 
-          <creative-commons v-bind:post="post" class="bun-blog-link" />
+          <creative-commons v-bind:post="post" class="bun-blog-post-link" />
         </v-col>
 
         <!-- 右侧页内导航 -->
@@ -273,18 +273,6 @@ export default {
     return head
   },
   computed: {
-    headerDisplayClass() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm':
-          return 'display-1'
-        case 'md':
-          return 'display-2'
-        case 'lg':
-        case 'xl':
-          return 'display-3'
-      }
-    },
     headerIcons: function () {
       return [
         {

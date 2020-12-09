@@ -1,12 +1,24 @@
 <template>
-  <div class="bun-bottom-links bun-margin-top" v-if="siteLinks.length">
-    <span class="bun-margin-right">友情链接</span>
-    <span>
-      <span v-for="(siteLink, index) in siteLinks" v-bind:key="siteLink.id">
-        <a :href="siteLink.link || '#'">{{ siteLink.name }}</a>
-        <a-divider type="vertical" v-if="index < siteLinks.length - 1" />
-      </span>
-    </span>
+  <div v-if="siteLinks.length" class="py-1">
+    <v-chip
+      label
+      disabled
+      color="transparent"
+      class="blue-grey--text text--lighten-5"
+    >
+      友情链接
+    </v-chip>
+
+    <v-chip
+      v-for="siteLink in siteLinks"
+      :key="siteLink.link"
+      :href="siteLink.link"
+      label
+      color="transparent"
+      class="blue-grey--text text--lighten-5"
+    >
+      {{ siteLink.name }}
+    </v-chip>
   </div>
 </template>
 
@@ -19,12 +31,3 @@ export default {
   }
 }
 </script>
-
-<style lang="stylus" scoped>
-.bun-bottom-links a
-  text-decoration: underline
-  color: rgba(0, 0, 0, 0.65)
-
-.bun-bottom-links i.anticon
-  margin-right: 8px
-</style>

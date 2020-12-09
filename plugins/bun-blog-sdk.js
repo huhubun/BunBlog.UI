@@ -31,8 +31,15 @@ export default ({ $axios }, inject) => {
     }
   }
 
+  const informations = {
+    async get() {
+      return await $axios.get(`/api/information`)
+    }
+  }
+
   const sdk = {
-    posts
+    posts,
+    informations
   }
 
   inject('bunblog', sdk)

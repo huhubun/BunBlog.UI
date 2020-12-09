@@ -47,9 +47,9 @@
       <nuxt />
     </v-main>
 
-    <v-footer color="blue-grey darken-4" padless>
+    <v-footer color="blue-grey darken-4 " >
       <v-row justify="center" no-gutters>
-        <v-col class="pb-4 text-center white--text" cols="12">
+        <v-col class="text-center" cols="12">
           <follow />
           <powered-by />
           <site-links />

@@ -68,14 +68,12 @@
           </a-col>
         </a-row>
 
-        <eof />
       </a-col>
     </a-row>
   </div>
 </template>
 
 <script>
-import eof from '~/components/layout/EOF.vue'
 
 export default {
   head() {
@@ -95,9 +93,6 @@ export default {
         }
       ]
     }
-  },
-  components: {
-    eof
   }
 }
 </script>

@@ -235,20 +235,32 @@ highlight.js solarized-light style
 
 .blog-post-content img:hover {
   /* blue-grey lighten-2 */
-  border-color: #90A4AE;
+  border-color: #90a4ae;
   transition: color 1s !important;
 }
 
 .blog-post-content a,
-.bun-blog-link a {
+.bun-blog-post-link a {
   color: inherit !important;
   text-decoration: underline !important;
   transition: color 1s !important;
 }
 
 .blog-post-content a:hover,
-.bun-blog-link a:hover {
+.bun-blog-post-link a:hover {
   /* light-blue darken-1 */
   color: #039be5 !important;
+  transition: color 1s !important;
+}
+
+.bun-blog-footer-link a {
+  color: inherit !important;
+  text-decoration: none !important;
+  transition: color 1s !important;
+}
+
+.bun-blog-footer-link a:hover {
+  /* blue-grey lighten-5 */
+  color: #eceff1 !important;
   transition: color 1s !important;
 }
