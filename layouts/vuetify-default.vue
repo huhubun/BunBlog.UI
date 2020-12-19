@@ -50,10 +50,9 @@
     <v-footer color="blue-grey darken-4 " >
       <v-row justify="center" no-gutters>
         <v-col class="text-center" cols="12">
-          <follow />
-          <powered-by />
           <site-links />
           <custom-footer />
+          <powered-by />
           <copyright />
         </v-col>
       </v-row>
@@ -63,7 +62,6 @@
 
 <script>
 import PoweredBy from '~/components/layout/PoweredBy.vue'
-import Follow from '~/components/layout/Follow.vue'
 import Copyright from '~/components/layout/Copyright.vue'
 import CustomFooter from '~/components/layout/CustomFooter.vue'
 import SiteLinks from '~/components/layout/SiteLinks.vue'
@@ -89,7 +87,6 @@ export default {
   },
   components: {
     PoweredBy,
-    Follow,
     Copyright,
     CustomFooter,
     SiteLinks
