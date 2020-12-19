@@ -24,7 +24,11 @@
         @click.stop="drawer = !drawer"
         class="hidden-sm-and-up white--text"
       />
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-items>
+        <v-btn text to="/" active-class="no-active" class="white--text title">
+          {{ title }}
+        </v-btn>
+      </v-toolbar-items>
 
       <v-spacer />
 
@@ -47,7 +51,7 @@
       <nuxt />
     </v-main>
 
-    <v-footer color="blue-grey darken-4 " >
+    <v-footer color="blue-grey darken-4 ">
       <v-row justify="center" no-gutters>
         <v-col class="text-center" cols="12">
           <site-links />
@@ -94,3 +98,12 @@ export default {
   middleware: ['loadSettings', 'loadSiteLinks']
 }
 </script>
+
+<style lang="stylus" scoped>
+.v-btn--active.no-active::before
+  opacity: 0 !important
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1)
+
+.v-btn--active.no-active:hover::before
+  opacity: 0.04 !important
+</style>
