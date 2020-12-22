@@ -10,27 +10,43 @@
         md="6"
         sm="6"
       >
-        <v-card :to="'/posts/' + post.linkName" hover>
-          <v-card-subtitle v-if="post.category">
-            {{ post.category.displayName }}
-          </v-card-subtitle>
+        <v-card
+          :to="'/posts/' + post.linkName"
+          hover
+          class="d-flex flex-column"
+          height="100%"
+        >
           <v-card-title>{{ post.title }}</v-card-title>
+
           <v-card-text>{{ post.excerpt }}</v-card-text>
-          <v-card-text class="text-right">
-            <v-chip
-              v-for="tag in post.tagList"
-              :key="tag.linkName"
-              small
-              class="mr-2"
-            >
-              {{ tag.displayName }}
-            </v-chip>
-          </v-card-text>
-          <v-card-text>{{ post.publishedOn }}</v-card-text>
-          <v-card-text v-if="post.metadataList">
-            <span v-for="metadata in post.metadataList" :key="metadata.key">
-              {{ metadata.value }}
-            </span>
+
+          <v-spacer></v-spacer>
+
+          <v-card-text class="align-end pt-0">
+            <v-row>
+              <v-col cols="6" class="py-0">
+                <span v-if="post.category">
+                  {{ post.category.displayName }}
+                </span>
+              </v-col>
+              <v-col cols="6" class="text-right py-0">
+                <span v-if="post.metadataList">
+                  <v-icon small class="mr-1">mdi-eye-outline</v-icon>
+                  <span
+                    v-for="metadata in post.metadataList"
+                    :key="metadata.key"
+                  >
+                    {{ metadata.value }}
+                  </span>
+
+                  <span class="ma-1">|</span>
+                </span>
+
+                <span>
+                  {{ convertDatetimeToFromNowStrOrDate(post.publishedOn) }}
+                </span>
+              </v-col>
+            </v-row>
           </v-card-text>
         </v-card>
       </v-col>
@@ -39,6 +55,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
+
 export default {
   layout: 'vuetify-default',
   async asyncData({ $bunblog }) {
@@ -85,6 +103,18 @@ export default {
           href: 'https://bun.dev'
         }
       ]
+    }
+  },
+  methods: {
+    convertDatetimeToFromNowStrOrDate(datetime) {
+      let nowDayjsObj = dayjs()
+      let datetimeDayjsObj = dayjs(datetime)
+
+      if (nowDayjsObj.subtract(6, 'month').isBefore(datetimeDayjsObj, 'day')) {
+        return datetimeDayjsObj.fromNow()
+      }
+
+      return datetimeDayjsObj.format('YYYY-MM-DD')
     }
   },
   head() {
