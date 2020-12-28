@@ -51,6 +51,9 @@
         </v-card>
       </v-col>
     </v-row>
+    <div v-if="posts" class="text-right">
+      <v-pagination v-model="posts.page" :length="posts.totalPage" @input="onPageChange" />
+    </div>
   </v-container>
 </template>
 
@@ -61,7 +64,8 @@ export default {
   layout: 'vuetify-default',
   async asyncData({ $bunblog }) {
     const posts = await $bunblog.posts.getList({
-      type: 'post'
+      type: 'post',
+      pageSize: '12'
     })
 
     return { posts }
@@ -115,6 +119,13 @@ export default {
       }
 
       return datetimeDayjsObj.format('YYYY-MM-DD')
+    },
+    async onPageChange(p){
+      this.posts = await this.$bunblog.posts.getList({
+        type: 'post',
+        pageSize: '12',
+        page: p
+      })
     }
   },
   head() {
