@@ -1,47 +1,57 @@
 <template>
-  <div>
-    <div class="header">
-      <h1>Bun Blog Admin</h1>
-    </div>
-    <a-row type="flex" justify="center">
-      <a-col :span="6">
-        <a-form :form="form" @submit.prevent="submit">
-          <a-form-item>
-            <a-input
-              placeholder="Username"
-              ref="usernameInput"
-              class="bun-margin-top-2x"
-              auto-focus
-              v-decorator="[
-                  'username',
-                  { rules: [{required: true, message: '请输入用户名'}] }
-                  ]"
-            >
-              <a-icon slot="prefix" type="user" />
-            </a-input>
-          </a-form-item>
+  <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
+    <v-row class="d-flex justify-center">
+      <v-col cols="12" xl="4" lg="5" md="6">
+        <v-card outlined id="SignInCard">
+          <v-card-title class="justify-center"> Bun Blog Admin </v-card-title>
+          <v-card-text>
+            <v-text-field
+              v-model="username"
+              :rules="usernameRules"
+              label="Username"
+              required
+            ></v-text-field>
 
-          <a-form-item>
-            <a-input
-              placeholder="Password"
-              ref="passwordInput"
+            <v-text-field
+              v-model="password"
+              :rules="passwordRules"
+              label="Password"
               type="password"
-              v-decorator="[
-                  'password',
-                  { rules: [{required: true, message: '请输入密码'}] }
-                  ]"
+              required
+            ></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              outlined
+              block
+              color="success"
+              type="submit"
+              :loading="waitForSignIn"
+              >Sign in</v-btn
             >
-              <a-icon slot="prefix" type="key" />
-            </a-input>
-          </a-form-item>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
 
-          <div class="login-operation bun-margin-top-2x">
-            <a-button type="primary" html-type="submit" block>登录</a-button>
-          </div>
-        </a-form>
-      </a-col>
-    </a-row>
-  </div>
+    <v-snackbar
+      :timeout="-1"
+      :value="!!message"
+      absolute
+      text
+      top
+      centered
+      :color="messageType"
+    >
+      {{ message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn :color="messageType" text v-bind="attrs" @click="message = ''">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </v-form>
 </template>
 
 <script>
@@ -56,51 +66,54 @@ export default {
   },
   data() {
     return {
-      form: this.$form.createForm(this)
+      valid: true,
+      username: null,
+      usernameRules: [v => !!v || 'Username is required'],
+      password: null,
+      passwordRules: [v => !!v || 'Password is required'],
+
+      waitForSignIn: false,
+
+      message: null,
+      messageType: null
     }
   },
   methods: {
     submit() {
-      this.form.validateFields((errors, values) => {
-        if (!errors) {
-          let loginInfo = this.form.getFieldsValue()
+      if (!this.$refs.form.validate()) {
+        return
+      }
 
-          this.$axios
-            .$post('/api/authentication/token', {
-              username: loginInfo.username,
-              password: loginInfo.password,
-              grant_type: 'password'
-            })
-            .then(res => {
-              this.$store.commit('currentUser/login', {
-                accessToken: res.access_token,
-                refreshToken: res.refresh_token,
-                username: loginInfo.username
-              })
+      this.waitForSignIn = true
+      this.message = null
 
-              this.$router.push('/admin')
+      this.$bunblog.authentication
+        .getToken({
+          username: this.username,
+          password: this.password
+        })
+        .then(token => {
+          this.$store.commit('currentUser/login', {
+            accessToken: token.access_token,
+            refreshToken: token.refresh_token,
+            username: this.username
+          })
 
-              this.$notification.success({
-                message: `${loginInfo.username}，欢迎回来！`,
-                description: '',
-                icon: <a-icon type="smile" style="color: #52c41a" />
-              })
-            })
-            .catch(e => {
-              this.$message.error(`登录失败：${e.message}`)
-            })
-        }
-      })
+          this.$router.push('/admin')
+        })
+        .catch(e => {
+          this.message = `登陆失败 ${e.message}`
+          this.messageType = 'error'
+        })
+        .finally(() => {
+          this.waitForSignIn = false
+        })
     }
   }
 }
 </script>
 
 <style lang="stylus" scoped>
-.header
-  text-align: center
-  padding-top: 128px
-
-  h1
-    font-weight: 200
+#SignInCard
+  margin-top: 10em
 </style>

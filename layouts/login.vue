@@ -1,15 +1,21 @@
 <template>
   <client-only>
-    <a-layout style="min-height: 100vh">
-      <a-layout-content>
+    <v-app>
+      <v-main>
         <nuxt />
-      </a-layout-content>
-      <a-layout-footer>
-        <powered-by />
-        <copyright />
-        <custom-footer />
-      </a-layout-footer>
-    </a-layout>
+      </v-main>
+
+      <v-footer color="blue-grey darken-4 ">
+        <v-row justify="center" no-gutters>
+          <v-col class="text-center" cols="12">
+            <site-links />
+            <custom-footer />
+            <powered-by />
+            <copyright />
+          </v-col>
+        </v-row>
+      </v-footer>
+    </v-app>
   </client-only>
 </template>
 

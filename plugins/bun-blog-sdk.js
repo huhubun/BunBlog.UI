@@ -1,5 +1,15 @@
 export default ({ $axios }, inject) => {
 
+  const authentication = {
+    async getToken(loginInfo) {
+      return await $axios.post('/api/authentication/token', {
+        username: loginInfo.username,
+        password: loginInfo.password,
+        grant_type: 'password'
+      })
+    }
+  }
+
   const posts = {
     async getList(query) {
       query = query || {}
@@ -38,6 +48,7 @@ export default ({ $axios }, inject) => {
   }
 
   const sdk = {
+    authentication,
     posts,
     informations
   }
