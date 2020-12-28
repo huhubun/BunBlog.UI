@@ -2,7 +2,7 @@ export default ({ $axios }, inject) => {
 
   const authentication = {
     async getToken(loginInfo) {
-      return await $axios.post('/api/authentication/token', {
+      return await $axios.$post('/api/authentication/token', {
         username: loginInfo.username,
         password: loginInfo.password,
         grant_type: 'password'
@@ -43,7 +43,7 @@ export default ({ $axios }, inject) => {
 
   const informations = {
     async get() {
-      return await $axios.get(`/api/information`)
+      return await $axios.$get(`/api/information`)
     }
   }
 

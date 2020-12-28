@@ -63,8 +63,8 @@ export default {
   },
   methods: {
     getApiInformation() {
-      this.$bunblog.informations.get().then(res => {
-        this.$store.commit('apiInformation/set', res.data)
+      this.$bunblog.informations.get().then(apiInfo => {
+        this.$store.commit('apiInformation/set', apiInfo)
       })
     }
   },
