@@ -45,6 +45,25 @@
           <template v-slot:top>
             <v-toolbar flat>
               <v-toolbar-title>列表</v-toolbar-title>
+              <v-dialog :value="removeItem" persistent max-width="500px">
+                <v-card>
+                  <v-card-title class="headline"> 确认删除 </v-card-title>
+                  <v-card-text v-if="removeItem">
+                    显示名称 {{ removeItem.displayName }}
+                    <br />
+                    链接名称 {{ removeItem.linkName }}
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="info" text @click="removeItem = null">
+                      取消
+                    </v-btn>
+                    <v-btn color="error" text @click="confirmRemove">
+                      删除
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </v-toolbar>
           </template>
           <template v-slot:item.actions="{ item }">
@@ -117,6 +136,8 @@ export default {
         { text: '操作', value: 'actions', sortable: false }
       ],
 
+      removeItem: null,
+
       message: null,
       messageType: null
     }
@@ -165,10 +186,19 @@ export default {
         })
     },
     remove(category) {
+      this.clearMessage()
+      this.removeItem = category
+    },
+    async fillTable() {
+      this.waitForTable = true
+      this.categoryList = await this.$bunblog.category.getList()
+      this.waitForTable = false
+    },
+    confirmRemove() {
       this.$bunblog.category
-        .remove(category.linkName)
+        .remove(this.removeItem.linkName)
         .then(() => {
-          this.showSuccessMessage(`已删除分类 ${category.displayName}`)
+          this.showSuccessMessage(`已删除分类 ${this.removeItem.displayName}`)
           this.fillTable()
         })
         .catch(error => {
@@ -182,11 +212,9 @@ export default {
 
           this.showErrorMessage(message)
         })
-    },
-    async fillTable() {
-      this.waitForTable = true
-      this.categoryList = await this.$bunblog.category.getList()
-      this.waitForTable = false
+        .finally(() => {
+          this.removeItem = null
+        })
     },
     showSuccessMessage(message) {
       this.message = message
