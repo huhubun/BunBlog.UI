@@ -24,6 +24,20 @@ export default ({ $axios }, inject) => {
     },
   }
 
+  const tag = {
+    async getList() {
+      return await $axios.$get('/api/tags')
+    },
+
+    async add(tag) {
+      return await $axios.$post('/api/tags', tag)
+    },
+
+    async remove(linkName) {
+      return await $axios.$delete(`/api/tags/${linkName}`)
+    },
+  }
+
   const posts = {
     async getList(query) {
       query = query || {}
@@ -64,6 +78,7 @@ export default ({ $axios }, inject) => {
   const sdk = {
     authentication,
     category,
+    tag,
     posts,
     informations
   }

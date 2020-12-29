@@ -1,171 +1,205 @@
 <template>
-  <div class="tag-container">
-    <h1>标签</h1>
-    <a-row :gutter="32">
-      <a-col :span="8">
-        <h2>添加</h2>
-        <a-form :form="form" @submit.prevent="addTag">
-          <a-form-item label="显示名称">
-            <a-input
-              v-decorator="[
-            'displayName',
-            { rules: [{required: true, message: '必须设置显示名称'}] }
-            ]"
-              autocomplete="off"
-            >
-              <a-icon slot="prefix" type="block" />
-            </a-input>
-          </a-form-item>
-
-          <a-form-item label="链接名称">
-            <a-input
-              v-decorator="[
-            'linkName',
-            { rules: [{required: true, message: '必须设置链接名称'}] }
-            ]"
-              autocomplete="off"
-            >
-              <a-icon slot="prefix" type="link" />
-            </a-input>
-          </a-form-item>
-
-          <a-form-item>
-            <a-button type="primary" html-type="submit">添加新标签</a-button>
-          </a-form-item>
-        </a-form>
-      </a-col>
-      <a-col :span="16">
-        <h2>列表</h2>
-        <a-table
-          :rowKey="row => row.linkName"
-          :dataSource="tagList"
-          :columns="tagTableColumns"
-          :loading="tagTableLoading"
-          class="tag-table"
+  <div class="ma-3">
+    <h2 class="display-1">{{ title }}</h2>
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+          @submit.prevent="submit"
         >
-          <span slot="displayNameHeader">
-            <a-icon type="block" />显示名称
-          </span>
-          <span slot="linkNameHeader">
-            <a-icon type="link" />链接名称
-          </span>
-          <span slot="operation" slot-scope="operation, record">
-            <a-popconfirm
-              v-if="tagList.length"
-              title="确定要删除该标签吗？"
-              okText="删除"
-              okType="danger"
-              cancelText="取消"
-              @confirm="() => onDelete(record.linkName, record.displayName)"
-            >
-              <a href="javascript:;">Delete</a>
-            </a-popconfirm>
-          </span>
-        </a-table>
-      </a-col>
-    </a-row>
+          <v-card flat id="SignInCard">
+            <v-card-title>添加</v-card-title>
+            <v-card-text>
+              <v-text-field
+                v-model="displayName"
+                :rules="displayNameRules"
+                label="显示名称"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="linkName"
+                :rules="linkNameRules"
+                label="链接名称"
+                required
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" type="submit" :loading="waitForSave">
+                添加新标签
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-form>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-data-table
+          :headers="headers"
+          :items="tagList"
+          :loading="waitForTable"
+          sort-by="calories"
+        >
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title>列表</v-toolbar-title>
+              <v-dialog :value="removeItem" persistent max-width="500px">
+                <v-card>
+                  <v-card-title class="headline"> 确认删除 </v-card-title>
+                  <v-card-text v-if="removeItem">
+                    显示名称 {{ removeItem.displayName }}
+                    <br />
+                    链接名称 {{ removeItem.linkName }}
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="info" text @click="removeItem = null">
+                      取消
+                    </v-btn>
+                    <v-btn color="error" text @click="confirmRemove">
+                      删除
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon small @click="remove(item)">mdi-delete</v-icon>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+
+    <v-snackbar
+      :color="messageType"
+      :value="!!message"
+      timeout="-1"
+      text
+      top
+      centered
+    >
+      {{ message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :color="messageType"
+          icon
+          small
+          v-bind="attrs"
+          @click="message = null"
+        >
+          <v-icon small>mdi-close-circle</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
-const tagTableColumns = [
-  {
-    dataIndex: 'displayName',
-    slots: {
-      title: 'displayNameHeader'
-    }
-  },
-  {
-    dataIndex: 'linkName',
-    slots: {
-      title: 'linkNameHeader'
-    }
-  },
-  {
-    dataIndex: 'operation',
-    title: '操作',
-    scopedSlots: {
-      customRender: 'operation'
-    }
-  }
-]
-
 export default {
-  layout: 'admin',
+  layout: 'vuetify-admin',
   head() {
     return {
-      title: '标签管理'
+      title: this.title
     }
   },
   data() {
     return {
-      form: this.$form.createForm(this),
-      tagTableLoading: true,
-      tagTableColumns,
-      tagList: []
+      title: '标签管理',
+
+      valid: true,
+
+      displayName: null,
+      displayNameRules: [v => !!v || '显示名称 is required'],
+      linkName: null,
+      linkNameRules: [v => !!v || '链接名称 is required'],
+
+      waitForSave: false,
+
+      tagList: [],
+
+      waitForTable: true,
+      headers: [
+        {
+          text: '显示名称',
+          value: 'displayName',
+          sortable: false
+        },
+        {
+          text: '链接名称',
+          value: 'linkName',
+          sortable: false
+        },
+        { text: '操作', value: 'actions', sortable: false }
+      ],
+
+      removeItem: null,
+
+      message: null,
+      messageType: null
     }
   },
   methods: {
-    getList() {
-      return this.$axios.get(`/api/tags`)
-    },
-    add(tag) {
-      return this.$axios.post(`/api/tags`, tag)
-    },
-    remove(linkName) {
-      return this.$axios.delete(`/api/tags/${linkName}`)
-    },
-    fillTagTable() {
-      this.tagTableLoading = true
+    submit() {
+      if (!this.$refs.form.validate()) {
+        return
+      }
 
-      this.getList()
-        .then(tagList => {
-          this.tagList = tagList.data
-          this.tagTableLoading = false
+      this.waitForSave = true
+      this.message = null
+
+      this.$bunblog.tag
+        .add({
+          displayName: this.displayName,
+          linkName: this.linkName
+        })
+        .then(() => {
+          this.$refs.form.reset()
+          this.showSuccessMessage('添加标签成功')
+          this.fillTable()
         })
         .catch(error => {
-          console.log(error)
-          this.$message.error('获取标签列表失败')
+          let errorMessage = '添加标签失败'
+
+          let errorResponse = error.response
+          if (errorResponse.status === 400) {
+            let errorData = errorResponse.data
+
+            let modelValidationErrorMessage = this.$bunHelper.tryParseModelValidationError(
+              errorData
+            )
+            if (modelValidationErrorMessage) {
+              errorMessage += `：${modelValidationErrorMessage}`
+            } else {
+              errorMessage += `：${errorData.message}`
+            }
+          }
+
+          this.showErrorMessage(errorMessage)
+          console.log(errorMessage)
+        })
+        .finally(() => {
+          this.waitForSave = false
         })
     },
-    addTag() {
-      this.form.validateFields((errors, values) => {
-        if (!errors) {
-          let tag = this.form.getFieldsValue()
-          this.add(tag)
-            .then(res => {
-              this.form.resetFields()
-              this.fillTagTable()
-
-              this.$message.success('添加标签成功')
-            })
-            .catch(error => {
-              let errorMessage = '添加标签失败'
-              let errorResponse = error.response
-              if (errorResponse.status === 400) {
-                let errorData = errorResponse.data
-
-                let modelValidationErrorMessage = this.$bunHelper.tryParseModelValidationError(
-                  errorData
-                )
-                if (modelValidationErrorMessage) {
-                  errorMessage += ` ${modelValidationErrorMessage}`
-                } else {
-                  errorMessage += ` ${errorData.message}`
-                }
-              }
-
-              console.error(errorMessage)
-              this.$message.error(errorMessage)
-            })
-        }
-      })
+    remove(tag) {
+      this.clearMessage()
+      this.removeItem = tag
     },
-    onDelete(linkName, displayName) {
-      this.remove(linkName)
-        .then(res => {
-          this.$message.success(`已删除标签 ${displayName}`)
-          this.fillTagTable()
+    async fillTable() {
+      this.waitForTable = true
+      this.tagList = await this.$bunblog.tag.getList()
+      this.waitForTable = false
+    },
+    confirmRemove() {
+      this.$bunblog.tag
+        .remove(this.removeItem.linkName)
+        .then(() => {
+          this.showSuccessMessage(`已删除标签 ${this.removeItem.displayName}`)
+          this.fillTable()
         })
         .catch(error => {
           console.error(error)
@@ -173,23 +207,29 @@ export default {
           let message = `删除失败`
           let errorResponse = error.response
           if (errorResponse.status === 400) {
-            message += ` ${errorResponse.data.message}`
+            message += `：${errorResponse.data.message}`
           }
 
-          this.$message.error(message)
+          this.showErrorMessage(message)
         })
+        .finally(() => {
+          this.removeItem = null
+        })
+    },
+    showSuccessMessage(message) {
+      this.message = message
+      this.messageType = 'success'
+    },
+    showErrorMessage(message) {
+      this.message = message
+      this.messageType = 'error'
+    },
+    clearMessage() {
+      this.message = null
     }
   },
   mounted() {
-    this.fillTagTable()
+    this.fillTable()
   }
 }
 </script>
-
-<style lang="stylus" scoped>
-.tag-container
-  margin-top: 10px
-
-.tag-table th .anticon
-  margin-right: 6px
-</style>

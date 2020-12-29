@@ -39,7 +39,7 @@
         <v-data-table
           :headers="headers"
           :items="categoryList"
-          :loading="waitForCategoryTable"
+          :loading="waitForTable"
           sort-by="calories"
         >
           <template v-slot:top>
@@ -58,7 +58,6 @@
       :color="messageType"
       :value="!!message"
       timeout="-1"
-      absolute
       text
       top
       centered
@@ -103,7 +102,7 @@ export default {
 
       categoryList: [],
 
-      waitForCategoryTable: true,
+      waitForTable: true,
       headers: [
         {
           text: '显示名称',
@@ -185,9 +184,9 @@ export default {
         })
     },
     async fillTable() {
-      this.waitForCategoryTable = true
+      this.waitForTable = true
       this.categoryList = await this.$bunblog.category.getList()
-      this.waitForCategoryTable = false
+      this.waitForTable = false
     },
     showSuccessMessage(message) {
       this.message = message

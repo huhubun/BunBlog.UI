@@ -37,7 +37,6 @@
     <v-snackbar
       :timeout="-1"
       :value="!!message"
-      absolute
       text
       top
       centered
