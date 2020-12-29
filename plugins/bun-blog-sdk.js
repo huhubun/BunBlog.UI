@@ -10,6 +10,20 @@ export default ({ $axios }, inject) => {
     }
   }
 
+  const category = {
+    async getList() {
+      return await $axios.$get('/api/categories')
+    },
+
+    async add(category) {
+      return await $axios.$post('/api/categories', category)
+    },
+
+    async remove(linkName) {
+      return await $axios.$delete(`/api/categories/${linkName}`)
+    },
+  }
+
   const posts = {
     async getList(query) {
       query = query || {}
@@ -49,6 +63,7 @@ export default ({ $axios }, inject) => {
 
   const sdk = {
     authentication,
+    category,
     posts,
     informations
   }

@@ -1,171 +1,176 @@
 <template>
-  <div class="category-container">
-    <h1>分类</h1>
-    <a-row :gutter="32">
-      <a-col :span="8">
-        <h2>添加</h2>
-        <a-form :form="form" @submit.prevent="addCategory">
-          <a-form-item label="显示名称">
-            <a-input
-              v-decorator="[
-            'displayName',
-            { rules: [{required: true, message: '必须设置显示名称'}] }
-            ]"
-              autocomplete="off"
-            >
-              <a-icon slot="prefix" type="block" />
-            </a-input>
-          </a-form-item>
-
-          <a-form-item label="链接名称">
-            <a-input
-              v-decorator="[
-            'linkName',
-            { rules: [{required: true, message: '必须设置链接名称'}] }
-            ]"
-              autocomplete="off"
-            >
-              <a-icon slot="prefix" type="link" />
-            </a-input>
-          </a-form-item>
-
-          <a-form-item>
-            <a-button type="primary" html-type="submit">添加新分类</a-button>
-          </a-form-item>
-        </a-form>
-      </a-col>
-      <a-col :span="16">
-        <h2>列表</h2>
-        <a-table
-          :rowKey="row => row.linkName"
-          :dataSource="categoryList"
-          :columns="categoryTableColumns"
-          :loading="categoryTableLoading"
-          class="category-table"
+  <div class="ma-3">
+    <h2 class="display-1">{{ title }}</h2>
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+          @submit.prevent="submit"
         >
-          <span slot="displayNameHeader">
-            <a-icon type="block" />显示名称
-          </span>
-          <span slot="linkNameHeader">
-            <a-icon type="link" />链接名称
-          </span>
-          <span slot="operation" slot-scope="operation, record">
-            <a-popconfirm
-              v-if="categoryList.length"
-              title="确定要删除该分类吗？"
-              okText="删除"
-              okType="danger"
-              cancelText="取消"
-              @confirm="() => onDelete(record.linkName, record.displayName)"
-            >
-              <a href="javascript:;">Delete</a>
-            </a-popconfirm>
-          </span>
-        </a-table>
-      </a-col>
-    </a-row>
+          <v-card flat id="SignInCard">
+            <v-card-title>添加</v-card-title>
+            <v-card-text>
+              <v-text-field
+                v-model="displayName"
+                :rules="displayNameRules"
+                label="显示名称"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="linkName"
+                :rules="linkNameRules"
+                label="链接名称"
+                required
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" type="submit" :loading="waitForSave">
+                添加新分类
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-form>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-data-table
+          :headers="headers"
+          :items="categoryList"
+          :loading="waitForCategoryTable"
+          sort-by="calories"
+        >
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title>列表</v-toolbar-title>
+            </v-toolbar>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon small @click="remove(item)">mdi-delete</v-icon>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+
+    <v-snackbar
+      :color="messageType"
+      :value="!!message"
+      timeout="-1"
+      absolute
+      text
+      top
+      centered
+    >
+      {{ message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :color="messageType"
+          icon
+          small
+          v-bind="attrs"
+          @click="message = null"
+        >
+          <v-icon small>mdi-close-circle</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
-const categoryTableColumns = [
-  {
-    dataIndex: 'displayName',
-    slots: {
-      title: 'displayNameHeader'
-    }
-  },
-  {
-    dataIndex: 'linkName',
-    slots: {
-      title: 'linkNameHeader'
-    }
-  },
-  {
-    dataIndex: 'operation',
-    title: '操作',
-    scopedSlots: {
-      customRender: 'operation'
-    }
-  }
-]
-
 export default {
-  layout: 'admin',
+  layout: 'vuetify-admin',
   head() {
     return {
-      title: '分类管理'
+      title: this.title
     }
   },
   data() {
     return {
-      form: this.$form.createForm(this),
-      categoryTableLoading: true,
-      categoryTableColumns,
-      categoryList: []
+      title: '分类管理',
+
+      valid: true,
+
+      displayName: null,
+      displayNameRules: [v => !!v || '显示名称 is required'],
+      linkName: null,
+      linkNameRules: [v => !!v || '链接名称 is required'],
+
+      waitForSave: false,
+
+      categoryList: [],
+
+      waitForCategoryTable: true,
+      headers: [
+        {
+          text: '显示名称',
+          value: 'displayName',
+          sortable: false
+        },
+        {
+          text: '链接名称',
+          value: 'linkName',
+          sortable: false
+        },
+        { text: '操作', value: 'actions', sortable: false }
+      ],
+
+      message: null,
+      messageType: null
     }
   },
   methods: {
-    getList() {
-      return this.$axios.get(`/api/categories`)
-    },
-    add(category) {
-      return this.$axios.post(`/api/categories`, category)
-    },
-    remove(linkName) {
-      return this.$axios.delete(`/api/categories/${linkName}`)
-    },
-    fillCategoryTable() {
-      this.categoryTableLoading = true
+    submit() {
+      if (!this.$refs.form.validate()) {
+        return
+      }
 
-      this.getList()
-        .then(categoryList => {
-          this.categoryList = categoryList.data
-          this.categoryTableLoading = false
+      this.waitForSave = true
+      this.message = null
+
+      this.$bunblog.category
+        .add({
+          displayName: this.displayName,
+          linkName: this.linkName
+        })
+        .then(() => {
+          this.$refs.form.reset()
+          this.showSuccessMessage('添加分类成功')
+          this.fillTable()
         })
         .catch(error => {
-          console.log(error)
-          this.$message.error('获取分类列表失败')
+          let errorMessage = '添加分类失败'
+
+          let errorResponse = error.response
+          if (errorResponse.status === 400) {
+            let errorData = errorResponse.data
+
+            let modelValidationErrorMessage = this.$bunHelper.tryParseModelValidationError(
+              errorData
+            )
+            if (modelValidationErrorMessage) {
+              errorMessage += `：${modelValidationErrorMessage}`
+            } else {
+              errorMessage += `：${errorData.message}`
+            }
+          }
+
+          this.showErrorMessage(errorMessage)
+          console.log(errorMessage)
+        })
+        .finally(() => {
+          this.waitForSave = false
         })
     },
-    addCategory() {
-      this.form.validateFields((errors, values) => {
-        if (!errors) {
-          let category = this.form.getFieldsValue()
-          this.add(category)
-            .then(res => {
-              this.form.resetFields()
-              this.fillCategoryTable()
-
-              this.$message.success('添加分类成功')
-            })
-            .catch(error => {
-              let errorMessage = '添加分类失败'
-              let errorResponse = error.response
-              if (errorResponse.status === 400) {
-                let errorData = errorResponse.data
-
-                let modelValidationErrorMessage = this.$bunHelper.tryParseModelValidationError(
-                  errorData
-                )
-                if (modelValidationErrorMessage) {
-                  errorMessage += ` ${modelValidationErrorMessage}`
-                } else {
-                  errorMessage += ` ${errorData.message}`
-                }
-              }
-
-              console.error(errorMessage)
-              this.$message.error(errorMessage)
-            })
-        }
-      })
-    },
-    onDelete(linkName, displayName) {
-      this.remove(linkName)
-        .then(res => {
-          this.$message.success(`已删除分类 ${displayName}`)
-          this.fillCategoryTable()
+    remove(category) {
+      this.$bunblog.category
+        .remove(category.linkName)
+        .then(() => {
+          this.showSuccessMessage(`已删除分类 ${category.displayName}`)
+          this.fillTable()
         })
         .catch(error => {
           console.error(error)
@@ -173,23 +178,31 @@ export default {
           let message = `删除失败`
           let errorResponse = error.response
           if (errorResponse.status === 400) {
-            message += ` ${errorResponse.data.message}`
+            message += `：${errorResponse.data.message}`
           }
 
-          this.$message.error(message)
+          this.showErrorMessage(message)
         })
+    },
+    async fillTable() {
+      this.waitForCategoryTable = true
+      this.categoryList = await this.$bunblog.category.getList()
+      this.waitForCategoryTable = false
+    },
+    showSuccessMessage(message) {
+      this.message = message
+      this.messageType = 'success'
+    },
+    showErrorMessage(message) {
+      this.message = message
+      this.messageType = 'error'
+    },
+    clearMessage() {
+      this.message = null
     }
   },
   mounted() {
-    this.fillCategoryTable()
+    this.fillTable()
   }
 }
 </script>
-
-<style lang="stylus" scoped>
-.category-container
-  margin-top: 10px
-
-.category-table th .anticon
-  margin-right: 6px
-</style>
