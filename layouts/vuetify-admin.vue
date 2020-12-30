@@ -94,7 +94,7 @@ export default {
         {
           icon: 'mdi-cog',
           title: '设置',
-          to: '/admin/setting'
+          to: '/admin/settings'
         }
       ]
     }
