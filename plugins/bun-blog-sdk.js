@@ -61,6 +61,20 @@ export default ({ $axios }, inject) => {
     }
   }
 
+  const siteLink = {
+    async getList() {
+      return await $axios.$get('/api/siteLinks')
+    },
+
+    async add(siteLink) {
+      return await $axios.$post('/api/siteLinks', siteLink)
+    },
+
+    async remove(id) {
+      return await $axios.$delete(`/api/siteLinks/${id}`)
+    }
+  }
+
   const tag = {
     async getList() {
       return await $axios.$get('/api/tags')
@@ -81,6 +95,7 @@ export default ({ $axios }, inject) => {
     category,
     informations,
     posts,
+    siteLink,
     tag
   }
 
