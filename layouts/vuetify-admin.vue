@@ -82,11 +82,6 @@ export default {
           to: '/admin/categories'
         },
         {
-          icon: 'mdi-inbox-multiple',
-          title: '分类',
-          to: '/admin/categories/index3'
-        },
-        {
           icon: 'mdi-tag',
           title: '标签',
           to: '/admin/tags'
