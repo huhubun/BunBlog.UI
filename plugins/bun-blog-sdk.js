@@ -61,6 +61,16 @@ export default ({ $axios }, inject) => {
     }
   }
 
+  const setting = {
+    async getList() {
+      return await $axios.$get('/api/settings')
+    },
+
+    async update(setting) {
+      return await $axios.$put(`/api/settings/${setting.code}`, { value: setting.value })
+    }
+  }
+
   const siteLink = {
     async getList() {
       return await $axios.$get('/api/siteLinks')
@@ -95,6 +105,7 @@ export default ({ $axios }, inject) => {
     category,
     informations,
     posts,
+    setting,
     siteLink,
     tag
   }

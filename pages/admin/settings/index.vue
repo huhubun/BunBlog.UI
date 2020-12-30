@@ -1,65 +1,96 @@
 <template>
-  <div class="settings-container">
-    <h1>设置</h1>
+  <div class="ma-3">
+    <h2 class="display-1">
+      {{ title }}
+    </h2>
+    <v-row>
+      <v-col>
+        <v-card flat>
+          <v-tabs v-model="selectedCategoryIndex">
+            <v-tab v-for="category in settingCategories" :key="category">
+              {{ category }}
+            </v-tab>
 
-    <div>
-      <a-radio-group v-model="selectedCategory">
-        <a-radio-button
-          v-for="category in settingCategories"
-          :key="category"
-          v-bind:value="category"
-        >{{category}}</a-radio-button>
-      </a-radio-group>
-    </div>
-    <div>
-      <a-form>
-        <a-form-item
-          v-for="setting in filteredSettings"
-          :key="setting.code"
-          :label-col="labelCol"
-          :wrapper-col="wrapperCol"
-          v-bind:label="setting.code"
+            <v-tab-item v-for="category in settingCategories" :key="category">
+              <v-form>
+                <v-card
+                  flat
+                  v-for="setting in filteredSettings"
+                  :key="setting.code"
+                >
+                  <v-card-text>
+                    <v-text-field
+                      v-if="setting.type === 'text'"
+                      v-model="setting.value"
+                      :label="setting.code"
+                      :placeholder="getDefaultValue(setting)"
+                      :hint="generateHint(setting)"
+                      persistent-hint
+                    ></v-text-field>
+                    <v-textarea
+                      v-if="setting.type === 'textarea'"
+                      v-model="setting.value"
+                      :label="setting.code"
+                      :placeholder="getDefaultValue(setting)"
+                      :hint="generateHint(setting)"
+                      persistent-hint
+                      rows="10"
+                    ></v-textarea>
+                  </v-card-text>
+
+                  <v-card-actions
+                    v-if="
+                      isValueChanged(setting) || isDifferentThenDefault(setting)
+                    "
+                  >
+                    <v-btn
+                      outlined
+                      color="error"
+                      v-show="isValueChanged(setting)"
+                      :loading="setting.loading"
+                      @click="update(setting)"
+                    >
+                      更新
+                    </v-btn>
+                    <v-btn
+                      outlined
+                      color="info"
+                      v-show="isDifferentThenDefault(setting)"
+                      @click="reset(setting)"
+                    >
+                      恢复默认值
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-form>
+            </v-tab-item>
+          </v-tabs>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-snackbar
+      :color="messageType"
+      :value="!!message"
+      timeout="-1"
+      text
+      top
+      centered
+    >
+      {{ message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :color="messageType"
+          icon
+          small
+          v-bind="attrs"
+          @click="message = null"
         >
-          <span slot="help">
-            {{setting.description}}
-            <br />
-            类型 {{setting.valueType}}, 默认值 {{setting.defaultValue || 'null'}}
-          </span>
-
-          <a-row :gutter="8">
-            <a-col :span="12">
-              <a-input
-                v-if="setting.type === 'text'"
-                :id="setting.code"
-                :placeholder="setting.value || 'null'"
-                v-model="setting.value"
-              />
-              <a-textarea
-                v-if="setting.type === 'textarea'"
-                :id="setting.code"
-                :placeholder="setting.value || 'null'"
-                v-model="setting.value"
-                rows="10"
-              />
-            </a-col>
-            <a-col :span="12">
-              <a-button
-                type="danger"
-                ghost
-                @click="update(setting)"
-                v-show="isValueChanged(setting)"
-              >更新</a-button>
-              <a-button
-                type="primary"
-                ghost
-                @click="reset(setting)"
-                v-show="isDifferentThenDefault(setting)"
-              >恢复默认值</a-button>
-            </a-col>
-          </a-row>
-        </a-form-item>
-      </a-form>
-    </div>
+          <v-icon small>mdi-close-circle</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -67,43 +98,54 @@
 import Vue from 'vue'
 
 export default {
-  layout: 'admin',
+  layout: 'vuetify-admin',
   head() {
     return {
-      title: '设置'
+      title: this.title
     }
   },
   data() {
     return {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 5 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 }
-      },
+      title: '设置',
+      tab: null,
+
       settings: [],
       settingsOriginal: {},
       settingCategories: [],
-      selectedCategory: null
+      selectedCategoryIndex: 0,
+
+      message: null,
+      messageType: null
+    }
+  },
+  computed: {
+    filteredSettings() {
+      return this.settings.filter(s => s.category === this.selectedCategory)
+    },
+    selectedCategory() {
+      return this.settingCategories[this.selectedCategoryIndex]
     }
   },
   methods: {
-    getList() {
-      return this.$axios.get(`/api/settings`)
+    async getSettings() {
+      this.settings = await this.$bunblog.setting.getList()
     },
     update(setting) {
-      this.$axios
-        .put(`/api/settings/${setting.code}`, { value: setting.value })
-        .then(r => {
+      setting.loading = true
+      this.clearMessage()
+      this.$bunblog.setting
+        .update(setting)
+        .then(() => {
+          this.showSuccessMessage('更新成功')
           // 更新原始值，以隐藏“更新”按钮
           Vue.set(this.settingsOriginal, setting.code, setting.value)
-          this.$message.success('更新成功')
         })
         .catch(e => {
-          console.log(e)
-          this.$message.error('更新失败')
+          console.error(e)
+          this.showErrorMessage('更新失败')
+        })
+        .finally(() => {
+          setting.loading = false
         })
     },
     reset(setting) {
@@ -114,35 +156,43 @@ export default {
     },
     isValueChanged(setting) {
       return setting.value !== this.settingsOriginal[setting.code]
+    },
+    getDefaultValue(setting) {
+      return setting.defaultValue || 'null'
+    },
+    generateHint(setting) {
+      return `${setting.description} | 类型 ${
+        setting.valueType
+      }, 默认值 ${this.getDefaultValue(setting)}`
+    },
+    showSuccessMessage(message) {
+      this.message = message
+      this.messageType = 'success'
+    },
+    showErrorMessage(message) {
+      this.message = message
+      this.messageType = 'error'
+    },
+    clearMessage() {
+      this.message = null
     }
   },
-  computed: {
-    filteredSettings() {
-      return this.settings.filter(s => s.category === this.selectedCategory)
-    }
-  },
-  mounted() {
-    this.getList().then(s => {
-      let settings = s.data
-      this.settings = settings
+  async mounted() {
+    await this.getSettings()
 
-      for (let i = 0; i < settings.length; i++) {
-        let item = settings[i]
-        let category = item.category
-        if (this.settingCategories.indexOf(category) == -1) {
-          this.settingCategories.push(category)
-        }
-
-        Vue.set(this.settingsOriginal, item.code, item.value)
+    for (let i = 0; i < this.settings.length; i++) {
+      let item = this.settings[i]
+      let category = item.category
+      if (this.settingCategories.indexOf(category) == -1) {
+        this.settingCategories.push(category)
       }
 
-      this.selectedCategory = this.settingCategories[0]
-    })
+      Vue.set(this.settingsOriginal, item.code, item.value)
+    }
+
+    this.selectedCategoryIndex = 0
   }
 }
 </script>
 
-<style lang="stylus" scoped>
-.settings-container
-  margin-top: 10px
-</style>
+<style lang="stylus" scoped></style>
