@@ -21,21 +21,13 @@ export default ({ $axios }, inject) => {
 
     async remove(linkName) {
       return await $axios.$delete(`/api/categories/${linkName}`)
-    },
+    }
   }
 
-  const tag = {
-    async getList() {
-      return await $axios.$get('/api/tags')
-    },
-
-    async add(tag) {
-      return await $axios.$post('/api/tags', tag)
-    },
-
-    async remove(linkName) {
-      return await $axios.$delete(`/api/tags/${linkName}`)
-    },
+  const informations = {
+    async get() {
+      return await $axios.$get(`/api/information`)
+    }
   }
 
   const posts = {
@@ -69,18 +61,27 @@ export default ({ $axios }, inject) => {
     }
   }
 
-  const informations = {
-    async get() {
-      return await $axios.$get(`/api/information`)
+  const tag = {
+    async getList() {
+      return await $axios.$get('/api/tags')
+    },
+
+    async add(tag) {
+      return await $axios.$post('/api/tags', tag)
+    },
+
+    async remove(linkName) {
+      return await $axios.$delete(`/api/tags/${linkName}`)
     }
   }
+
 
   const sdk = {
     authentication,
     category,
-    tag,
+    informations,
     posts,
-    informations
+    tag
   }
 
   inject('bunblog', sdk)
