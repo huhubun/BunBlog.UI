@@ -58,6 +58,11 @@ export default ({ $axios }, inject) => {
       console.log(post)
 
       return post
+    },
+
+    async deleteDraft(linkName) {
+      await this.$axios
+        .$delete(`/api/posts/${linkName}/draft`)
     }
   }
 
