@@ -1,11 +1,13 @@
 <template>
-  <div class="post-edit-container">
-    <post-editor v-bind:post="post" v-if="post"></post-editor>
-  </div>
+  <v-app>
+    <v-main>
+      <post-editor-vuetify v-bind:post="post" v-if="post"></post-editor-vuetify>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import PostEditor from '@/components/post/PostEditor'
+import PostEditorVuetify from '@/components/post/PostEditorVuetify'
 
 export default {
   layout: 'post-editor',
@@ -21,23 +23,15 @@ export default {
     }
   },
   methods: {
-    getPostDetail() {
-      this.$axios
-        .get(`/api/posts/${this.id}`)
-        .then(post => {
-          this.post = post.data
-          this.metadataList = this.post.metadataList
-        })
-        .catch(err => {
-          console.error(err)
-        })
+    async getPostById() {
+      this.post = await this.$bunblog.posts.getById(this.id)
     }
   },
   mounted() {
-    this.getPostDetail()
+    this.getPostById()
   },
   components: {
-    PostEditor
+    PostEditorVuetify
   }
 }
 </script>

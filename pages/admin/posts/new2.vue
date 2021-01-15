@@ -1,13 +1,11 @@
 <template>
-  <v-app>
-    <v-main>
-      <post-editor-vuetify></post-editor-vuetify>
-    </v-main>
-  </v-app>
+  <div class="post-new-container">
+    <post-editor></post-editor>
+  </div>
 </template>
 
 <script>
-import PostEditorVuetify from '@/components/post/PostEditorVuetify'
+import PostEditor from '@/components/post/PostEditor'
 
 export default {
   layout: 'post-editor',
@@ -18,10 +16,15 @@ export default {
   },
   data() {
     return {
+      post: {
+        title: '',
+        excerpt: '',
+        content: ''
+      }
     }
   },
   components: {
-    PostEditorVuetify
+    PostEditor
   }
 }
 </script>

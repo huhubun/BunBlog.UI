@@ -15,6 +15,10 @@
             <v-icon left>mdi-pencil-outline</v-icon>
             撰写博文
           </v-btn>
+          <v-btn lin to="/admin/posts/new2">
+            <v-icon left>mdi-pencil-outline</v-icon>
+            撰写博文 old
+          </v-btn>
           <v-dialog :value="removeItem" persistent max-width="500px">
             <v-card>
               <v-card-title class="headline"> 确认删除 </v-card-title>
@@ -34,6 +38,7 @@
       </template>
       <template v-slot:item.title="{ item }">
         <n-link :to="`/admin/posts/edit/${item.id}`">{{ item.title }}</n-link>
+        ( <n-link :to="`/admin/posts/edit2/${item.id}`">旧版编辑器</n-link> )
         <v-chip small v-if="isDraft(item)" class="ml-2"> 草稿 </v-chip>
       </template>
       <template v-slot:item.actions="{ item }">
