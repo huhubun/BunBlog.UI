@@ -214,6 +214,7 @@
 
 <script>
 import hotkeys from 'hotkeys-js'
+import Vue from 'vue'
 
 export default {
   name: 'PostEditorVuetify',
@@ -250,7 +251,6 @@ export default {
       tagListModel: [],
 
       editorPost: {},
-      originalLinkName: null,
 
       message: null,
       messageType: null,
@@ -300,59 +300,117 @@ export default {
       // 'post' = 正式发布
       postClone.type = this.saveAsDraft ? 'draft' : 'post'
 
-      postClone.category = postClone.category.linkName
-      postClone.tagList = postClone.tagList.map((item, index) => {
-        return item.linkName
-      })
+      console.log(
+        `onConfirmPublishButtonClick(): isNewPost = ${this.isNewPost}, isDraft= ${this.isDraft}, saveAsDraft = ${this.saveAsDraft}`
+      )
 
       if (this.isNewPost) {
+        let successMessage = this.saveAsDraft ? '草稿保存成功' : '博文发布成功'
+        let errorMessage = this.saveAsDraft ? '草稿保存失败' : '博文发布失败'
+
         // 新博文第一次保存，不论是发布还是草稿，都调用 posts.new()
         this.$bunblog.posts
           .new(postClone)
           .then(res => {
-            this.editorPost.id = res.id
-            this.originalLinkName = res.linkName
-            this.showSuccessMessage('博文发布成功')
-          })
-          .catch(this.catchResponseError('博文发布失败'))
-      } else {
-        // 如果当前要保存草稿，需要考虑是新建草稿还是修改草稿
-        if (this.saveAsDraft) {
-          // 先尝试修改草稿，如果 linkName 对应的草稿存在，则修改草稿
-          this.$bunblog.posts
-            .editDraft(this.originalLinkName, postClone)
-            .then(res => {
-              this.originalLinkName = this.editorPost.linkName
-              this.showSuccessMessage('草稿保存成功')
-            })
-            .catch(error => {
-              // 如果根据 linkName 修改草稿返回 404，说明该文章没有草稿，所以新建草稿
-              if (error.response.status === 404) {
-                console.log(
-                  `originalLinkName = ${this.originalLinkName} 的草稿不存在，现在开始创建草稿`
-                )
+            Vue.set(this.editorPost, 'id', res.id)
+            Vue.set(this.editorPost, 'type', res.type)
 
-                this.$bunblog.posts
-                  .new(postClone)
-                  .then(res => {
-                    this.editorPost.id = res.id
-                    this.originalLinkName = res.linkName
-                    this.showSuccessMessage('草稿保存成功')
-                  })
-                  .catch(this.catchResponseError('博文发布失败'))
-              } else {
-                this.catchResponseError('草稿保存失败')(error)
-              }
-            })
-        } else {
-          // 修改并发布博文
+            this.showSuccessMessage(successMessage)
+          })
+          .catch(this.catchResponseError(errorMessage))
+      } else {
+        // 如果当前博文是已发布状态，需要保存草稿
+        if (!this.isDraft && this.saveAsDraft) {
+          // 并且 for 字段有值，则直接更新对应草稿
+          if (this.editorPost.for) {
+            postClone.id = this.editorPost.for
+            postClone.for = this.editorPost.id
+
+            this.$bunblog.posts
+              .editDraft(this.editorPost.for, postClone)
+              .then(res => {
+                Vue.set(this.editorPost, 'type', postClone.type)
+                Vue.set(this.editorPost, 'for', postClone.for)
+                Vue.set(this.editorPost, 'id', postClone.id)
+
+                this.showSuccessMessage('草稿保存成功')
+              })
+              .catch(this.catchResponseError('草稿保存失败'))
+          } else {
+            // 如果 for 字段没值，说明博文以前没有草稿，新建草稿
+
+            // 把 for 字段设置成当前博文的 id，这样当前保存的是草稿，就能和 id 对应的正文关联上了
+            postClone.for = this.editorPost.id
+
+            this.$bunblog.posts
+              .new(postClone)
+              .then(res => {
+                console.log({
+                  this: this,
+                  res
+                })
+
+                Vue.set(this.editorPost, 'id', res.id)
+                Vue.set(this.editorPost, 'type', res.type)
+                Vue.set(this.editorPost, 'for', res.for)
+
+                this.showSuccessMessage('草稿保存成功')
+              })
+              .catch(this.catchResponseError('草稿保存失败'))
+          }
+        }
+        // 如果当前博文是已发布状态，需要发布修订
+        else if (!this.isDraft && !this.saveAsDraft) {
           this.$bunblog.posts
-            .edit(this.originalLinkName, postClone)
+            .edit(this.editorPost.id, postClone)
             .then(res => {
-              this.originalLinkName = this.editorPost.linkName
               this.showSuccessMessage('修订后的博文发布成功')
             })
             .catch(this.catchResponseError('修订版博文发布失败'))
+        }
+        // 如果当前为草稿，并继续保存为草稿
+        else if (this.isDraft && this.saveAsDraft) {
+          this.$bunblog.posts
+            .editDraft(this.editorPost.id, postClone)
+            .then(res => {
+              this.showSuccessMessage('草稿保存成功')
+            })
+            .catch(this.catchResponseError('草稿保存失败'))
+        }
+        // 如果当前为草稿，要正式发布
+        else if (this.isDraft && !this.saveAsDraft) {
+          // 并且 for 字段有值，表示之前已经发布过，则直接更新对应博文
+          if (this.editorPost.for) {
+            postClone.id = this.editorPost.for
+            postClone.for = this.editorPost.id
+
+            this.$bunblog.posts
+              .edit(this.editorPost.for, postClone)
+              .then(res => {
+                Vue.set(this.editorPost, 'type', postClone.type)
+                Vue.set(this.editorPost, 'for', postClone.for)
+                Vue.set(this.editorPost, 'id', postClone.id)
+
+                this.showSuccessMessage('修订后的博文发布成功')
+              })
+              .catch(this.catchResponseError('修订版博文发布失败'))
+          } else {
+            // 如果 for 字段没值，说明这篇博文从未发布过，因此新建博文
+
+            // 把 for 字段设置成当前草稿的 id，这样当前发布的博文，就能和 id 对应的草稿关联上了
+            postClone.for = this.editorPost.id
+
+            this.$bunblog.posts
+              .new(postClone)
+              .then(res => {
+                Vue.set(this.editorPost, 'id', res.id)
+                Vue.set(this.editorPost, 'type', res.type)
+                Vue.set(this.editorPost, 'for', res.for)
+
+                this.showSuccessMessage('博文发布成功')
+              })
+              .catch(this.catchResponseError('博文发布失败'))
+          }
         }
       }
     },
@@ -407,10 +465,13 @@ export default {
     this.getTagList()
 
     if (this.post) {
-      this.editorPost = this.post
-      this.originalLinkName = this.post.linkName
-
       console.log(this.post)
+
+      this.post.category = this.post.category.linkName
+      this.post.tagList = this.post.tagList.map((item, index) => {
+        return item.linkName
+      })
+      this.editorPost = this.post
     }
   }
 }

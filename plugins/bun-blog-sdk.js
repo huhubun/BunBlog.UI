@@ -67,12 +67,12 @@ export default ({ $axios }, inject) => {
       return await $axios.$post('/api/posts', blogPost)
     },
 
-    async edit(linkName, blogPost) {
-      await $axios.$put(`/api/posts/${linkName}`, blogPost)
+    async edit(id, blogPost) {
+      await $axios.$put(`/api/posts/${id}`, blogPost)
     },
 
-    async editDraft(linkName, blogPostDraft) {
-      await $axios.$put(`/api/posts/${linkName}/draft`, blogPostDraft)
+    async editDraft(id, blogPostDraft) {
+      await $axios.$put(`/api/posts/${id}/draft`, blogPostDraft)
     },
 
     async deleteDraft(linkName) {
