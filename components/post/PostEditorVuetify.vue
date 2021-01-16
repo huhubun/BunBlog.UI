@@ -20,6 +20,30 @@
       <v-spacer></v-spacer>
 
       <v-btn
+        v-if="!isNewPost && !isDraft && editorPost.linkName"
+        :href="`/posts/${editorPost.linkName}`"
+        target="_blank"
+        :text="!$vuetify.breakpoint.smAndDown"
+        :icon="$vuetify.breakpoint.smAndDown"
+      >
+        <v-icon :left="!$vuetify.breakpoint.smAndDown">
+          mdi-open-in-new
+        </v-icon>
+        <span v-if="!$vuetify.breakpoint.smAndDown">查看已发布</span>
+      </v-btn>
+
+      <v-btn
+        @click="onPostConfigButtonClick"
+        :text="!$vuetify.breakpoint.smAndDown"
+        :icon="$vuetify.breakpoint.smAndDown"
+      >
+        <v-icon :left="!$vuetify.breakpoint.smAndDown">
+          mdi-cog-outline
+        </v-icon>
+        <span v-if="!$vuetify.breakpoint.smAndDown">博文设置</span>
+      </v-btn>
+
+      <v-btn
         @click="onSaveDraftButtonClick"
         :text="!$vuetify.breakpoint.smAndDown"
         :icon="$vuetify.breakpoint.smAndDown"
@@ -170,7 +194,7 @@
                 rows="5"
                 label="摘要"
                 prepend-inner-icon="mdi-text-short"
-                hint="SEO 提示：摘要长度建议不要超过 75 个汉字，它被作为文章的 description 被搜索引擎抓取，过长的内容会在搜索时显示为省略号。"
+                hint="SEO 提示：摘要长度建议不要超过 75 个汉字，将作为文章的 description 被搜索引擎抓取，过长的内容会在搜索时显示为省略号。"
                 persistent-hint
               ></v-textarea>
             </v-list-item-content>
@@ -179,7 +203,13 @@
           <v-list-item>
             <v-list-item-content>
               <v-btn block @click="onConfirmPublishButtonClick" class="primary">
-                确认发布
+                {{
+                  saveAsDraft
+                    ? '存为草稿'
+                    : isNewPost
+                    ? '确认发布'
+                    : '确认发布修订版'
+                }}
               </v-btn>
             </v-list-item-content>
           </v-list-item>
@@ -288,6 +318,7 @@ export default {
     },
     onConfirmPublishButtonClick() {
       if (!this.$refs.form.validate()) {
+        this.openDrawer()
         return
       }
 
@@ -434,13 +465,27 @@ export default {
         console.log(errorMessage)
       }
     },
+    onPostConfigButtonClick() {
+      this.saveAsDraft = false
+      this.openDrawer()
+    },
     onSaveDraftButtonClick() {
       this.saveAsDraft = true
-      this.openDrawer()
+
+      if (this.isNewPost) {
+        this.openDrawer()
+      } else {
+        this.onConfirmPublishButtonClick()
+      }
     },
     onPublishButtonClick() {
       this.saveAsDraft = false
-      this.openDrawer()
+
+      if (this.isNewPost) {
+        this.openDrawer()
+      } else {
+        this.onConfirmPublishButtonClick()
+      }
     },
     openDrawer() {
       this.drawer = true
@@ -458,21 +503,40 @@ export default {
     },
     clearMessage() {
       this.message = null
+    },
+    initHotkey() {
+      hotkeys('ctrl+s', 'post-editor', () => {
+        this.onSaveDraftButtonClick()
+        return false
+      })
+
+      hotkeys.setScope('post-editor')
     }
   },
   mounted() {
     this.getCategoryList()
     this.getTagList()
+    this.initHotkey()
 
     if (this.post) {
       console.log(this.post)
 
-      this.post.category = this.post.category.linkName
-      this.post.tagList = this.post.tagList.map((item, index) => {
-        return item.linkName
-      })
+      // 早期版本没限制 category 和 tag 必选，这里做一些兼容处理
+      if (this.post.category) {
+        this.post.category = this.post.category.linkName
+      }
+
+      if (this.post.tagList) {
+        this.post.tagList = this.post.tagList.map((item, index) => {
+          return item.linkName
+        })
+      }
+
       this.editorPost = this.post
     }
+  },
+  destroyed() {
+    hotkeys.deleteScope('post-editor')
   }
 }
 </script>
