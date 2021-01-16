@@ -23,6 +23,10 @@
             <v-card>
               <v-card-title class="headline"> 确认删除 </v-card-title>
               <v-card-text v-if="removeItem">
+                <v-chip v-if="removeItem.type === 'draft'" label small>
+                  草稿
+                </v-chip>
+
                 {{ removeItem.title }}
               </v-card-text>
               <v-card-actions>
@@ -39,7 +43,7 @@
       <template v-slot:item.title="{ item }">
         <n-link :to="`/admin/posts/edit/${item.id}`">{{ item.title }}</n-link>
         ( <n-link :to="`/admin/posts/edit2/${item.id}`">旧版编辑器</n-link> )
-        <v-chip small v-if="isDraft(item)" class="ml-2"> 草稿 </v-chip>
+        <v-chip small label v-if="isDraft(item)" class="ml-2"> 草稿 </v-chip>
       </template>
       <template v-slot:item.actions="{ item }">
         <v-icon small v-if="isDraft(item)" @click="remove(item)">
@@ -98,6 +102,11 @@ export default {
           sortable: false
         },
         {
+          text: '链接名称',
+          value: 'linkName',
+          sortable: false
+        },
+        {
           text: '发表时间',
           value: 'publishedOn',
           sortable: false
@@ -141,8 +150,8 @@ export default {
       await this.fillTable()
     },
     confirmRemove() {
-      this.$bunblog.tag
-        .remove(this.removeItem.linkName)
+      this.$bunblog.posts
+        .deleteDraft(this.removeItem.linkName)
         .then(() => {
           this.showSuccessMessage(
             `已删除博文 《${this.removeItem.title}》 的草稿`

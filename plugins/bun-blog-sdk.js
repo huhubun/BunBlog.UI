@@ -63,9 +63,20 @@ export default ({ $axios }, inject) => {
       return post
     },
 
+    async new(blogPost) {
+      return await $axios.$post('/api/posts', blogPost)
+    },
+
+    async edit(linkName, blogPost) {
+      await $axios.$put(`/api/posts/${linkName}`, blogPost)
+    },
+
+    async editDraft(linkName, blogPostDraft) {
+      await $axios.$put(`/api/posts/${linkName}/draft`, blogPostDraft)
+    },
+
     async deleteDraft(linkName) {
-      await this.$axios
-        .$delete(`/api/posts/${linkName}/draft`)
+      await $axios.$delete(`/api/posts/${linkName}/draft`)
     }
   }
 
@@ -106,7 +117,6 @@ export default ({ $axios }, inject) => {
       return await $axios.$delete(`/api/tags/${linkName}`)
     }
   }
-
 
   const sdk = {
     authentication,
