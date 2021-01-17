@@ -1,13 +1,13 @@
 <template>
   <v-app>
     <v-main>
-      <post-editor-vuetify v-bind:post="post" v-if="post"></post-editor-vuetify>
+      <post-editor v-bind:post="post" v-if="post"></post-editor>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import PostEditorVuetify from '@/components/post/PostEditorVuetify'
+import PostEditor from '@/components/post/PostEditor'
 
 export default {
   layout: 'post-editor',
@@ -31,7 +31,7 @@ export default {
     this.getPostById()
   },
   components: {
-    PostEditorVuetify
+    PostEditor
   }
 }
 </script>

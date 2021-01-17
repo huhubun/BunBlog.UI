@@ -1,13 +1,13 @@
 <template>
   <v-app>
     <v-main>
-      <post-editor-vuetify></post-editor-vuetify>
+      <post-editor></post-editor>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import PostEditorVuetify from '@/components/post/PostEditorVuetify'
+import PostEditor from '@/components/post/PostEditor'
 
 export default {
   layout: 'post-editor',
@@ -21,7 +21,7 @@ export default {
     }
   },
   components: {
-    PostEditorVuetify
+    PostEditor
   }
 }
 </script>

@@ -98,7 +98,7 @@
 import Vue from 'vue'
 
 export default {
-  layout: 'vuetify-admin',
+  layout: 'admin',
   head() {
     return {
       title: this.title

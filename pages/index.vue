@@ -61,7 +61,6 @@
 import dayjs from 'dayjs'
 
 export default {
-  layout: 'vuetify-default',
   async asyncData({ $bunblog }) {
     const posts = await $bunblog.posts.getList({
       type: 'post',

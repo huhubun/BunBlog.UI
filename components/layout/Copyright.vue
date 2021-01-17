@@ -4,7 +4,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-chip
           label
-          href="https://huhubun.com/"
+          href="https://cdn.bun.plus/blog/wechat_qr.png"
           v-bind="attrs"
           v-on="on"
           color="transparent"
