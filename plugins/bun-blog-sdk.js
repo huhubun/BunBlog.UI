@@ -90,6 +90,10 @@ export default ({ $axios }, inject) => {
 
     async deleteDraft(id) {
       await $axios.$delete(`/api/posts/${id}/draft`)
+    },
+
+    async visits(id) {
+      await $axios.$post(`/api/posts/${id}/visits`)
     }
   }
 

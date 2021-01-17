@@ -120,7 +120,6 @@ module.exports = {
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
     // 关闭默认字体，因为默认字体总是从 Google 获取字体，国内访问很慢，改为在 `head` 里引入国内源的 Roboto 字体
     // https://github.com/nuxt-community/vuetify-module#defaultassets
     defaultAssets: false,

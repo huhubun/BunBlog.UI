@@ -19,7 +19,9 @@
             </v-chip>
           </v-card-subtitle>
 
-          <v-card-title class="justify-center text-h5 text-sm-h4 text-md-h3 text-lg-h2">
+          <v-card-title
+            class="justify-center text-h5 text-sm-h4 text-md-h3 text-lg-h2"
+          >
             {{ post.title }}
           </v-card-title>
 
@@ -160,6 +162,8 @@ export default {
 
     const converter = new showdown.Converter({ extensions: ['vue-img-lazy'] })
     const postContent = converter.makeHtml(post.content)
+
+    $bunblog.posts.visits(post.id)
 
     return { post, postContent }
   },
