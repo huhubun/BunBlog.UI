@@ -151,7 +151,7 @@ export default {
     },
     confirmRemove() {
       this.$bunblog.posts
-        .deleteDraft(this.removeItem.linkName)
+        .deleteDraft(this.removeItem.id)
         .then(() => {
           this.showSuccessMessage(
             `已删除博文 《${this.removeItem.title}》 的草稿`

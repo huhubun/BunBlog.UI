@@ -75,8 +75,8 @@ export default ({ $axios }, inject) => {
       await $axios.$put(`/api/posts/${id}/draft`, blogPostDraft)
     },
 
-    async deleteDraft(linkName) {
-      await $axios.$delete(`/api/posts/${linkName}/draft`)
+    async deleteDraft(id) {
+      await $axios.$delete(`/api/posts/${id}/draft`)
     }
   }
 

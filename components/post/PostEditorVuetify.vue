@@ -129,7 +129,15 @@
                 label="链接名称"
                 prepend-inner-icon="mdi-link-variant"
                 :rules="[formRules.required('链接名称')]"
-              ></v-text-field>
+              >
+                <template v-slot:append-outer>
+                  <div class="bun-textbox-append-outer">
+                    <v-btn icon large @click="formatLinkName">
+                      <v-icon>mdi-auto-fix</v-icon>
+                    </v-btn>
+                  </div>
+                </template>
+              </v-text-field>
             </v-list-item-content>
           </v-list-item>
 
@@ -213,6 +221,16 @@
               </v-btn>
             </v-list-item-content>
           </v-list-item>
+
+          <v-list-item>
+            <v-list-item-content class="pl-3">
+              <v-switch
+                v-model="deleteDraftAfterPublished"
+                inset
+                label="发布后同时删除草稿（如果草稿存在）"
+              ></v-switch>
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-form>
     </v-navigation-drawer>
@@ -270,6 +288,7 @@ export default {
   data() {
     return {
       drawer: false,
+      deleteDraftAfterPublished: false,
 
       saveAsDraft: false,
 
@@ -422,7 +441,26 @@ export default {
                 Vue.set(this.editorPost, 'for', postClone.for)
                 Vue.set(this.editorPost, 'id', postClone.id)
 
-                this.showSuccessMessage('修订后的博文发布成功')
+                if (this.deleteDraftAfterPublished) {
+                  console.log('根据配置，需要删除草稿')
+                  this.$bunblog.posts
+                    .deleteDraft(postClone.for)
+                    .then(res => {
+                      Vue.set(this.editorPost, 'for', null)
+                      this.showSuccessMessage(
+                        '修订后的博文发布成功，草稿已删除'
+                      )
+                    })
+                    .catch(error => {
+                      console.log(error)
+
+                      this.showErrorMessage(
+                        '修订后的博文发布成功，但草稿删除失败'
+                      )
+                    })
+                } else {
+                  this.showSuccessMessage('修订后的博文发布成功')
+                }
               })
               .catch(this.catchResponseError('修订版博文发布失败'))
           } else {
@@ -504,6 +542,15 @@ export default {
     clearMessage() {
       this.message = null
     },
+    formatLinkName() {
+      if (this.editorPost.linkName) {
+        Vue.set(
+          this.editorPost,
+          'linkName',
+          this.editorPost.linkName.toLowerCase().replace(/ /g, '-')
+        )
+      }
+    },
     initHotkey() {
       hotkeys('ctrl+s', 'post-editor', () => {
         this.onSaveDraftButtonClick()
@@ -543,6 +590,7 @@ export default {
 
 <style scoped>
 /* 受到 .v-input__icon .v-input__icon--append-outer 的启发 */
+.bun-textbox-append-outer,
 .bun-selecter-append-outer {
   width: 44px;
   /* 不要修改 height，否则会错位 */
