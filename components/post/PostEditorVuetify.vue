@@ -13,9 +13,83 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn text class="hidden-xs-only">
-        <v-icon>mdi-image-outline</v-icon>
-      </v-btn>
+      <v-dialog v-model="isUploadImageWindowDisplay" persistent width="500">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn text v-bind="attrs" v-on="on" class="hidden-xs-only">
+            <v-icon>mdi-image-outline</v-icon>
+          </v-btn>
+        </template>
+
+        <v-card>
+          <v-card-title class=" "> 插入图片</v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-text>
+            <v-text-field
+              v-model="uploadImageUrl"
+              single-line
+              autofocus
+              prepend-icon="mdi-link-variant"
+              label="输入 URL"
+              :error="!!uploadImageUrlErrorMessage"
+              :error-messages="uploadImageUrlErrorMessage"
+            >
+            </v-text-field>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-text>
+            <v-file-input
+              v-model="uploadImageInput"
+              show-size
+              accept="image/png, image/jpeg, image/gif"
+              label="上传图片"
+              :loading="waitForUploadImage"
+              :error="!!uploadImageInputErrorMessage"
+              :error-messages="uploadImageInputErrorMessage"
+              @change="onUploadImageInputChange"
+            ></v-file-input>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-text>
+            <v-text-field
+              v-model="uploadImageDescription"
+              single-line
+              clearable
+              prepend-icon="mdi-text-short"
+              label="描述"
+            >
+            </v-text-field>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn
+              color="info"
+              text
+              :disabled="waitForUploadImage"
+              @click="onUploadImageCancelButtonClick"
+            >
+              取消
+            </v-btn>
+            <v-btn
+              color="primary"
+              text
+              :disabled="waitForUploadImage"
+              @click="onUploadImageOkButtonClick"
+            >
+              确定
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
       <v-spacer></v-spacer>
 
@@ -301,6 +375,14 @@ export default {
 
       editorPost: {},
 
+      isUploadImageWindowDisplay: false,
+      waitForUploadImage: false,
+      uploadImageUrl: null,
+      uploadImageUrlErrorMessage: null,
+      uploadImageInput: null,
+      uploadImageInputErrorMessage: null,
+      uploadImageDescription: null,
+
       message: null,
       messageType: null,
 
@@ -530,6 +612,98 @@ export default {
     },
     closeDrawer() {
       this.drawer = false
+    },
+    openUploadImageWindow() {
+      this.isUploadImageWindowDisplay = true
+    },
+    closeUploadImageWindow() {
+      this.isUploadImageWindowDisplay = false
+    },
+    onUploadImageOkButtonClick() {
+      if (!this.uploadImageUrl && !this.uploadImageInput) {
+        this.uploadImageUrlErrorMessage =
+          '至少从输入 URL 和上传图片中选择一种方式插入图片'
+
+        return
+      } else if (this.uploadImageUrl && this.uploadImageInput) {
+        this.uploadImageUrlErrorMessage =
+          '只能从输入 URL 和上传图片中选择一种方式插入图片'
+
+        return
+      }
+
+      this.uploadImageUrlErrorMessage = null
+      this.uploadImageInputErrorMessage = null
+
+      let content = this.editorPost.content
+      content =
+        content === undefined || content === null || content === ''
+          ? ''
+          : content + '\n'
+
+      if (this.uploadImageUrl) {
+        if (!/^http[s]?:\/\//.test(this.uploadImageUrl)) {
+          this.uploadImageUrlErrorMessage = '输入的 URL 格式不正确'
+
+          return
+        }
+
+        Vue.set(
+          this.editorPost,
+          'content',
+          `${content}![${this.uploadImageDescription || '图片描述'}](${
+            this.uploadImageUrl
+          })`
+        )
+
+        this.onUploadImageCancelButtonClick()
+      }
+
+      if (this.uploadImageInput) {
+        this.waitForUploadImage = true
+
+        this.$bunblog.image
+          .upload(this.uploadImageInput)
+          .then(res => {
+            Vue.set(
+              this.editorPost,
+              'content',
+              `${content}![${this.uploadImageDescription || '图片描述'}](${
+                res.url
+              })`
+            )
+
+            this.closeUploadImageWindow()
+          })
+          .catch(error => {
+            console.log(error)
+
+            this.uploadImageInputErrorMessage = '上传失败'
+          })
+          .finally(() => {
+            this.waitForUploadImage = false
+          })
+      }
+    },
+    onUploadImageCancelButtonClick() {
+      this.closeUploadImageWindow()
+
+      this.uploadImageUrl = null
+      this.uploadImageUrlErrorMessage = null
+      this.uploadImageInput = null
+      this.uploadImageInputErrorMessage = null
+      this.uploadImageDescription = null
+    },
+    onUploadImageInputChange(file) {
+      if (!file) {
+        return
+      }
+
+      let fileNameRegex = /(?<filename>.*)\..*/.exec(file.name)
+
+      if (!this.uploadImageDescription && fileNameRegex) {
+        this.uploadImageDescription = fileNameRegex.groups.filename
+      }
     },
     showSuccessMessage(message) {
       this.message = message

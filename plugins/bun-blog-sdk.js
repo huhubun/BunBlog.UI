@@ -24,6 +24,19 @@ export default ({ $axios }, inject) => {
     }
   }
 
+  const image = {
+    async upload(image) {
+      let formData = new FormData();
+      formData.append('image', image);
+
+      return await $axios.$post('/api/images', formData, {
+        headers: {
+          'Content-Type': 'multipart/form'
+        }
+      })
+    }
+  }
+
   const informations = {
     async get() {
       return await $axios.$get(`/api/information`)
@@ -121,6 +134,7 @@ export default ({ $axios }, inject) => {
   const sdk = {
     authentication,
     category,
+    image,
     informations,
     posts,
     setting,
