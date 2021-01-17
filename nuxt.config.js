@@ -1,10 +1,7 @@
 var webpack = require('webpack');
-var path = require('path');
-var AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
 
 module.exports = {
   telemetry: false,
-  mode: 'universal',
 
   // Disable the progress bar
   loading: false,
@@ -28,7 +25,6 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'apple-touch-icon', href: 'https://cdn.bun.plus/blog/icon-512x512.png' },
-      { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/ant-design-vue@1.6.4/dist/antd.css' },
       // 解决 Google 字体国内访问慢的问题
       { rel: 'stylesheet', href: 'https://fonts.loli.net/css?family=Roboto|Roboto+Mono&display=swap' },
       // 因为 defaultAssets 设为了 false，这里需要手动引入 Material Design Icons
@@ -54,7 +50,6 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/antd-ui',
     '@/plugins/axios',
     '@/plugins/bun-blog-sdk',
     '@/plugins/bun-helper',
@@ -117,13 +112,8 @@ module.exports = {
       new webpack.DefinePlugin({
         'process.env.BUN_BLOG_UI_VERSION': JSON.stringify(require('./package.json').version),
         'process.env.BUN_BLOG_API_BASE_URL': JSON.stringify(process.env.NODE_ENV === 'development' ? 'http://localhost:52000' : 'https://api.bun.plus')
-      }),
-      new AntdDayjsWebpackPlugin()
-    ],
-    extend(config, ctx) {
-      // antd icons 按需加载，能大幅降低 antd icons 占用的空间，提高加载速度
-      config.resolve.alias['@ant-design/icons/lib/dist$'] = path.resolve(__dirname, './assets/antd-icons.js')
-    }
+      })
+    ]
   },
 
   components: true,

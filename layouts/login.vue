@@ -34,16 +34,4 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.ant-layout
-  min-height: 100vh
-
-.login-operation
-  text-align: center
-
-.ant-layout-footer
-  text-align: center
-
-.ant-layout-content
-  background-color: #f0f2f5
-</style>
+<style lang="stylus" scoped></style>

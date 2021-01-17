@@ -125,16 +125,6 @@ blockquote p:last-child {
   max-width: 100%;
 }
 
-/* 临时公告：切换域名提示 */
-
-#domain-migration-notification .ant-alert-description {
-  text-align: center;
-}
-
-#domain-migration-notification .ant-alert-icon {
-  line-height: 24px;
-}
-
 /* 
 highlight.js solarized-light style
 由于 vuetify 为 <code> 添加了样式，而且 cdn link 引入 hightlight 的样式排在 vuetify 的前面
