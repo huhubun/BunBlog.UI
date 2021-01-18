@@ -22,7 +22,7 @@ export default {
   name: 'PoweredBy',
   data() {
     return {
-      uiVersion: process.env.BUN_BLOG_UI_VERSION
+      uiVersion: this.$config.uiVersion
     }
   },
   computed: {

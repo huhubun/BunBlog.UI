@@ -1,4 +1,4 @@
-var webpack = require('webpack');
+require('dotenv').config();
 
 module.exports = {
   telemetry: false,
@@ -66,11 +66,13 @@ module.exports = {
   */
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify',
-    // https://github.com/nuxt-community/dotenv-module
-    // https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-env
-    '@nuxtjs/dotenv'
+    '@nuxtjs/vuetify'
   ],
+
+  // https://nuxtjs.org/blog/moving-from-nuxtjs-dotenv-to-runtime-config
+  publicRuntimeConfig: {
+    uiVersion: require('./package.json').version
+  },
 
   /*
   ** Nuxt.js modules
@@ -86,7 +88,7 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:52000' : 'https://api.bun.plus'
+    baseURL: process.env.BASE_URL || 'http://localhost:22070'
   },
 
   /*
@@ -106,14 +108,7 @@ module.exports = {
 
     // 正式发布时需要将 client 的内容上传到 CDN 以提高访问速度
     // https://zh.nuxtjs.org/api/configuration-build/#publicpath
-    publicPath: process.env.NODE_ENV === 'development' ? '/_nuxt/' : 'https://cdn.bun.plus/blog/client/',
-
-    plugins: [
-      new webpack.DefinePlugin({
-        'process.env.BUN_BLOG_UI_VERSION': JSON.stringify(require('./package.json').version),
-        'process.env.BUN_BLOG_API_BASE_URL': JSON.stringify(process.env.NODE_ENV === 'development' ? 'http://localhost:52000' : 'https://api.bun.plus')
-      })
-    ]
+    publicPath: process.env.CLIENT_JS_PATH || '/_nuxt/'
   },
 
   components: true,
