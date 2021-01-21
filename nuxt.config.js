@@ -71,7 +71,21 @@ module.exports = {
 
   // https://nuxtjs.org/blog/moving-from-nuxtjs-dotenv-to-runtime-config
   publicRuntimeConfig: {
-    uiVersion: require('./package.json').version
+    uiVersion: require('./package.json').version,
+    // https://axios.nuxtjs.org/options#runtime-config
+    axios: {
+      browserBaseURL: process.env.BROWSER_BASE_URL
+    }
+  },
+  privateRuntimeConfig: {
+    axios: {
+      baseURL: process.env.BASE_URL
+    }
+  },
+
+  // 如果未配置 runtime config，则使用这里硬编码的地址
+  axios: {
+    baseURL: 'http://localhost:22070'
   },
 
   /*
@@ -82,14 +96,6 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/style-resources'
   ],
-
-  /*
-  ** Axios module configuration
-  ** See https://axios.nuxtjs.org/options
-  */
-  axios: {
-    baseURL: process.env.BASE_URL || 'http://localhost:22070'
-  },
 
   /*
   ** Build configuration
