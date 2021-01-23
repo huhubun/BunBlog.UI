@@ -78,7 +78,7 @@ export default {
     }
   },
   methods: {
-    submit() {
+    async submit() {
       if (!this.$refs.form.validate()) {
         return
       }
@@ -86,27 +86,27 @@ export default {
       this.waitForSignIn = true
       this.message = null
 
-      this.$bunblog.authentication
-        .getToken({
-          username: this.username,
-          password: this.password
+      try {
+        let response = await this.$auth.loginWith('local', {
+          data: {
+            username: this.username,
+            password: this.password
+          }
         })
-        .then(token => {
-          this.$store.commit('currentUser/login', {
-            accessToken: token.access_token,
-            refreshToken: token.refresh_token,
-            username: this.username
-          })
 
-          this.$router.push('/admin')
-        })
-        .catch(e => {
-          this.message = `登陆失败 ${e.message}`
-          this.messageType = 'error'
-        })
-        .finally(() => {
-          this.waitForSignIn = false
-        })
+        this.$auth.refreshTokens()
+
+        console.log(this.$auth.loggedIn)
+        console.log(this.$auth.token)
+        console.log(this.$auth.refreshToken)
+      } catch (err) {
+        console.log(err)
+
+        this.message = `登陆失败 ${err.message}`
+        this.messageType = 'error'
+      } finally {
+        this.waitForSignIn = false
+      }
     }
   }
 }

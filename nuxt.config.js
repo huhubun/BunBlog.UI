@@ -50,7 +50,6 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/axios',
     '@/plugins/bun-blog-sdk',
     '@/plugins/bun-helper',
     '@/plugins/dayjs',
@@ -58,6 +57,7 @@ module.exports = {
     '@/plugins/hotkeys',
     '@/plugins/lazyload',
     '@/plugins/showdown',
+    '@/plugins/auth',
     { src: '@/plugins/cnzz', ssr: false }
   ],
 
@@ -92,10 +92,47 @@ module.exports = {
   ** Nuxt.js modules
   */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
+    // https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/style-resources'
+    '@nuxtjs/style-resources',
+    // https://auth.nuxtjs.org/
+    '@nuxtjs/auth-next'
   ],
+
+  auth: {
+    strategies: {
+      local: {
+        scheme: 'refresh',
+        token: {
+          property: 'access_token',
+          type: 'Bearer',
+          maxAge: 1800
+        },
+        refreshToken: {
+          property: 'refresh_token',
+          data: 'refresh_token',
+          maxAge: 60 * 60 * 24 * 30,
+          tokenRequired: true
+        },
+        grantType: 'password',
+        user: {
+          property: false,
+          autoFetch: true
+        },
+        endpoints: {
+          login: { url: '/api/authentication/token', method: 'post' },
+          refresh: { url: '/api/authentication/token', method: 'post' },
+          logout: { url: '/api/authentication/endsession', method: 'get' },
+          user: { url: '/api/authentication/user', method: 'get' }
+        }
+      }
+    },
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      home: '/admin'
+    }
+  },
 
   /*
   ** Build configuration

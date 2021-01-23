@@ -35,6 +35,19 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
+
+        <template v-slot:append>
+          <v-list>
+            <v-list-item to="/logout">
+              <v-list-item-action>
+                <v-icon>mdi-logout-variant</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title> 登出 </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </template>
       </v-navigation-drawer>
 
       <v-app-bar app dense flat>
@@ -132,19 +145,19 @@ export default {
     }
   },
   methods: {
-    selectedMenuKeys() {
-      const routes = this.$route.matched.concat()
-      this.selectedKeys = [routes.pop().path]
-    },
-    logout() {
-      this.$store.commit('currentUser/logout')
-      this.$router.push('/login')
-    }
+    // selectedMenuKeys() {
+    //   const routes = this.$route.matched.concat()
+    //   this.selectedKeys = [routes.pop().path]
+    // },
+    // logout() {
+    //   this.$store.commit('currentUser/logout')
+    //   this.$router.push('/login')
+    // }
   },
   computed: {
-    username() {
-      return this.$store.state.currentUser.username
-    }
+    // username() {
+    //   return this.$store.state.currentUser.username
+    // }
   },
   middleware: 'auth',
   components: {
@@ -152,13 +165,13 @@ export default {
     Copyright
   },
   watch: {
-    $route(val) {
-      this.selectedMenuKeys()
-    }
-  },
-  created() {
-    this.selectedMenuKeys()
+    // $route(val) {
+    //   this.selectedMenuKeys()
+    // }
   }
+  // created() {
+  //   this.selectedMenuKeys()
+  // }
 }
 </script>
 
