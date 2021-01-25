@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <v-alert text type="warning">
-          This page is under development and will be available later {{ this.$auth.user }}
+          This page is under development and will be available later
         </v-alert>
       </v-col>
     </v-row>
@@ -12,12 +12,7 @@
 
 <script>
 export default {
-  layout: 'admin',
-  head() {
-    return {
-      title: 'Dashboard'
-    }
-  }
+  layout: 'admin'
 }
 </script>
 

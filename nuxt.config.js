@@ -57,7 +57,6 @@ module.exports = {
     '@/plugins/hotkeys',
     '@/plugins/lazyload',
     '@/plugins/showdown',
-    '@/plugins/auth',
     { src: '@/plugins/cnzz', ssr: false }
   ],
 

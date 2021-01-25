@@ -1,8 +1,7 @@
 <template>
-  <div class="ma-3">
-    <h2 class="display-1">{{ title }}</h2>
+  <div class="mx-2">
     <v-row>
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="6" class="pt-0">
         <v-form
           ref="form"
           v-model="valid"
@@ -35,7 +34,7 @@
         </v-form>
       </v-col>
 
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="6" class="pt-0">
         <v-data-table
           :headers="headers"
           :items="linksList"
@@ -101,15 +100,8 @@
 <script>
 export default {
   layout: 'admin',
-  head() {
-    return {
-      title: this.title
-    }
-  },
   data() {
     return {
-      title: '友情链接管理',
-
       valid: true,
 
       name: null,

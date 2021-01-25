@@ -1,10 +1,7 @@
 <template>
-  <div class="ma-3">
-    <h2 class="display-1">
-      {{ title }}
-    </h2>
+  <div class="mx-2">
     <v-row>
-      <v-col>
+      <v-col class="pt-0">
         <v-card flat>
           <v-tabs v-model="selectedCategoryIndex">
             <v-tab v-for="category in settingCategories" :key="category">
@@ -99,14 +96,8 @@ import Vue from 'vue'
 
 export default {
   layout: 'admin',
-  head() {
-    return {
-      title: this.title
-    }
-  },
   data() {
     return {
-      title: '设置',
       tab: null,
 
       settings: [],

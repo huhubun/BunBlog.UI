@@ -6,13 +6,16 @@
         app
         :expand-on-hover="!$vuetify.breakpoint.smAndDown"
       >
-        <v-list>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                Bun Blog Admin
-              </v-list-item-title>
-            </v-list-item-content>
+        <v-list class="py-0">
+          <v-list-item class="px-2">
+            <v-list-item-avatar color="grey darken-1" rounded="lg">
+              <v-avatar>
+                <span class="white--text headline">B</span>
+              </v-avatar>
+            </v-list-item-avatar>
+            <v-list-item-title class="title">
+              Bun Blog Admin
+            </v-list-item-title>
           </v-list-item>
         </v-list>
 
@@ -20,7 +23,7 @@
 
         <v-list nav dense>
           <v-list-item
-            v-for="item in items"
+            v-for="item in $store.state.adminRoute.routes"
             :key="item.to"
             :to="item.to"
             :href="item.href"
@@ -43,7 +46,9 @@
                 <v-icon>mdi-logout-variant</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title> 登出 </v-list-item-title>
+                <v-list-item-title>
+                  登出 {{ $auth.user.username }}
+                </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -84,12 +89,11 @@
           <span>撰写博文</span>
         </v-tooltip>
 
-        <!--
-  TODO 
         <v-divider class="ml-2 mr-4" vertical></v-divider>
 
-        <v-toolbar-title>Application</v-toolbar-title>
-        -->
+        <v-toolbar-title>
+          {{ $store.state.adminRoute.current.title }}
+        </v-toolbar-title>
       </v-app-bar>
 
       <v-main>
@@ -104,74 +108,25 @@ import PoweredBy from '~/components/layout/PoweredBy.vue'
 import Copyright from '~/components/layout/Copyright.vue'
 
 export default {
+  head() {
+    return {
+      title: this.$store.state.adminRoute.current.title
+    }
+  },
   data() {
     return {
       collapsed: false,
       selectedKeys: [],
 
-      drawer: true,
-      items: [
-        {
-          icon: 'mdi-gauge',
-          title: '仪表盘',
-          to: '/admin'
-        },
-        {
-          icon: 'mdi-note-multiple',
-          title: '博文',
-          to: '/admin/posts'
-        },
-        {
-          icon: 'mdi-inbox-multiple',
-          title: '分类',
-          to: '/admin/categories'
-        },
-        {
-          icon: 'mdi-tag',
-          title: '标签',
-          to: '/admin/tags'
-        },
-        {
-          icon: 'mdi-link',
-          title: '友情链接',
-          to: '/admin/siteLinks'
-        },
-        {
-          icon: 'mdi-cog',
-          title: '设置',
-          to: '/admin/settings'
-        }
-      ]
+      drawer: true
     }
   },
-  methods: {
-    // selectedMenuKeys() {
-    //   const routes = this.$route.matched.concat()
-    //   this.selectedKeys = [routes.pop().path]
-    // },
-    // logout() {
-    //   this.$store.commit('currentUser/logout')
-    //   this.$router.push('/login')
-    // }
-  },
-  computed: {
-    // username() {
-    //   return this.$store.state.currentUser.username
-    // }
-  },
-  middleware: 'auth',
+  methods: {},
+  middleware: ['auth', 'adminRoute'],
   components: {
     PoweredBy,
     Copyright
-  },
-  watch: {
-    // $route(val) {
-    //   this.selectedMenuKeys()
-    // }
   }
-  // created() {
-  //   this.selectedMenuKeys()
-  // }
 }
 </script>
 

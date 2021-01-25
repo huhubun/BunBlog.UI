@@ -1,7 +1,5 @@
 <template>
-  <div class="ma-3">
-    <h2 class="display-1">{{ title }}</h2>
-
+  <div class="mx-2">
     <v-data-table
       :headers="headers"
       :items="postList"
@@ -75,15 +73,8 @@
 <script>
 export default {
   layout: 'admin',
-  head() {
-    return {
-      title: this.title
-    }
-  },
   data() {
     return {
-      title: '博文管理',
-
       postList: [],
       size: 10,
       page: 1,
