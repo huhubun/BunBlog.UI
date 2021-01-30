@@ -1,60 +1,75 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col
-        v-for="post in posts.items"
-        :key="post.linkName"
-        cols="12"
-        xl="3"
-        lg="4"
-        md="6"
-        sm="6"
-      >
-        <v-card
-          :to="'/posts/' + post.linkName"
-          hover
-          class="d-flex flex-column"
-          height="100%"
+  <div class="blue-grey lighten-5" style="height: 100%">
+    <v-container>
+      <v-row>
+        <v-col
+          v-for="post in posts.items"
+          :key="post.linkName"
+          cols="12"
+          xl="3"
+          lg="4"
+          md="6"
+          sm="6"
         >
-          <v-card-title>{{ post.title }}</v-card-title>
+          <v-hover>
+            <template v-slot:default="{ hover }">
+              <v-card
+                :to="'/posts/' + post.linkName"
+                class="d-flex flex-column"
+                :class="`elevation-${hover ? 12 : 0} transition-swing`"
+                height="100%"
+                rounded="lg"
+              >
+                <post-list-title-bg :styling="post.styling"></post-list-title-bg>
 
-          <v-card-text>{{ post.excerpt }}</v-card-text>
+                <v-card-title>{{ post.title }}</v-card-title>
 
-          <v-spacer></v-spacer>
+                <v-card-text>{{ post.excerpt }}</v-card-text>
 
-          <v-card-text class="align-end pt-0">
-            <v-row>
-              <v-col cols="6" class="py-0">
-                <span v-if="post.category">
-                  {{ post.category.displayName }}
-                </span>
-              </v-col>
-              <v-col cols="6" class="text-right py-0">
-                <span v-if="post.metadataList">
-                  <v-icon small class="mr-1">mdi-eye-outline</v-icon>
-                  <span
-                    v-for="metadata in post.metadataList"
-                    :key="metadata.key"
-                  >
-                    {{ metadata.value }}
-                  </span>
+                <v-spacer></v-spacer>
 
-                  <span class="ma-1">|</span>
-                </span>
+                <v-card-text class="align-end pt-0">
+                  <v-row>
+                    <v-col cols="6" class="py-0">
+                      <span v-if="post.category">
+                        {{ post.category.displayName }}
+                      </span>
+                    </v-col>
+                    <v-col cols="6" class="text-right py-0">
+                      <span v-if="post.metadataList">
+                        <v-icon small class="mr-1">mdi-eye-outline</v-icon>
+                        <span
+                          v-for="metadata in post.metadataList"
+                          :key="metadata.key"
+                        >
+                          {{ metadata.value }}
+                        </span>
 
-                <span>
-                  {{ convertDatetimeToFromNowStrOrDate(post.publishedOn) }}
-                </span>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-    <div v-if="posts" class="text-right">
-      <v-pagination v-model="posts.page" :length="posts.totalPage" @input="onPageChange" />
-    </div>
-  </v-container>
+                        <span class="ma-1">|</span>
+                      </span>
+
+                      <span>
+                        {{
+                          convertDatetimeToFromNowStrOrDate(post.publishedOn)
+                        }}
+                      </span>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-hover>
+        </v-col>
+      </v-row>
+      <div v-if="posts" class="text-right">
+        <v-pagination
+          v-model="posts.page"
+          :length="posts.totalPage"
+          @input="onPageChange"
+        />
+      </div>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -119,7 +134,7 @@ export default {
 
       return datetimeDayjsObj.format('YYYY-MM-DD')
     },
-    async onPageChange(p){
+    async onPageChange(p) {
       this.posts = await this.$bunblog.posts.getList({
         type: 'post',
         pageSize: '12',

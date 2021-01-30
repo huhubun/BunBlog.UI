@@ -170,6 +170,11 @@
           ></v-textarea>
         </v-col>
       </v-row>
+
+      <v-row>
+        {{ showColorPicker }}
+        {{ cardClicks }}
+      </v-row>
     </v-container>
 
     <v-navigation-drawer
@@ -305,6 +310,124 @@
               ></v-switch>
             </v-list-item-content>
           </v-list-item>
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-card
+                height="200px"
+                outlined
+                @click.native="onCardClick"
+                :style="{ background: titleBackground }"
+              />
+
+              <v-card
+                outlined
+                height="16px"
+                :style="{ background: titleBackground }"
+                class="mt-2"
+              />
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-left">X %</th>
+                      <th class="text-left">Y %</th>
+                      <th class="text-left">Color</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in cardClicks" :key="item.id">
+                      <td>{{ item.x }}</td>
+                      <td>{{ item.y }}</td>
+                      <td>
+                        <v-menu
+                          :close-on-content-click="false"
+                          left
+                          offset-x
+                          :value="showColorPicker[item.id]"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-avatar
+                              width="80px"
+                              height="30px"
+                              :color="`rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, ${item.color.a})`"
+                              rounded
+                              v-bind="attrs"
+                              v-on="on"
+                              @click="onSelectedColorRowAvatarClick(item)"
+                            >
+                              <span class="black--text">
+                                <v-icon>mdi-blur-radial</v-icon>
+                                {{ item.size }}%
+                              </span>
+                            </v-avatar>
+                          </template>
+                          <v-card>
+                            <v-list>
+                              <v-list-item class="">
+                                <v-list-item-content>
+                                  <v-color-picker
+                                    v-model="colorPickerColor"
+                                    dot-size="25"
+                                    mode="rgba"
+                                    swatches-max-height="200"
+                                    @update:color="onColorPickerUpdate(item)"
+                                  />
+                                </v-list-item-content>
+                              </v-list-item>
+                              <v-list-item>
+                                <v-list-item-content class="pt-4">
+                                  <v-slider
+                                    v-model="radialGradientSize"
+                                    hide-details
+                                    thumb-label="always"
+                                    thumb-size="16"
+                                    prepend-icon="mdi-blur-radial"
+                                    @change="onRadialGradientSizeChange(item)"
+                                  />
+                                </v-list-item-content>
+                              </v-list-item>
+                            </v-list>
+
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="info"
+                                text
+                                @click="cancelPickColor(item)"
+                              >
+                                取消
+                              </v-btn>
+                              <v-btn
+                                color="success"
+                                text
+                                @click="confirmPickColor(item)"
+                              >
+                                确定
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-menu>
+                      </td>
+                      <td>
+                        <v-btn icon small>
+                          <v-icon small @click="deleteSelectedColor(item.id)">
+                            mdi-delete
+                          </v-icon>
+                        </v-btn>
+                      </td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-form>
     </v-navigation-drawer>
@@ -386,6 +509,14 @@ export default {
       message: null,
       messageType: null,
 
+      cardClicks: [],
+      cardClickId: 0,
+      showColorPicker: {},
+      colorPickerColor: null,
+      originalColor: null,
+      radialGradientSize: 0,
+      originalRadialGradientSize: null,
+
       formRules: {
         required(fieldName) {
           return value => !!value || `必须设置${fieldName}`
@@ -404,6 +535,14 @@ export default {
     },
     isDraft() {
       return this.editorPost.type === 'draft'
+    },
+    titleBackground() {
+      return this.cardClicks
+        .map(
+          item =>
+            `radial-gradient(circle at ${item.x}% ${item.y}%, rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, ${item.color.a}), rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, 0) ${item.size}%)`
+        )
+        .join()
     }
   },
   methods: {
@@ -432,9 +571,13 @@ export default {
       // 'post' = 正式发布
       postClone.type = this.saveAsDraft ? 'draft' : 'post'
 
-      console.log(
-        `onConfirmPublishButtonClick(): isNewPost = ${this.isNewPost}, isDraft= ${this.isDraft}, saveAsDraft = ${this.saveAsDraft}`
-      )
+      if (this.cardClicks.length > 0) {
+        postClone.styling = JSON.stringify({
+          titleBg: {
+            content: this.cardClicks
+          }
+        })
+      }
 
       if (this.isNewPost) {
         let successMessage = this.saveAsDraft ? '草稿保存成功' : '博文发布成功'
@@ -477,11 +620,6 @@ export default {
             this.$bunblog.posts
               .new(postClone)
               .then(res => {
-                console.log({
-                  this: this,
-                  res
-                })
-
                 Vue.set(this.editorPost, 'id', res.id)
                 Vue.set(this.editorPost, 'type', res.type)
                 Vue.set(this.editorPost, 'for', res.for)
@@ -705,6 +843,74 @@ export default {
         this.uploadImageDescription = fileNameRegex.groups.filename
       }
     },
+    onCardClick(e) {
+      let offsetX = e.offsetX
+      let offsetY = e.offsetY
+      let width = e.currentTarget.offsetWidth
+      let height = e.currentTarget.offsetHeight
+
+      this.cardClicks.push({
+        id: this.cardClickId++,
+        x: ((offsetX / width) * 100).toFixed(2),
+        y: ((offsetY / height) * 100).toFixed(2),
+        color: {
+          r: 204,
+          g: 204,
+          b: 204,
+          a: 1
+        },
+        size: 50
+      })
+    },
+    deleteSelectedColor(selectedColorId) {
+      this.cardClicks = this.cardClicks.filter(
+        item => item.id !== selectedColorId
+      )
+    },
+    onSelectedColorRowAvatarClick(item) {
+      Vue.set(this.showColorPicker, item.id, true)
+      this.originalColor = item.color
+      this.colorPickerColor = item.color
+
+      this.radialGradientSize = item.size
+      this.originalRadialGradientSize = item.size
+    },
+    confirmPickColor(item) {
+      Vue.set(
+        item,
+        'color',
+        this.colorPickerColor.rgba || this.colorPickerColor
+      )
+      Vue.set(this.showColorPicker, 'size', this.originalRadialGradientSize)
+
+      Vue.set(this.showColorPicker, item.id, false)
+    },
+    cancelPickColor(item) {
+      this.colorPickerColor = null
+
+      let originalColor = JSON.parse(JSON.stringify(this.originalColor))
+      Vue.set(item, 'color', originalColor)
+      this.colorPickerColor = originalColor
+      this.originalColor = null
+
+      let originalSize = JSON.parse(
+        JSON.stringify(this.originalRadialGradientSize)
+      )
+      Vue.set(item, 'size', originalSize)
+      this.originalRadialGradientSize = null
+
+      Vue.set(this.showColorPicker, item.id, false)
+    },
+    onColorPickerUpdate(item) {
+      Vue.set(
+        item,
+        'color',
+        this.colorPickerColor.rgba || this.colorPickerColor
+      )
+    },
+    onRadialGradientSizeChange(item) {
+      Vue.set(item, 'size', this.radialGradientSize)
+    },
     showSuccessMessage(message) {
       this.message = message
       this.messageType = 'success'
@@ -740,8 +946,6 @@ export default {
     this.initHotkey()
 
     if (this.post) {
-      console.log(this.post)
-
       // 早期版本没限制 category 和 tag 必选，这里做一些兼容处理
       if (this.post.category) {
         this.post.category = this.post.category.linkName
@@ -751,6 +955,24 @@ export default {
         this.post.tagList = this.post.tagList.map((item, index) => {
           return item.linkName
         })
+      }
+
+      if (this.post.styling) {
+        let styling = JSON.parse(this.post.styling)
+
+        if (styling.titleBg) {
+          // titleBg = { type, content }
+          // 其中 type 字段为以后预留，现在还没有
+
+          for (let i = 0; i < styling.titleBg.content.length; i++) {
+            let item = styling.titleBg.content[i]
+            if (item.id > this.cardClickId) {
+              this.cardClickId = item.id
+            }
+
+            this.cardClicks.push(item)
+          }
+        }
       }
 
       this.editorPost = this.post

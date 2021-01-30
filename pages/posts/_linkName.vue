@@ -5,7 +5,9 @@
         flat
         tile
         :height="blogPostHeaderHeight"
-        class="blue-grey darken-1 white--text"
+        :style="styling.titleBg"
+        :class="styling.titleBg ? '' : 'blue-grey darken-1'"
+        class="white--text"
       >
         <v-container
           class="d-flex flex-column"
@@ -174,7 +176,11 @@ export default {
       anchorWidth: 0,
       showGoToTopButton: false,
       anchorActiveItem: null,
-      anchorActiveItemTimeoutId: null
+      anchorActiveItemTimeoutId: null,
+
+      styling: {
+        titleBg: null
+      }
     }
   },
   methods: {
@@ -300,6 +306,24 @@ export default {
     window.addEventListener('scroll', this.onScrollYGreaterThan400)
     window.addEventListener('scroll', this.onScrollUpdateAnchorActiveItem)
     window.addEventListener('resize', this.onResizeUpdateAnchorWidth)
+
+    if (this.post.styling) {
+      let styling = JSON.parse(this.post.styling)
+
+      // 标题背景
+      if (styling.titleBg && styling.titleBg.content) {
+        let bgStyle = styling.titleBg.content
+          .map(
+            item =>
+              `radial-gradient(circle at ${item.x}% ${item.y}%, rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, ${item.color.a}), rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, 0) ${item.size}%)`
+          )
+          .join()
+
+        this.styling.titleBg = {
+          background: bgStyle
+        }
+      }
+    }
   },
   destroyed() {
     window.removeEventListener('scroll', this.onScrollYGreaterThan400)

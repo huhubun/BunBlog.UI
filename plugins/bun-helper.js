@@ -59,6 +59,26 @@ const BunHelperImpl = {
     }
 
     return anchors
+  },
+
+  parseStyling(postStyling) {
+    if (!postStyling) {
+      return null
+    }
+
+    let styling = JSON.parse(postStyling)
+    let returnStyling = {}
+
+    if (styling.titleBg) {
+      returnStyling.titleBg = {
+        background: styling.titleBg.content.map(
+          item =>
+            `radial-gradient(circle at ${item.x}% ${item.y}%, rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, ${item.color.a}), rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, 0) ${item.size}%)`
+        ).join()
+      }
+    }
+
+    return returnStyling
   }
 }
 
