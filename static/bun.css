@@ -212,6 +212,16 @@ highlight.js solarized-light style
   padding: 1em !important;
 }
 
+/* 博文 title 样式 */
+.blog-header .title-category {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.blog-header .title-tag {
+  /* blue-grey darken-4 + 0.1 透明度*/
+  background-color: rgba(39, 50, 56, 0.1) !important;
+}
+
 /* 博文正文样式 */
 .blog-post-content img {
   max-width: 100%;

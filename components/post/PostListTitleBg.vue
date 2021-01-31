@@ -8,7 +8,6 @@
 export default {
   props: {
     styling: {
-      type: String,
       required: true
     }
   },

@@ -1,6 +1,6 @@
 <template>
   <article>
-    <header>
+    <header class="blog-header">
       <v-card
         flat
         tile
@@ -16,7 +16,12 @@
           <v-spacer />
 
           <v-card-subtitle class="text-center pa-0" v-if="post.category">
-            <v-chip small label color="blue-grey lighten-4">
+            <v-chip
+              small
+              label
+              outlined
+              color="white"
+            >
               {{ post.category.displayName }}
             </v-chip>
           </v-card-subtitle>
@@ -37,7 +42,7 @@
                   :key="headerIcon.icon"
                   small
                   color="transparent"
-                  class="blue-grey--text text--lighten-5"
+                  class="blue-grey--text text--darken-4"
                 >
                   <v-avatar left>
                     <v-icon small>{{ headerIcon.icon }}</v-icon>
@@ -52,8 +57,8 @@
                     v-for="tag in post.tagList"
                     :key="tag.linkName"
                     small
-                    color="blue-grey lighten-2"
-                    class="ml-2"
+                    color="blue-grey--text text--darken-4"
+                    class="ml-2 title-tag"
                   >
                     {{ tag.displayName }}
                   </v-chip>
@@ -258,8 +263,10 @@ export default {
     },
     onResizeUpdateAnchorWidth() {
       // 24 = container 的 padding，左右各 12px
-      this.anchorWidth =
-        document.querySelector('#AnchorContainer').clientWidth - 24
+      let anchorContainer = document.querySelector('#AnchorContainer')
+      if (anchorContainer) {
+        this.anchorWidth = anchorContainer.clientWidth - 24
+      }
     }
   },
   head() {
