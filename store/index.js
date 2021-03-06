@@ -15,7 +15,7 @@ export const actions = {
       console.error('获取 apiInformation 时出错', e)
     })
 
-    let settingsPromise = $bunblog.setting.getList(['layout.footer', 's.poweredby']).then(settings => {
+    let settingsPromise = $bunblog.setting.getList(['certification.list', 's.poweredby']).then(settings => {
       settings.forEach(s => { commit('settings/set', s) })
     }).catch(e => {
       console.error('获取 settings 时出错', e)

@@ -24,6 +24,7 @@
                       :hint="generateHint(setting)"
                       persistent-hint
                     ></v-text-field>
+
                     <v-textarea
                       v-if="setting.type === 'textarea'"
                       v-model="setting.value"
@@ -33,6 +34,7 @@
                       persistent-hint
                       rows="10"
                     ></v-textarea>
+
                     <v-card outlined v-if="setting.type === 'object'">
                       <v-card-title>
                         {{ setting.code }}
@@ -64,7 +66,63 @@
                         {{ setting.code }}
                       </v-card-subtitle>
                     </v-card>
-                    <div v-if="setting.type === 'list'"></div>
+
+                    <v-card outlined v-if="setting.type === 'list'">
+                      <v-card-title>
+                        {{ setting.code }}
+                      </v-card-title>
+                      <v-card-text>
+                        <v-row
+                          v-for="(row, index) in getListValue(setting, true)"
+                          :key="index"
+                        >
+                          <v-col
+                            v-for="property in setting.schema.split(',')"
+                            :key="property"
+                            cols="12"
+                            md="2"
+                          >
+                            <v-text-field
+                              :label="property"
+                              :placeholder="property"
+                              :value="
+                                getListObjectRowPropertyValue(row, property)
+                              "
+                              @change="
+                                onListObjectRowPropertyChange(
+                                  $event,
+                                  index,
+                                  row,
+                                  property,
+                                  setting
+                                )
+                              "
+                            ></v-text-field>
+                          </v-col>
+                          <v-col>
+                            <v-btn
+                              depressed
+                              color="error"
+                              :disabled="getListValue(setting).length <= 1"
+                              @click="onListRemoveRowClick(index, setting)"
+                            >
+                              <v-icon>mdi-minus</v-icon>
+                            </v-btn>
+                            <v-btn
+                              depressed
+                              color="primary"
+                              v-if="getListValue(setting).length === 0 || getListValue(setting).length === index + 1"
+                              @click="onListAddRowClick(setting)"
+                            >
+                              <v-icon>mdi-plus</v-icon>
+                            </v-btn>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                      <v-card-subtitle>
+                        {{ setting.code }}
+                      </v-card-subtitle>
+                    </v-card>
                   </v-card-text>
 
                   <v-card-actions
@@ -195,13 +253,47 @@ export default {
       setting.value = JSON.stringify(obj)
     },
     generateObject(setting) {
-      let obj = new Object()
+      let obj = {}
       setting.schema.split(',').forEach(i => (obj[i] = null))
       return obj
     },
     getObjectPropertyValue(propertyName, setting) {
       let value = setting.value || '{}'
       return JSON.parse(value)[propertyName] || null
+    },
+    getListValue(setting, needInit) {
+      let listConfigValue = setting.value || '[]'
+      let list = JSON.parse(listConfigValue)
+      if (needInit && list.length == 0) {
+        list.push(this.generateObject(setting))
+      }
+      return list
+    },
+    getListObjectRowPropertyValue(row, propertyName) {
+      return row[propertyName] || null
+    },
+    onListObjectRowPropertyChange(
+      newValue,
+      rowIndex,
+      row,
+      propertyName,
+      setting
+    ) {
+      row[propertyName] = newValue
+      let listConfig = setting.value || '[]'
+      let list = JSON.parse(listConfig)
+      list[rowIndex] = row
+      setting.value = JSON.stringify(list)
+    },
+    onListAddRowClick(setting) {
+      let list = this.getListValue(setting)
+      list.push(this.generateObject(setting))
+      setting.value = JSON.stringify(list)
+    },
+    onListRemoveRowClick(index, setting) {
+      let list = this.getListValue(setting)
+      list.splice(index, 1)
+      setting.value = JSON.stringify(list)
     },
     showSuccessMessage(message) {
       this.message = message

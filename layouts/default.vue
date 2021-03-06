@@ -56,6 +56,7 @@
         <v-col class="text-center" cols="12">
           <site-links />
           <powered-by />
+          <certifications />
           <copyright />
         </v-col>
       </v-row>
@@ -66,7 +67,7 @@
 <script>
 import PoweredBy from '~/components/layout/PoweredBy.vue'
 import Copyright from '~/components/layout/Copyright.vue'
-import CustomFooter from '~/components/layout/CustomFooter.vue'
+import Certifications from '~/components/layout/Certifications.vue'
 import SiteLinks from '~/components/layout/SiteLinks.vue'
 
 export default {
@@ -91,7 +92,7 @@ export default {
   components: {
     PoweredBy,
     Copyright,
-    CustomFooter,
+    Certifications,
     SiteLinks
   }
 }

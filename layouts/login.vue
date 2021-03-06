@@ -22,13 +22,13 @@
 <script>
 import PoweredBy from '~/components/layout/PoweredBy.vue'
 import Copyright from '~/components/layout/Copyright.vue'
-import CustomFooter from '~/components/layout/CustomFooter.vue'
+import Certifications from '~/components/layout/Certifications.vue'
 
 export default {
   components: {
     PoweredBy,
     Copyright,
-    CustomFooter
+    Certifications
   }
 }
 </script>
