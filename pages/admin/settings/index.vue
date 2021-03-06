@@ -200,8 +200,8 @@ export default {
       return obj
     },
     getObjectPropertyValue(propertyName, setting) {
-      let original = this.settingsOriginal[setting.code] || '{}'
-      return JSON.parse(original)[propertyName] || null
+      let value = setting.value || '{}'
+      return JSON.parse(value)[propertyName] || null
     },
     showSuccessMessage(message) {
       this.message = message
