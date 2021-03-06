@@ -51,11 +51,10 @@
       <nuxt />
     </v-main>
 
-    <v-footer color="blue-grey darken-4 ">
+    <v-footer color="blue-grey darken-4 py-10">
       <v-row justify="center" no-gutters>
         <v-col class="text-center" cols="12">
           <site-links />
-          <custom-footer />
           <powered-by />
           <copyright />
         </v-col>
@@ -94,8 +93,7 @@ export default {
     Copyright,
     CustomFooter,
     SiteLinks
-  },
-  middleware: ['loadSettings', 'loadSiteLinks']
+  }
 }
 </script>
 

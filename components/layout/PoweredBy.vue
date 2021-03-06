@@ -1,6 +1,15 @@
 <template>
   <div class="py-1">
     <v-chip
+      label
+      disabled
+      color="transparent"
+      class="blue-grey--text text--lighten-5 text-uppercase"
+    >
+      Powered By
+    </v-chip>
+
+    <v-chip
       v-for="i in by"
       :key="i.url"
       :href="i.url"
@@ -12,7 +21,21 @@
         <v-icon small>{{ i.icon }}</v-icon>
       </v-avatar>
 
-      {{ i.text }}
+      {{ $vuetify.breakpoint.smAndDown ? i.shortText : i.text }}
+    </v-chip>
+
+    <v-chip
+      v-if="sponsor"
+      :href="sponsor.url"
+      label
+      :color="sponsor.color"
+      class="blue-grey--text text--lighten-5"
+    >
+      <v-avatar left>
+        <v-icon small>{{ sponsor.icon }}</v-icon>
+      </v-avatar>
+
+      {{ sponsor.text }}
     </v-chip>
   </div>
 </template>
@@ -41,11 +64,13 @@ export default {
         {
           icon: 'mdi-palette',
           text: `BunBlog.UI ${this.uiVersion}`,
+          shortText: `UI ${this.uiVersion}`,
           url: 'https://github.com/huhubun/BunBlog.UI'
         },
         {
           icon: 'mdi-lightning-bolt-outline',
           text: `BunBlog.API ${this.apiVersion}`,
+          shortText: `API ${this.apiVersion}`,
           url: 'https://github.com/huhubun/BunBlog.API'
         }
       ]
@@ -54,23 +79,21 @@ export default {
         result.push({
           icon: 'mdi-console',
           text: `${this.runtimeFramework} on ${this.os}`,
+          shortText: this.runtimeFramework,
           url: 'https://dot.net/'
         })
       }
 
       return result
-    }
-  },
-  methods: {
-    getApiInformation() {
-      this.$bunblog.informations.get().then(apiInfo => {
-        this.$store.commit('apiInformation/set', apiInfo)
-      })
-    }
-  },
-  mounted() {
-    if (this.os === null) {
-      this.getApiInformation()
+    },
+
+    sponsor() {
+      let sponsor = this.$store.state.settings.settings['s.poweredby']
+      if (sponsor) {
+        return JSON.parse(sponsor)
+      }
+
+      return null
     }
   }
 }

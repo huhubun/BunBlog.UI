@@ -29,8 +29,7 @@ export default {
     PoweredBy,
     Copyright,
     CustomFooter
-  },
-  middleware: 'loadSettings'
+  }
 }
 </script>
 

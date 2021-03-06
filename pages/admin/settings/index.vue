@@ -33,6 +33,38 @@
                       persistent-hint
                       rows="10"
                     ></v-textarea>
+                    <v-card outlined v-if="setting.type === 'object'">
+                      <v-card-title>
+                        {{ setting.code }}
+                      </v-card-title>
+                      <v-card-text>
+                        <v-row>
+                          <v-col
+                            v-for="property in setting.schema.split(',')"
+                            :key="property"
+                            cols="12"
+                            md="2"
+                          >
+                            <v-text-field
+                              :label="property"
+                              :placeholder="property"
+                              :value="getObjectPropertyValue(property, setting)"
+                              @change="
+                                onObjectPropertyChange(
+                                  $event,
+                                  property,
+                                  setting
+                                )
+                              "
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                      <v-card-subtitle>
+                        {{ setting.code }}
+                      </v-card-subtitle>
+                    </v-card>
+                    <div v-if="setting.type === 'list'"></div>
                   </v-card-text>
 
                   <v-card-actions
@@ -119,7 +151,7 @@ export default {
   },
   methods: {
     async getSettings() {
-      this.settings = await this.$bunblog.setting.getList()
+      this.settings = await this.$bunblog.settingDefinitions.getList()
     },
     update(setting) {
       setting.loading = true
@@ -155,6 +187,21 @@ export default {
       return `${setting.description} | 类型 ${
         setting.valueType
       }, 默认值 ${this.getDefaultValue(setting)}`
+    },
+    onObjectPropertyChange(newValue, propertyName, setting) {
+      let obj = JSON.parse(setting.value || '{}')
+      obj[propertyName] = newValue
+
+      setting.value = JSON.stringify(obj)
+    },
+    generateObject(setting) {
+      let obj = new Object()
+      setting.schema.split(',').forEach(i => (obj[i] = null))
+      return obj
+    },
+    getObjectPropertyValue(propertyName, setting) {
+      let original = this.settingsOriginal[setting.code] || '{}'
+      return JSON.parse(original)[propertyName] || null
     },
     showSuccessMessage(message) {
       this.message = message

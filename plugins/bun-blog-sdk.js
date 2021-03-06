@@ -51,8 +51,6 @@ export default ({ $axios }, inject) => {
         params: query
       })
 
-      console.log(posts)
-
       return posts
     },
 
@@ -98,12 +96,21 @@ export default ({ $axios }, inject) => {
   }
 
   const setting = {
-    async getList() {
-      return await $axios.$get('/api/settings')
+    async getList(codes) {
+      let params = new URLSearchParams()
+      codes.forEach(c => params.append('code', c))
+
+      return await $axios.$get('/api/settings', { params })
     },
 
     async update(setting) {
       return await $axios.$put(`/api/settings/${setting.code}`, { value: setting.value })
+    }
+  }
+
+  const settingDefinitions = {
+    async getList() {
+      return await $axios.$get('/api/settingDefinitions')
     }
   }
 
@@ -142,6 +149,7 @@ export default ({ $axios }, inject) => {
     informations,
     posts,
     setting,
+    settingDefinitions,
     siteLink,
     tag
   }
