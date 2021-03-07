@@ -36,10 +36,10 @@
                     ></v-textarea>
 
                     <v-card outlined v-if="setting.type === 'object'">
-                      <v-card-title>
+                      <v-card-title class="pb-0">
                         {{ setting.code }}
                       </v-card-title>
-                      <v-card-text>
+                      <v-card-text class="pb-0">
                         <v-row>
                           <v-col
                             v-for="property in setting.schema.split(',')"
@@ -62,16 +62,16 @@
                           </v-col>
                         </v-row>
                       </v-card-text>
-                      <v-card-subtitle>
-                        {{ setting.code }}
+                      <v-card-subtitle class="pt-0">
+                        {{ setting.description }}
                       </v-card-subtitle>
                     </v-card>
 
                     <v-card outlined v-if="setting.type === 'list'">
-                      <v-card-title>
+                      <v-card-title class="pb-0">
                         {{ setting.code }}
                       </v-card-title>
-                      <v-card-text>
+                      <v-card-text class="pb-0">
                         <v-row
                           v-for="(row, index) in getListValue(setting, true)"
                           :key="index"
@@ -119,8 +119,8 @@
                           </v-col>
                         </v-row>
                       </v-card-text>
-                      <v-card-subtitle>
-                        {{ setting.code }}
+                      <v-card-subtitle class="pt-0">
+                        {{ setting.description }}
                       </v-card-subtitle>
                     </v-card>
                   </v-card-text>
