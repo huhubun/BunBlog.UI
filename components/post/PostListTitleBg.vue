@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-3 pb-0">
+  <div class="px-3 pt-4 pb-0">
     <v-card flat disabled height="16px" :style="style" :class="cssClass" />
   </div>
 </template>
@@ -21,7 +21,8 @@ export default {
       }
     }
 
-    if (!style) {
+    if (!style || !style.background) {
+      style = null
       cssClass = 'blue-grey darken-1'
     }
 

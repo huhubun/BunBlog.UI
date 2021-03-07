@@ -428,6 +428,28 @@
               </v-simple-table>
             </v-list-item-content>
           </v-list-item>
+
+          <v-list-item>
+            <v-list-item-content class="pl-3">
+              <v-switch
+                v-model="isLightenTitleBg"
+                inset
+                label="Title 亮色背景"
+              ></v-switch>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-text-field
+                v-model="titleTextShadow"
+                outlined
+                label="标题阴影"
+                prepend-inner-icon="mdi-text-shadow"
+              >
+              </v-text-field>
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-form>
     </v-navigation-drawer>
@@ -516,6 +538,8 @@ export default {
       originalColor: null,
       radialGradientSize: 0,
       originalRadialGradientSize: null,
+      isLightenTitleBg: false,
+      titleTextShadow: null,
 
       formRules: {
         required(fieldName) {
@@ -571,10 +595,12 @@ export default {
       // 'post' = 正式发布
       postClone.type = this.saveAsDraft ? 'draft' : 'post'
 
-      if (this.cardClicks.length > 0) {
+      if (this.cardClicks.length > 0 || this.isLightenTitleBg != false || this.titleTextShadow != null) {
         postClone.styling = JSON.stringify({
           titleBg: {
-            content: this.cardClicks
+            content: this.cardClicks,
+            isLightenTitleBg: this.isLightenTitleBg,
+            titleTextShadow: this.titleTextShadow
           }
         })
       }
@@ -972,6 +998,9 @@ export default {
 
             this.cardClicks.push(item)
           }
+
+          this.isLightenTitleBg = styling.titleBg.isLightenTitleBg
+          this.titleTextShadow = styling.titleBg.titleTextShadow
         }
       }
 

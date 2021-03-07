@@ -9,8 +9,8 @@
         <v-row justify="center" no-gutters>
           <v-col class="text-center" cols="12">
             <site-links />
-            <custom-footer />
             <powered-by />
+            <certifications />
             <copyright />
           </v-col>
         </v-row>

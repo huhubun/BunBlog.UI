@@ -13,21 +13,24 @@
           class="d-flex flex-column"
           :style="{ height: `${blogPostHeaderHeight}px` }"
         >
-          <v-spacer />
-
-          <v-card-subtitle class="text-center pa-0" v-if="post.category">
+          <v-card-subtitle class="text-right pa-0" v-if="post.category">
             <v-chip
               small
               label
-              outlined
-              color="white"
+              class="title-category blue-grey--text text--darken-4"
+              :color="
+                styling.isLightenTitleBg ? 'transparent' : 'blue-grey lighten-2'
+              "
             >
               {{ post.category.displayName }}
             </v-chip>
           </v-card-subtitle>
 
+          <v-spacer />
+
           <v-card-title
-            class="justify-center text-h5 text-sm-h4 text-md-h3 text-lg-h2"
+            class="justify-center text-h4 text-md-h3 text-lg-h2"
+            :style="{ textShadow: styling.titleTextShadow }"
           >
             {{ post.title }}
           </v-card-title>
@@ -35,14 +38,27 @@
           <v-spacer />
 
           <v-card-text class="align-end pa-0">
-            <v-row>
-              <v-col cols="6" class="py-0">
+            <div
+              class="d-flex"
+              :class="
+                this.$vuetify.breakpoint.mdAndUp
+                  ? 'justify-space-between'
+                  : 'flex-column'
+              "
+            >
+              <div class="py-0">
                 <v-chip
                   v-for="headerIcon in headerIcons"
                   :key="headerIcon.icon"
                   small
                   color="transparent"
-                  class="blue-grey--text text--darken-4"
+                  class="blue-grey--text"
+                  :title="headerIcon.tooltip"
+                  :class="
+                    styling.isLightenTitleBg
+                      ? 'text--darken-4'
+                      : 'text--lighten-4'
+                  "
                 >
                   <v-avatar left>
                     <v-icon small>{{ headerIcon.icon }}</v-icon>
@@ -50,21 +66,32 @@
 
                   {{ headerIcon.text }}
                 </v-chip>
-              </v-col>
-              <v-col cols="6" class="text-right py-0">
-                <div v-if="post.tagList">
+              </div>
+
+              <div
+                class="py-0"
+                :class="
+                  $vuetify.breakpoint.mdAndUp ? 'text-right' : 'text-left'
+                "
+              >
+                <div v-if="post.tagList" :class="$vuetify.breakpoint.mdAndUp ? '' : 'mt-1'">
                   <v-chip
                     v-for="tag in post.tagList"
                     :key="tag.linkName"
                     small
-                    color="blue-grey--text text--darken-4"
-                    class="ml-2 title-tag"
+                    class="title-tag blue-grey--text text--darken-4"
+                    :class="$vuetify.breakpoint.mdAndUp ? 'ml-2' : 'mr-2'"
+                    :color="
+                      styling.isLightenTitleBg
+                        ? 'transparent'
+                        : 'blue-grey lighten-2'
+                    "
                   >
                     {{ tag.displayName }}
                   </v-chip>
                 </div>
-              </v-col>
-            </v-row>
+              </div>
+            </div>
           </v-card-text>
         </v-container>
       </v-card>
@@ -176,7 +203,6 @@ export default {
   },
   data() {
     return {
-      blogPostHeaderHeight: 400,
       anchors: [],
       anchorWidth: 0,
       showGoToTopButton: false,
@@ -189,9 +215,16 @@ export default {
     }
   },
   methods: {
-    formatDate(datetime) {
+    formatDate(datetime, needFullText) {
       let dayjsObj = dayjs(datetime)
-      return `${dayjsObj.format('YYYY-MM-DD HH:mm')} ( ${dayjsObj.fromNow()} )`
+
+      if (needFullText) {
+        return `${dayjsObj.format(
+          'YYYY-MM-DD HH:mm'
+        )} ( ${dayjsObj.fromNow()} )`
+      }
+
+      return dayjsObj.fromNow()
     },
     getVisits(metadataList) {
       if (metadataList) {
@@ -290,15 +323,26 @@ export default {
     return head
   },
   computed: {
+    blogPostHeaderHeight() {
+      return 400 //this.$vuetify.breakpoint.mdAndUp ? 400 : 260
+    },
     headerIcons: function () {
+      let fullPublishedOn = this.formatDate(this.post.publishedOn, true)
+      let simplifyPublishedOn = this.formatDate(this.post.publishedOn)
+      let visits = this.getVisits(this.post.metadataList)
+
       return [
         {
           icon: 'mdi-calendar-blank-outline',
-          text: this.formatDate(this.post.publishedOn)
+          text: this.$vuetify.breakpoint.mdAndUp
+            ? fullPublishedOn
+            : simplifyPublishedOn,
+          tooltip: `发布于 ${fullPublishedOn}`
         },
         {
           icon: 'mdi-eye-outline',
-          text: this.getVisits(this.post.metadataList)
+          text: visits,
+          tooltip: `阅读量 ${visits}`
         }
       ]
     }
@@ -314,20 +358,32 @@ export default {
     window.addEventListener('scroll', this.onScrollUpdateAnchorActiveItem)
     window.addEventListener('resize', this.onResizeUpdateAnchorWidth)
 
+    // 默认样式
+    this.styling.isLightenTitleBg = false
+    this.styling.titleTextShadow = null
+
+    // 如果博文有自定义样式，再覆盖默认样式
     if (this.post.styling) {
       let styling = JSON.parse(this.post.styling)
 
       // 标题背景
-      if (styling.titleBg && styling.titleBg.content) {
-        let bgStyle = styling.titleBg.content
-          .map(
-            item =>
-              `radial-gradient(circle at ${item.x}% ${item.y}%, rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, ${item.color.a}), rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, 0) ${item.size}%)`
-          )
-          .join()
+      if (styling.titleBg) {
+        this.styling.isLightenTitleBg =
+          styling.titleBg.isLightenTitleBg || false
 
-        this.styling.titleBg = {
-          background: bgStyle
+        this.styling.titleTextShadow = styling.titleBg.titleTextShadow
+
+        if (styling.titleBg.content && styling.titleBg.content.length > 0) {
+          let bgStyle = styling.titleBg.content
+            .map(
+              item =>
+                `radial-gradient(circle at ${item.x}% ${item.y}%, rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, ${item.color.a}), rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, 0) ${item.size}%)`
+            )
+            .join()
+
+          this.styling.titleBg = {
+            background: bgStyle
+          }
         }
       }
     }

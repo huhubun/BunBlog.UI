@@ -217,7 +217,8 @@ highlight.js solarized-light style
   background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
-.blog-header .title-tag {
+.blog-header .title-tag,
+.blog-header .title-category {
   /* blue-grey darken-4 + 0.1 透明度*/
   background-color: rgba(39, 50, 56, 0.1) !important;
 }
@@ -227,16 +228,16 @@ highlight.js solarized-light style
   max-width: 100%;
   display: block;
   margin: 0 auto;
-  border-radius: 1em;
-  /* #CFD8DC = blue-grey lighten-4 */
-  border: 1px solid #cfd8dc;
-  transition: border-color 1s !important;
+  border-radius: 0.5em;
+  /* #757575 = grey darken-1 */
+  box-shadow: 0 0 10px #757575;
+  transition: box-shadow 0.4s !important;
 }
 
 .blog-post-content img:hover {
-  /* blue-grey lighten-2 */
-  border-color: #90a4ae;
-  transition: color 1s !important;
+  /* #616161 = grey darken-2 */
+  box-shadow: 0 0 16px #616161;
+  transition: box-shadow 0.4s !important;
 }
 
 .blog-post-content a,

@@ -70,8 +70,10 @@ const BunHelperImpl = {
     let returnStyling = {}
 
     if (styling.titleBg) {
-      returnStyling.titleBg = {
-        background: styling.titleBg.content.map(
+      returnStyling.titleBg = {}
+
+      if (styling.titleBg.content && styling.titleBg.content.length > 0) {
+        returnStyling.titleBg.background = styling.titleBg.content.map(
           item =>
             `radial-gradient(circle at ${item.x}% ${item.y}%, rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, ${item.color.a}), rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, 0) ${item.size}%)`
         ).join()
