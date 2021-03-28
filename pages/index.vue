@@ -61,7 +61,7 @@
           </v-hover>
         </v-col>
       </v-row>
-      <div v-if="posts" class="text-right">
+      <div v-if="posts" class="mt-4">
         <v-pagination
           v-model="posts.page"
           :length="posts.totalPage"

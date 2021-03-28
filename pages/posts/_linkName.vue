@@ -102,8 +102,8 @@
         <!-- TODO 考虑在这里加个目录（默认折叠）供 < md 的屏幕尺寸查看；或者在返回顶部的按钮上面加个目录按钮 -->
 
         <!-- 博文内容 -->
-        <v-col cols="12" xl="10" lg="9" md="9" sm="12" class="py-0">
-          <blockquote>
+        <v-col cols="12" xl="10" lg="9" md="9" sm="12" class="">
+          <blockquote class="blockquote mb-4 pr-6">
             <p>{{ post.excerpt }}</p>
           </blockquote>
 
@@ -111,7 +111,7 @@
             v-highlight
             v-html="postContent"
             v-lazy-container="{ selector: 'img' }"
-            class="blog-post-content"
+            class="blog-post-content mb-6"
           />
 
           <creative-commons v-bind:post="post" class="bun-blog-post-link" />
@@ -125,7 +125,6 @@
           md="3"
           sm="0"
           id="AnchorContainer"
-          class="py-0"
         >
           <div
             id="AnchorArea"
@@ -133,7 +132,7 @@
             :style="{ width: `${anchorWidth}px` }"
           >
             <v-navigation-drawer floating permanent width="100%">
-              <v-list dense>
+              <v-list dense class="pt-0" >
                 <v-list-item-group v-model="anchorActiveItem">
                   <template v-for="anchor in anchors">
                     <v-list-item
@@ -194,7 +193,7 @@ export default {
   async asyncData({ $bunblog, params }) {
     const post = await $bunblog.posts.getByLinkName(params.linkName)
 
-    const converter = new showdown.Converter({ extensions: ['vue-img-lazy'] })
+    const converter = new showdown.Converter({ extensions: ['vue-img-lazy', 'post-content'] })
     const postContent = converter.makeHtml(post.content)
 
     $bunblog.posts.visits(post.id)
@@ -400,9 +399,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.blog-post-container
-  font-size: 1rem
-
 .fixed-anchor
   position: fixed
   top: 88px
