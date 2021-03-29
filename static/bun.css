@@ -33,6 +33,8 @@ blockquote {
   padding: 0.4rem 0.8rem;
   /* grey lighten-3 */
   background-color: #eeeeee;
+  /* grey darken-4 */
+  color: #212121;
 }
 
 blockquote p:last-child {

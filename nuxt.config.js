@@ -1,3 +1,4 @@
+const sitemap = require('./sitemap/sitemap')
 require('dotenv').config();
 
 module.exports = {
@@ -95,8 +96,12 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/style-resources',
     // https://auth.nuxtjs.org/
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
+    // https://sitemap.nuxtjs.org/
+    '@nuxtjs/sitemap'
   ],
+
+  sitemap: sitemap,
 
   auth: {
     strategies: {
