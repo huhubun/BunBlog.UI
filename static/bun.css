@@ -230,18 +230,18 @@ highlight.js solarized-light style
 
 /* 博文正文样式 */
 .blog-post-content img {
-  max-width: 100%;
+  max-width: 97.8%;
   display: block;
   margin: 0 auto;
   border-radius: 0.5em;
-  /* #757575 = grey darken-1 */
-  box-shadow: 0 0 10px #757575;
+  /* #BDBDBD = grey lighten-1 */
+  box-shadow: 0 6px 10px #BDBDBD;
   transition: box-shadow 0.6s !important;
 }
 
 .blog-post-content img:hover {
-  /* #616161 = grey darken-2 */
-  box-shadow: 0 0 16px #616161;
+  /* #9E9E9E = grey darken-1 */
+  box-shadow: 0 0 18px #9E9E9E;
   transition: box-shadow 0.6s !important;
 }
 
@@ -280,4 +280,16 @@ highlight.js solarized-light style
 .blog-post-container pre,
 .blog-post-container samp {
   font-family: "Roboto Mono", "Courier New", Courier, monospace;
+}
+
+/* 和 .v-application p 保持一致 */
+.blog-post-container ul,
+.blog-post-container ol {
+  margin-bottom: 16px;
+}
+
+.blog-post-container h2,
+.blog-post-container h3,
+.blog-post-container h4 {
+  margin: 16px auto;
 }

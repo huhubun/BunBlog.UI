@@ -12,6 +12,14 @@ $ npm install
 $ npm run dev
 ```
 
+### Env
+
+```
+BASE_URL=
+BROWSER_BASE_URL=
+CLIENT_JS_PATH=
+```
+
 ## Build and deploy
 
 First, run `npm run build` to generate client and server code

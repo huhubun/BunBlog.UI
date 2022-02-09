@@ -13,8 +13,8 @@ showdown.extension('vue-img-lazy', {
 // 博文正文使用，为一部分 html 标签添加 class
 showdown.extension('post-content', function () {
   const classMap = {
-    h2: 'v-heading text-h4 text-sm-h4 mb-3',
-    h3: 'v-heading text-h5 mb-2',
+    h2: 'v-heading text-h4 text-sm-h4',
+    h3: 'v-heading text-h5',
     img: 'my-4',
     blockquote: 'blockquote mb-4 pr-6',
     pre: 'mb-4'
