@@ -29,10 +29,10 @@ module.exports = {
       // 解决 Google 字体国内访问慢的问题
       { rel: 'stylesheet', href: 'https://fonts.loli.net/css?family=Roboto|Roboto+Mono&display=swap' },
       // 因为 defaultAssets 设为了 false，这里需要手动引入 Material Design Icons
-      { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css' },
+      { rel: 'stylesheet', href: 'https://cdn.staticfile.org/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css' },
     ],
     script: [
-      { src: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.4.1/build/highlight.min.js' }
+      { src: 'https://cdn.staticfile.org/highlight.js/10.7.3/highlight.min.js' }
     ]
   },
 
