@@ -1,43 +1,36 @@
 <template>
   <client-only>
-    <a-layout style="min-height: 100vh">
-      <a-layout-content>
+    <v-app>
+      <v-main>
         <nuxt />
-      </a-layout-content>
-      <a-layout-footer>
-        <powered-by />
-        <copyright />
-        <custom-footer />
-      </a-layout-footer>
-    </a-layout>
+      </v-main>
+
+      <v-footer color="blue-grey darken-4 ">
+        <v-row justify="center" no-gutters>
+          <v-col class="text-center" cols="12">
+            <site-links />
+            <powered-by />
+            <certifications />
+            <copyright />
+          </v-col>
+        </v-row>
+      </v-footer>
+    </v-app>
   </client-only>
 </template>
 
 <script>
 import PoweredBy from '~/components/layout/PoweredBy.vue'
 import Copyright from '~/components/layout/Copyright.vue'
-import CustomFooter from '~/components/layout/CustomFooter.vue'
+import Certifications from '~/components/layout/Certifications.vue'
 
 export default {
   components: {
     PoweredBy,
     Copyright,
-    CustomFooter
-  },
-  middleware: 'loadSettings'
+    Certifications
+  }
 }
 </script>
 
-<style lang="stylus" scoped>
-.ant-layout
-  min-height: 100vh
-
-.login-operation
-  text-align: center
-
-.ant-layout-footer
-  text-align: center
-
-.ant-layout-content
-  background-color: #f0f2f5
-</style>
+<style lang="stylus" scoped></style>

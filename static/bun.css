@@ -8,12 +8,8 @@ kbd {
 }
 
 code {
-  background: #fcf2f2;
-  border-radius: 0.1rem;
-  color: #d73e48;
-  font-size: 85%;
-  line-height: 1.25;
-  padding: 0.1rem 0.2rem;
+  background: none !important;
+  color: #d73e48 !important;
 }
 
 pre code {
@@ -31,13 +27,22 @@ mark {
 }
 
 blockquote {
-  border-left: 0.1rem solid #dadee4;
+  /* grey lighten-2 */
+  border-left: 0.2rem solid #e0e0e0;
   margin-left: 0;
   padding: 0.4rem 0.8rem;
+  /* grey lighten-3 */
+  background-color: #eeeeee;
+  /* grey darken-4 */
+  color: #212121;
 }
 
 blockquote p:last-child {
   margin-bottom: 0;
+}
+
+blockquote footer {
+  font-size: 1rem;
 }
 
 .bun-tooltip {
@@ -125,12 +130,166 @@ blockquote p:last-child {
   max-width: 100%;
 }
 
-/* 临时公告：切换域名提示 */
+/* 
+highlight.js solarized-light style
+由于 vuetify 为 <code> 添加了样式，而且 cdn link 引入 hightlight 的样式排在 vuetify 的前面
+导致样式不能正确显示，所以将 hightlight 的样式集成到项目中，提高优先级 
+*/
 
-#domain-migration-notification .ant-alert-description {
-  text-align: center;
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: #fdf6e3 !important;
+  color: #657b83 !important;
 }
 
-#domain-migration-notification .ant-alert-icon {
-  line-height: 24px;
+.hljs-comment,
+.hljs-quote {
+  color: #93a1a1;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-addition {
+  color: #859900;
+}
+
+.hljs-number,
+.hljs-string,
+.hljs-meta .hljs-meta-string,
+.hljs-literal,
+.hljs-doctag,
+.hljs-regexp {
+  color: #2aa198;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #268bd2;
+}
+
+.hljs-attribute,
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-class .hljs-title,
+.hljs-type {
+  color: #b58900;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-subst,
+.hljs-meta,
+.hljs-meta .hljs-keyword,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-link {
+  color: #cb4b16;
+}
+
+.hljs-built_in,
+.hljs-deletion {
+  color: #dc322f;
+}
+
+.hljs-formula {
+  background: #eee8d5;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+/* 自定义的 hightlight 样式 */
+.hljs {
+  font-family: "Roboto Mono", "Courier New", Courier, monospace;
+  font-size: 1em !important;
+  font-weight: normal !important;
+  padding: 1em !important;
+}
+
+/* 博文 title 样式 */
+.blog-header .title-category {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.blog-header .title-tag,
+.blog-header .title-category {
+  /* blue-grey darken-4 + 0.1 透明度*/
+  background-color: rgba(39, 50, 56, 0.1) !important;
+}
+
+/* 博文正文样式 */
+.blog-post-content img {
+  max-width: 97.8%;
+  display: block;
+  margin: 0 auto;
+  border-radius: 0.5em;
+  /* #BDBDBD = grey lighten-1 */
+  box-shadow: 0 6px 10px #BDBDBD;
+  transition: box-shadow 0.6s !important;
+}
+
+.blog-post-content img:hover {
+  /* #9E9E9E = grey darken-1 */
+  box-shadow: 0 0 18px #9E9E9E;
+  transition: box-shadow 0.6s !important;
+}
+
+.blog-post-content a,
+.bun-blog-post-link a {
+  color: inherit !important;
+  text-decoration: underline !important;
+  transition: color 1s !important;
+}
+
+.blog-post-content a:hover,
+.bun-blog-post-link a:hover {
+  /* light-blue darken-1 */
+  color: #039be5 !important;
+  transition: color 1s !important;
+}
+
+.bun-blog-footer-link a {
+  color: inherit !important;
+  text-decoration: none !important;
+  transition: color 1s !important;
+}
+
+.bun-blog-footer-link a:hover {
+  /* blue-grey lighten-5 */
+  color: #eceff1 !important;
+  transition: color 1s !important;
+}
+
+.blog-post-container p {
+  font-size: 1.06rem;
+}
+
+.blog-post-container code,
+.blog-post-container kbd,
+.blog-post-container pre,
+.blog-post-container samp {
+  font-family: "Roboto Mono", "Courier New", Courier, monospace;
+}
+
+/* 和 .v-application p 保持一致 */
+.blog-post-container ul,
+.blog-post-container ol {
+  margin-bottom: 16px;
+}
+
+.blog-post-container h2,
+.blog-post-container h3,
+.blog-post-container h4 {
+  margin: 16px auto;
 }

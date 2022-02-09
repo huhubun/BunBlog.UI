@@ -1,7 +1,9 @@
 <template>
-  <div class="post-edit-container">
-    <post-editor v-bind:post="post" v-if="post"></post-editor>
-  </div>
+  <v-app>
+    <v-main>
+      <post-editor v-bind:post="post" v-if="post"></post-editor>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
@@ -21,20 +23,12 @@ export default {
     }
   },
   methods: {
-    getPostDetail() {
-      this.$axios
-        .get(`/api/posts/${this.id}`)
-        .then(post => {
-          this.post = post.data
-          this.metadataList = this.post.metadataList
-        })
-        .catch(err => {
-          console.error(err)
-        })
+    async getPostById() {
+      this.post = await this.$bunblog.posts.getById(this.id)
     }
   },
   mounted() {
-    this.getPostDetail()
+    this.getPostById()
   },
   components: {
     PostEditor

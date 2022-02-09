@@ -9,3 +9,21 @@ showdown.extension('vue-img-lazy', {
   regex: '<img src(.*)/>',
   replace: '<img data-src$1/>'
 })
+
+// 博文正文使用，为一部分 html 标签添加 class
+showdown.extension('post-content', function () {
+  const classMap = {
+    h2: 'v-heading text-h4 text-sm-h4',
+    h3: 'v-heading text-h5',
+    img: 'my-4',
+    blockquote: 'blockquote mb-4 pr-6',
+    pre: 'mb-4'
+  }
+
+  return Object.keys(classMap)
+    .map(key => ({
+      type: 'output',
+      regex: `<${key}(.*)>`,
+      replace: `<${key} class="${classMap[key]}" $1>`
+    }))
+})

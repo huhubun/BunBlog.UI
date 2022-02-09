@@ -1,167 +1,227 @@
 <template>
-  <div class="site-links-container">
-    <h1>{{ title }}</h1>
-    <a-row :gutter="32">
-      <a-col :span="8">
-        <h2>添加</h2>
-        <a-form :form="form" @submit.prevent="add">
-          <a-form-item label="站点名称">
-            <a-input
-              v-decorator="[
-            'name',
-            { rules: [{required: true, message: '必须设置站点名称'}] }
-            ]"
-              autocomplete="off"
-            >
-              <a-icon slot="prefix" type="block" />
-            </a-input>
-          </a-form-item>
-
-          <a-form-item label="站点链接">
-            <a-input
-              v-decorator="[
-            'link',
-            { rules: [{required: true, message: '必须设置站点链接'}] }
-            ]"
-              autocomplete="off"
-            >
-              <a-icon slot="prefix" type="link" />
-            </a-input>
-          </a-form-item>
-
-          <a-form-item>
-            <a-button type="primary" html-type="submit">添加友情链接</a-button>
-          </a-form-item>
-        </a-form>
-      </a-col>
-      <a-col :span="16">
-        <h2>列表</h2>
-        <a-table
-          :rowKey="row => row.linkName"
-          :dataSource="siteLinksList"
-          :columns="siteLinksTableColumns"
-          :loading="siteLinksTableLoading"
-          class="site-links-table"
+  <div class="mx-2">
+    <v-row>
+      <v-col cols="12" md="6" class="pt-0">
+        <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+          @submit.prevent="submit"
         >
-          <span slot="nameHeader">
-            <a-icon type="block" />站点名称
-          </span>
-          <span slot="linkHeader">
-            <a-icon type="link" />站点链接
-          </span>
-          <span slot="operation" slot-scope="operation, record">
-            <a-popconfirm
-              v-if="siteLinksList.length"
-              title="确定要删除该友情链接吗？"
-              okText="删除"
-              okType="danger"
-              cancelText="取消"
-              @confirm="() => onDelete(record.id, record.name)"
-            >
-              <a href="javascript:;">Delete</a>
-            </a-popconfirm>
-          </span>
-        </a-table>
-      </a-col>
-    </a-row>
+          <v-card flat id="SignInCard">
+            <v-card-title>添加</v-card-title>
+            <v-card-text>
+              <v-text-field
+                v-model="name"
+                :rules="nameRules"
+                label="站点名称"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="link"
+                :rules="linkRules"
+                label="站点链接"
+                required
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" type="submit" :loading="waitForSave">
+                添加友情链接
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-form>
+      </v-col>
+
+      <v-col cols="12" md="6" class="pt-0">
+        <v-data-table
+          :headers="headers"
+          :items="linksList"
+          :loading="waitForTable"
+          sort-by="calories"
+        >
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title>列表</v-toolbar-title>
+              <v-dialog :value="removeItem" persistent max-width="500px">
+                <v-card>
+                  <v-card-title class="headline"> 确认删除 </v-card-title>
+                  <v-card-text v-if="removeItem">
+                    站点名称 {{ removeItem.name }}
+                    <br />
+                    站点链接 {{ removeItem.link }}
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="info" text @click="removeItem = null">
+                      取消
+                    </v-btn>
+                    <v-btn color="error" text @click="confirmRemove">
+                      删除
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon small @click="remove(item)">mdi-delete</v-icon>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+
+    <v-snackbar
+      :color="messageType"
+      :value="!!message"
+      timeout="-1"
+      text
+      top
+      centered
+    >
+      {{ message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :color="messageType"
+          icon
+          small
+          v-bind="attrs"
+          @click="message = null"
+        >
+          <v-icon small>mdi-close-circle</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
-const siteLinksTableColumns = [
-  {
-    dataIndex: 'name',
-    slots: {
-      title: 'nameHeader'
-    }
-  },
-  {
-    dataIndex: 'link',
-    slots: {
-      title: 'linkHeader'
-    }
-  },
-  {
-    dataIndex: 'operation',
-    title: '操作',
-    scopedSlots: {
-      customRender: 'operation'
-    }
-  }
-]
-
 export default {
   layout: 'admin',
-  head() {
-    return {
-      title: this.title
-    }
-  },
   data() {
     return {
-      form: this.$form.createForm(this),
-      siteLinksTableLoading: true,
-      siteLinksTableColumns,
-      siteLinksList: [],
-      title: '友情链接'
+      valid: true,
+
+      name: null,
+      nameRules: [v => !!v || '站点名称 is required'],
+      link: null,
+      linkRules: [v => !!v || '站点链接 is required'],
+
+      waitForSave: false,
+
+      linksList: [],
+
+      waitForTable: true,
+      headers: [
+        {
+          text: '站点名称',
+          value: 'name',
+          sortable: false
+        },
+        {
+          text: '站点链接',
+          value: 'link',
+          sortable: false
+        },
+        { text: '操作', value: 'actions', sortable: false }
+      ],
+
+      removeItem: null,
+
+      message: null,
+      messageType: null
     }
   },
   methods: {
-    add(siteLink) {
-      this.form.validateFields((errors, values) => {
-        if (!errors) {
-          let siteLink = this.form.getFieldsValue()
-
-          let result = this.$axios
-            .$post(`/api/siteLinks`, siteLink)
-            .then(res => {
-              this.form.resetFields()
-              this.fillSiteLinksTable()
-
-              this.$message.success('添加友情链接成功')
-            })
-            .catch(error => {
-              console.error(error)
-              this.$message.error('添加友情链接失败')
-            })
-        }
-      })
-    },
-    async fillSiteLinksTable() {
-      this.siteLinksTableLoading = true
-
-      try {
-        this.siteLinksList = await this.$axios.$get(`/api/siteLinks`)
-      } catch (error) {
-        console.error(error)
-        this.siteLinksList = []
-        this.$message.error('获取友情链接列表失败')
+    submit() {
+      if (!this.$refs.form.validate()) {
+        return
       }
 
-      this.siteLinksTableLoading = false
-    },
-    async onDelete(id, name) {
-      try {
-        await this.$axios.$delete(`/api/siteLinks/${id}`)
-        this.$message.success(`已删除 ${name} 的友情链接`)
-      } catch (error) {
-        console.error(error)
-        this.$message.error(`删除失败`)
-      }
+      this.waitForSave = true
+      this.message = null
 
-      await this.fillSiteLinksTable()
+      this.$bunblog.siteLink
+        .add({
+          name: this.name,
+          link: this.link
+        })
+        .then(() => {
+          this.$refs.form.reset()
+          this.showSuccessMessage('添加友情链接成功')
+          this.fillTable()
+        })
+        .catch(error => {
+          let errorMessage = '添加友情链接失败'
+
+          let errorResponse = error.response
+          if (errorResponse.status === 400) {
+            let errorData = errorResponse.data
+
+            let modelValidationErrorMessage = this.$bunHelper.tryParseModelValidationError(
+              errorData
+            )
+            if (modelValidationErrorMessage) {
+              errorMessage += `：${modelValidationErrorMessage}`
+            } else {
+              errorMessage += `：${errorData.message}`
+            }
+          }
+
+          this.showErrorMessage(errorMessage)
+          console.log(errorMessage)
+        })
+        .finally(() => {
+          this.waitForSave = false
+        })
+    },
+    remove(link) {
+      this.clearMessage()
+      this.removeItem = link
+    },
+    async fillTable() {
+      this.waitForTable = true
+      this.linksList = await this.$bunblog.siteLink.getList()
+      this.waitForTable = false
+    },
+    confirmRemove() {
+      this.$bunblog.siteLink
+        .remove(this.removeItem.id)
+        .then(() => {
+          this.showSuccessMessage(`已删除 ${this.removeItem.name} 的友情链接`)
+          this.fillTable()
+        })
+        .catch(error => {
+          console.error(error)
+
+          let message = `删除失败`
+          let errorResponse = error.response
+          if (errorResponse.status === 400) {
+            message += `：${errorResponse.data.message}`
+          }
+
+          this.showErrorMessage(message)
+        })
+        .finally(() => {
+          this.removeItem = null
+        })
+    },
+    showSuccessMessage(message) {
+      this.message = message
+      this.messageType = 'success'
+    },
+    showErrorMessage(message) {
+      this.message = message
+      this.messageType = 'error'
+    },
+    clearMessage() {
+      this.message = null
     }
   },
-  async mounted() {
-    await this.fillSiteLinksTable()
+  mounted() {
+    this.fillTable()
   }
 }
 </script>
-
-<style lang="stylus" scoped>
-.site-links-container
-  margin-top: 10px
-
-.site-links-table th .anticon
-  margin-right: 6px
-</style>

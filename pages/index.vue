@@ -1,116 +1,145 @@
 <template>
-  <section class="post-list-container">
-    <a-row>
-      <a-col :xs="{ span: 22, offset: 1 }">
-        <a-list
-          itemLayout="vertical"
-          :dataSource="postsData.items"
-          :pagination="pagination"
+  <div class="blue-grey lighten-5" style="height: 100%">
+    <v-container>
+      <v-row>
+        <v-col
+          v-for="post in posts.items"
+          :key="post.linkName"
+          cols="12"
+          xl="3"
+          lg="4"
+          md="6"
+          sm="6"
         >
-          <a-list-item slot="renderItem" slot-scope="item" key="item.id">
-            <article>
-              <header>
-                <h2>
-                  <n-link :to="`/posts/${item.linkName}`">
-                    {{ item.title }}
-                  </n-link>
-                </h2>
-              </header>
-              <p>{{ item.excerpt }}</p>
-              <footer>
-                <span>
-                  <a-icon type="calendar" />
-                  {{ formatDate(item.publishedOn) }}
-                </span>
-                <span>
-                  <a-divider type="vertical" />
-                  <a-icon type="eye" />
-                  {{ getPostVisits(item.metadataList) }}
-                </span>
-                <span v-if="item.category != null">
-                  <a-divider type="vertical" />
-                  <a-icon type="inbox" />
-                  {{ item.category.displayName }}
-                </span>
-                <span v-if="item.tagList != null && item.tagList.length > 0">
-                  <a-divider type="vertical" />
-                  <a-icon type="tags" />
-                  <a-tag v-for="tag in item.tagList" v-bind:key="tag.linkName">
-                    {{ tag.displayName }}
-                  </a-tag>
-                </span>
-              </footer>
-            </article>
-          </a-list-item>
-        </a-list>
-      </a-col>
-    </a-row>
-  </section>
+          <v-hover>
+            <template v-slot:default="{ hover }">
+              <v-card
+                :to="'/posts/' + post.linkName"
+                class="d-flex flex-column"
+                :class="`elevation-${hover ? 12 : 0} transition-swing`"
+                height="100%"
+                rounded="lg"
+              >
+                <post-list-title-bg :styling="post.styling"></post-list-title-bg>
+
+                <v-card-title>{{ post.title }}</v-card-title>
+
+                <v-card-text>{{ post.excerpt }}</v-card-text>
+
+                <v-spacer></v-spacer>
+
+                <v-card-text class="align-end pt-0">
+                  <v-row>
+                    <v-col cols="6" class="py-0">
+                      <span v-if="post.category">
+                        {{ post.category.displayName }}
+                      </span>
+                    </v-col>
+                    <v-col cols="6" class="text-right py-0">
+                      <span v-if="post.metadataList">
+                        <v-icon small class="mr-1">mdi-eye-outline</v-icon>
+                        <span
+                          v-for="metadata in post.metadataList"
+                          :key="metadata.key"
+                        >
+                          {{ metadata.value }}
+                        </span>
+
+                        <span class="ma-1">|</span>
+                      </span>
+
+                      <span>
+                        {{
+                          convertDatetimeToFromNowStrOrDate(post.publishedOn)
+                        }}
+                      </span>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-hover>
+        </v-col>
+      </v-row>
+      <div v-if="posts" class="mt-4">
+        <v-pagination
+          v-model="posts.page"
+          :length="posts.totalPage"
+          @input="onPageChange"
+        />
+      </div>
+    </v-container>
+  </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
 
 export default {
-  data() {
-    return {
-      size: 10
-    }
-  },
-  async asyncData({ $axios }) {
-    const postsData = await $axios.$get('/api/posts', {
-      params: {
-        type: 'post',
-        page: 1,
-        size: 10
-      }
+  async asyncData({ $bunblog }) {
+    const posts = await $bunblog.posts.getList({
+      type: 'post',
+      pageSize: '12'
     })
 
-    return { postsData }
+    return { posts }
   },
-  computed: {
-    pagination() {
-      let data = this.postsData
-      let that = this
-
-      return {
-        position: 'bottom',
-        pagesize: data.page,
-        total: data.total,
-        async onChange(page) {
-          await that.getPosts(page)
+  data() {
+    return {
+      clipped: true,
+      drawer: false,
+      items: [
+        {
+          icon: 'mdi-home-outline',
+          title: '首页',
+          to: '/'
+        },
+        {
+          icon: 'mdi-file-document-outline',
+          title: '文档',
+          href: 'https://github.com/huhubun/DDNSSharp'
+        },
+        {
+          icon: 'mdi-history',
+          title: '更新记录',
+          href: 'https://github.com/huhubun/DDNSSharp/releases'
+        },
+        {
+          icon: 'mdi-keyboard-return',
+          title: 'BUN.DEV',
+          href: 'https://bun.dev/'
         }
-      }
+      ],
+      title: 'DDNSSharp',
+      footers: [
+        {
+          text: '源代码',
+          href: 'https://github.com/huhubun/DDNSSharp'
+        },
+        {
+          text: 'bun.dev 旗下作品',
+          href: 'https://bun.dev'
+        }
+      ]
     }
   },
   methods: {
-    async getPosts(page) {
-      let data = await this.$axios.$get('/api/posts', {
-        params: {
-          type: 'post',
-          page: page || 1,
-          size: this.size
-        }
-      })
+    convertDatetimeToFromNowStrOrDate(datetime) {
+      let nowDayjsObj = dayjs()
+      let datetimeDayjsObj = dayjs(datetime)
 
-      this.postsData = data
-    },
-    onPageChange(current) {
-      console.log(current)
-    },
-    getPostVisits(metadataList) {
-      if (metadataList) {
-        let metadata = metadataList.filter(ele => ele.key === 'VISITS')
-        if (metadata) {
-          return metadata[0].value
-        }
+      if (nowDayjsObj.subtract(6, 'month').isBefore(datetimeDayjsObj, 'day')) {
+        return datetimeDayjsObj.fromNow()
       }
 
-      return 0
+      return datetimeDayjsObj.format('YYYY-MM-DD')
     },
-    formatDate(datetime) {
-      let dayjsObj = dayjs(datetime)
-      return `${dayjsObj.format('YYYY-MM-DD HH:mm')} (${dayjsObj.fromNow()})`
+    async onPageChange(p) {
+      this.posts = await this.$bunblog.posts.getList({
+        type: 'post',
+        pageSize: '12',
+        page: p
+      })
     }
   },
   head() {
@@ -121,7 +150,7 @@ export default {
           hid: 'description',
           name: 'description',
           content:
-            '欢迎访问呼呼小笼包 (huhubun) 的个人博客。这里的文章包含了前后端软件开发技术博文、精品软件推荐等内容。欢迎大家一起学习、成长。也欢迎关注微信公众号 bundev 交流！'
+            '欢迎访问呼呼小笼包 (huhubun) 的个人博客。这里的文章包含了前后端软件开发技术博文、精品软件推荐等内容。欢迎大家一起学习、成长。也欢迎关注微信公众号 bundev 交流。'
         },
         {
           hid: 'keywords',
@@ -134,11 +163,3 @@ export default {
   }
 }
 </script>
-
-<style lang="stylus" scoped>
-i.anticon
-  margin-right: 8px
-
-.post-list-container
-  padding-bottom: 1em
-</style>

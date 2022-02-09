@@ -1,7 +1,9 @@
 <template>
-  <div class="post-new-container">
-    <post-editor></post-editor>
-  </div>
+  <v-app>
+    <v-main>
+      <post-editor></post-editor>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
@@ -16,11 +18,6 @@ export default {
   },
   data() {
     return {
-      post: {
-        title: '',
-        excerpt: '',
-        content: ''
-      }
     }
   },
   components: {

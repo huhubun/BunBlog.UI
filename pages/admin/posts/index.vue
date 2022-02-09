@@ -1,139 +1,181 @@
 <template>
-  <div class="post-container">
-    <h1>博文</h1>
-    <div>
-      <a-button type="default" icon="edit" @click="goToNewPost">撰写博文</a-button>
+  <div class="mx-2">
+    <v-data-table
+      :headers="headers"
+      :items="postList"
+      :loading="waitForTable"
+      :server-items-length="total"
+      @update:options="onPageOptionsChange"
+    >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-btn lin to="/admin/posts/new">
+            <v-icon left>mdi-pencil-outline</v-icon>
+            撰写博文
+          </v-btn>
+          <v-dialog :value="removeItem" persistent max-width="500px">
+            <v-card>
+              <v-card-title class="headline"> 确认删除 </v-card-title>
+              <v-card-text v-if="removeItem">
+                <v-chip v-if="removeItem.type === 'draft'" label small>
+                  草稿
+                </v-chip>
 
-      <a-table
-        :row-key="row => row.id"
-        :dataSource="postList"
-        :columns="postTableColumns"
-        :loading="postTableLoading"
-        :pagination="postTablePagination"
-        @change="fillPostTable"
-      >
-        <template slot="post-title" slot-scope="title, row">
-          <n-link :to="`/admin/posts/edit/${row.id}`">{{title}}</n-link>
-          <a-tag v-if="isDraft(row)">草稿</a-tag>
-        </template>
-        <template slot="operation" slot-scope="operation, row">
-          <n-link :to="`/admin/posts/edit/${row.id}`">编辑</n-link>
-          <a-divider type="vertical" />
-          <n-link :to="`/posts/${row.linkName}`">查看</n-link>
-          <template v-if="isDraft(row)">
-            <a-divider type="vertical" />
-            <a-popconfirm
-              title="确定要删除该草稿吗？"
-              okText="删除"
-              okType="danger"
-              cancelText="取消"
-              @confirm="() => deleteDraft(row.linkName, row.title)"
-            >
-              <a href="javascript:;">删除</a>
-            </a-popconfirm>
-          </template>
-        </template>
-      </a-table>
-    </div>
+                {{ removeItem.title }}
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="info" text @click="removeItem = null">
+                  取消
+                </v-btn>
+                <v-btn color="error" text @click="confirmRemove"> 删除 </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <template v-slot:item.title="{ item }">
+        <n-link :to="`/admin/posts/edit/${item.id}`">{{ item.title }}</n-link>
+        <v-chip small label v-if="isDraft(item)" class="ml-2"> 草稿 </v-chip>
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <v-icon small v-if="isDraft(item)" @click="remove(item)">
+          mdi-delete
+        </v-icon>
+      </template>
+    </v-data-table>
+
+    <v-snackbar
+      :color="messageType"
+      :value="!!message"
+      timeout="-1"
+      text
+      top
+      centered
+    >
+      {{ message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :color="messageType"
+          icon
+          small
+          v-bind="attrs"
+          @click="message = null"
+        >
+          <v-icon small>mdi-close-circle</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
-const postTableColumns = [
-  {
-    dataIndex: 'title',
-    title: '标题',
-    scopedSlots: { customRender: 'post-title' }
-  },
-  {
-    dataIndex: 'publishedOn',
-    title: '发表时间'
-  },
-  {
-    dataIndex: 'operation',
-    title: '操作',
-    scopedSlots: {
-      customRender: 'operation'
-    }
-  }
-]
-
 export default {
   layout: 'admin',
-  head() {
-    return {
-      title: '博文管理'
-    }
-  },
   data() {
     return {
       postList: [],
-      postTableColumns,
-      postTableLoading: true,
-      postTablePagination: {
-        current: 1,
-        defaultCurrent: 1,
-        total: 0
-      }
+      size: 10,
+      page: 1,
+      total: 0,
+
+      waitForTable: true,
+      headers: [
+        {
+          text: '标题',
+          value: 'title',
+          sortable: false
+        },
+        {
+          text: '链接名称',
+          value: 'linkName',
+          sortable: false
+        },
+        {
+          text: '发表时间',
+          value: 'publishedOn',
+          sortable: false
+        },
+        { text: '操作', value: 'actions', sortable: false }
+      ],
+
+      removeItem: null,
+
+      message: null,
+      messageType: null
     }
   },
   methods: {
-    getList(page, pageSize) {
-      return this.$axios.get(`/api/posts`, {
-        params: {
-          page,
-          pageSize
-        }
+    remove(draft) {
+      this.clearMessage()
+      this.removeItem = draft
+    },
+    async fillTable() {
+      this.waitForTable = true
+
+      let response = await this.$bunblog.posts.getList({
+        page: this.page,
+        pageSize: this.size
       })
+      this.postList = response.items
+      this.page = response.page
+      this.total = response.total
+
+      this.waitForTable = false
     },
-    fillPostTable(pagination, pageSize) {
-      this.postTableLoading = true
+    async onPageChange(page) {
+      this.page = page
 
-      if (!pagination) {
-        pagination = this.postTablePagination
-      } else {
-        this.postTablePagination.current = pagination.current
-      }
+      await this.fillTable()
+    },
+    async onPageOptionsChange(options) {
+      this.size = options.itemsPerPage
+      this.page = options.page
 
-      this.getList(pagination.current, pagination.defaultPageSize)
-        .then(postList => {
-          let response = postList.data
-
-          this.postList = response.items
-          this.postTablePagination.total = response.total
-          this.postTableLoading = false
+      await this.fillTable()
+    },
+    confirmRemove() {
+      this.$bunblog.posts
+        .deleteDraft(this.removeItem.id)
+        .then(() => {
+          this.showSuccessMessage(
+            `已删除博文 《${this.removeItem.title}》 的草稿`
+          )
+          this.fillTable()
         })
         .catch(error => {
-          console.log(error)
-          this.$message.error('获取博文列表失败')
+          console.error(error)
+
+          let message = `删除博文 《${this.removeItem.title}》 的草稿失败`
+          let errorResponse = error.response
+          if (errorResponse.status === 400) {
+            message += `：${errorResponse.data.message}`
+          }
+
+          this.showErrorMessage(message)
         })
-    },
-    deleteDraft(linkName, title) {
-      this.$axios
-        .delete(`/api/posts/${linkName}/draft`)
-        .then(res => {
-          this.$message.success(`已删除《${title}》的草稿`)
-          this.fillPostTable()
+        .finally(() => {
+          this.removeItem = null
         })
-        .catch(error => {
-          console.log(error)
-          this.$message.error(`删除《${title}》的草稿失败`)
-        })
-    },
-    goToNewPost() {
-      this.$router.push('/admin/posts/new')
     },
     isDraft(post) {
-      return post.type === "draft"
+      return post.type === 'draft'
+    },
+    showSuccessMessage(message) {
+      this.message = message
+      this.messageType = 'success'
+    },
+    showErrorMessage(message) {
+      this.message = message
+      this.messageType = 'error'
+    },
+    clearMessage() {
+      this.message = null
     }
   },
   mounted() {
-    this.fillPostTable()
+    this.fillTable()
   }
 }
 </script>
-
-<style lang="stylus" scoped>
-.post-container
-  margin-top: 10px
-</style>

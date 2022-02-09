@@ -1,82 +1,105 @@
 <template>
   <client-only>
-    <a-layout style="min-height: 100vh">
-      <a-layout-sider collapsible v-model="collapsed">
-        <div class="logo">Bun Blog Admin</div>
-        <a-menu theme="dark" :selectedKeys="selectedKeys" mode="inline">
-          <a-menu-item key="/admin">
-            <n-link to="/admin">
-              <a-icon type="dashboard" />
-              <span>仪表盘</span>
-            </n-link>
-          </a-menu-item>
+    <v-app>
+      <v-navigation-drawer
+        v-model="drawer"
+        app
+        :expand-on-hover="!$vuetify.breakpoint.smAndDown"
+      >
+        <v-list class="py-0">
+          <v-list-item class="px-2">
+            <v-list-item-avatar color="grey darken-1" rounded="lg">
+              <v-avatar>
+                <span class="white--text headline">B</span>
+              </v-avatar>
+            </v-list-item-avatar>
+            <v-list-item-title class="title">
+              Bun Blog Admin
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
 
-          <a-menu-item key="/admin/posts">
-            <n-link to="/admin/posts">
-              <a-icon type="profile" />
-              <span>博文</span>
-            </n-link>
-          </a-menu-item>
+        <v-divider></v-divider>
 
-          <a-menu-item key="/admin/categories">
-            <n-link to="/admin/categories">
-              <a-icon type="inbox" />
-              <span>分类</span>
-            </n-link>
-          </a-menu-item>
+        <v-list nav dense>
+          <v-list-item
+            v-for="item in $store.state.adminRoute.routes"
+            :key="item.to"
+            :to="item.to"
+            :href="item.href"
+            router
+            exact
+          >
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
 
-          <a-menu-item key="/admin/tags">
-            <n-link to="/admin/tags">
-              <a-icon type="tags" />
-              <span>标签</span>
-            </n-link>
-          </a-menu-item>
+        <template v-slot:append>
+          <v-list>
+            <v-list-item to="/logout">
+              <v-list-item-action>
+                <v-icon>mdi-logout-variant</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  登出 {{ $auth.user.username }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </template>
+      </v-navigation-drawer>
 
-          <a-menu-item key="/admin/siteLinks">
-            <n-link to="/admin/siteLinks">
-              <a-icon type="link" />
-              <span>友情链接</span>
-            </n-link>
-          </a-menu-item>
+      <v-app-bar app dense flat>
+        <v-app-bar-nav-icon
+          @click="drawer = !drawer"
+          v-if="$vuetify.breakpoint.smAndDown"
+        />
 
-          <a-menu-item key="/admin/settings">
-            <n-link to="/admin/settings">
-              <a-icon type="setting" />
-              <span>设置</span>
-            </n-link>
-          </a-menu-item>
-        </a-menu>
-      </a-layout-sider>
-      <a-layout>
-        <a-layout-header>
-          <a-menu mode="horizontal" theme="dark">
-            <a-menu-item class="bun-left">
-              <n-link to="/">
-                <a-icon type="home" />查看博客
-              </n-link>
-            </a-menu-item>
-            <a-menu-item class="bun-left">
-              <n-link to="/admin/posts/new">
-                <a-icon type="edit" />撰写博文
-              </n-link>
-            </a-menu-item>
-            <a-menu-item>
-              <span @click="logout">
-                <a-icon type="logout" />
-                登出 {{ username }}
-              </span>
-            </a-menu-item>
-          </a-menu>
-        </a-layout-header>
-        <a-layout-content style="margin: 0 16px">
-          <router-view></router-view>
-        </a-layout-content>
-        <a-layout-footer>
-          <powered-by />
-          <copyright />
-        </a-layout-footer>
-      </a-layout>
-    </a-layout>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              href="/"
+              target="_blank"
+              :class="{ 'app-bar-first-icon': !$vuetify.breakpoint.smAndDown }"
+            >
+              <v-icon>mdi-home-outline</v-icon>
+            </v-btn>
+          </template>
+          <span>
+            查看博客
+            <v-icon color="white" small>mdi-open-in-new</v-icon>
+          </span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" v-on="on" to="/admin/posts/new">
+              <v-icon>mdi-pencil-outline</v-icon>
+            </v-btn>
+          </template>
+          <span>撰写博文</span>
+        </v-tooltip>
+
+        <v-divider class="ml-2 mr-4" vertical></v-divider>
+
+        <v-toolbar-title>
+          {{ $store.state.adminRoute.current.title }}
+        </v-toolbar-title>
+      </v-app-bar>
+
+      <v-main>
+        <nuxt />
+      </v-main>
+    </v-app>
   </client-only>
 </template>
 
@@ -85,74 +108,30 @@ import PoweredBy from '~/components/layout/PoweredBy.vue'
 import Copyright from '~/components/layout/Copyright.vue'
 
 export default {
+  head() {
+    return {
+      title: this.$store.state.adminRoute.current.title
+    }
+  },
   data() {
     return {
       collapsed: false,
-      selectedKeys: []
+      selectedKeys: [],
+
+      drawer: true
     }
   },
-  methods: {
-    selectedMenuKeys() {
-      const routes = this.$route.matched.concat()
-      this.selectedKeys = [routes.pop().path]
-    },
-    logout() {
-      this.$store.commit('currentUser/logout')
-      this.$router.push('/login')
-    }
-  },
-  computed: {
-    username() {
-      return this.$store.state.currentUser.username
-    }
-  },
-  middleware: 'auth',
+  methods: {},
+  middleware: ['auth', 'adminRoute'],
   components: {
     PoweredBy,
     Copyright
-  },
-  watch: {
-    $route(val) {
-      this.selectedMenuKeys()
-    }
-  },
-  created() {
-    this.selectedMenuKeys()
   }
 }
 </script>
 
 <style lang="stylus" scoped>
-.logo
-  color: #FFF
-  line-height: 32px
-  font-size: 20px
-  font-weight: 100
-  padding-left: 24px
-
-.ant-layout-sider-collapsed .logo
-  line-height: 24px
-  font-size: 20px
-  padding: 8px 0 8px 8px
-
-.ant-layout-header
-  line-height: 32px
-  height: 32px
-  padding: 0
-  text-align: right
-
-.ant-layout-header .ant-menu
-  height: 32px
-
-.ant-layout-header .ant-menu .ant-menu-item
-  padding: 0 16px
-
-.ant-layout-header .ant-menu .ant-menu-item, .ant-layout-header .ant-menu .ant-menu-submenu
-  vertical-align: top
-  margin: 4px 0 0 0
-  line-height: 26px
-  height: 26px
-
-.ant-layout-footer
-  padding: 10px 16px
+// 由于顶部 icon 增加了tooltip，导致 icon 不是 app-bar 里的第一个元素，无法应用 :first-child 样式，这里自定义这个样式避免错位
+.app-bar-first-icon
+  margin-left: -12px
 </style>
