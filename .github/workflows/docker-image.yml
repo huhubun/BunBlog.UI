@@ -1,0 +1,28 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master, huhubun-actions ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  IMAGE_NAME: ccr.ccs.tencentyun.com/huhubun/bunblog.ui
+  IMAGE_VERSION: $(date +%s)
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME:$IMAGE_VERSION
+
+    - name: Login to tencent cloud registry
+      run: docker login ccr.ccs.tencentyun.com --username=${{secrets.TENCENT_CLOUD_REGISTERY_USERNAME}} --password=${{TENCENT_CLOUD_REGISTERY_PASSWORD}}
+
+    - name: Push image
+      run: docker push IMAGE_NAME:$IMAGE_VERSION
