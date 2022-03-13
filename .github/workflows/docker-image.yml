@@ -8,7 +8,7 @@ on:
 
 env:
   IMAGE_NAME: ccr.ccs.tencentyun.com/huhubun/bunblog.ui
-  IMAGE_VERSION: $(date +%s)
+  IMAGE_VERSION: v0.1-test
 
 jobs:
 
