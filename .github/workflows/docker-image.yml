@@ -1,9 +1,8 @@
 name: Docker Image CI
 
 on:
-  push:
-    tags:
-    - 'v*'
+  release:
+    types: [ published ]
 
 env:
   IMAGE_NAME: huhubun/bunblog.ui
