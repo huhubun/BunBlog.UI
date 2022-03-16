@@ -1,8 +1,9 @@
 name: Docker Image CI
 
 on:
-  release:
-    types: [ published ]
+  push:
+    tags:
+    - 'v*'
 
 env:
   IMAGE_NAME: huhubun/bunblog.ui
@@ -15,11 +16,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Get the version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag $IMAGE_NAME:${{github.event.release.tag_name}}
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME:$VERSION
 
     - name: Login
       run: docker login --username=${{secrets.DOCKER_USERNAME}} --password=${{secrets.DOCKER_ACCESS_TOKEN}}
 
     - name: Push image
-      run: docker push $IMAGE_NAME:${{github.ref}}
+      run: docker push $IMAGE_NAME:$VERSION
