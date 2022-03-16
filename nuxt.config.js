@@ -8,7 +8,8 @@ module.exports = {
   loading: false,
 
   server: {
-    port: 17088
+    port: 17088,
+    host: '0.0.0.0'
   },
 
   /*

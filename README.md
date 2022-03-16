@@ -1,6 +1,16 @@
 # BunBlog.UI
 
-> A blog front end site developed using [Nuxt.js](https://nuxtjs.org). Welcome to my Blog(Bun Dev Blog) https://bun.plus
+![GitHub package.json version](https://img.shields.io/github/package-json/v/huhubun/BunBlog.UI)
+![Docker Pulls](https://img.shields.io/docker/pulls/huhubun/bunblog.ui)
+
+> A blog front end site developed using [Nuxt.js](https://nuxtjs.org). Welcome to my Blog(Bun Dev Blog) https://bun.plus  
+> Please note, this project required a server side program [BunBlog.API](https://github.com/huhubun/BunBlog.API)  to provider data
+
+## Docker image
+
+```bash
+docker push huhubun/bunblog.ui
+```
 
 ## Development
 
@@ -35,6 +45,7 @@ Then copy the following to the server
 
 - `.nuxt` folder
 - `server` folder
+- `sitemap` folder
 - `static` folder
 - `nuxt.config.js` file
 - `package.json` file
