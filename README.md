@@ -1,7 +1,7 @@
 # BunBlog.UI
 
-![GitHub package.json version](https://img.shields.io/github/package-json/v/huhubun/BunBlog.UI)
-![Docker Pulls](https://img.shields.io/docker/pulls/huhubun/bunblog.ui)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/huhubun/BunBlog.UI?url=https://github.com/huhubun/BunBlog.UI)
+![Docker Pulls](https://img.shields.io/docker/pulls/huhubun/bunblog.ui?url=https://hub.docker.com/r/huhubun/bunblog.ui)
 
 > A blog front end site developed using [Nuxt.js](https://nuxtjs.org). Welcome to my Blog(Bun Dev Blog) https://bun.plus  
 > Please note, this project required a server side program [BunBlog.API](https://github.com/huhubun/BunBlog.API)  to provider data
