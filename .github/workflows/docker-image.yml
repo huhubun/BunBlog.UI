@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 env:
-  IMAGE_NAME: ccr.ccs.tencentyun.com/huhubun/bunblog.ui
+  IMAGE_NAME: huhubun/bunblog.ui
   IMAGE_VERSION: v0.1-test
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag $IMAGE_NAME:$IMAGE_VERSION
 
-    - name: Login to tencent cloud registry
+    - name: Login
       run: docker login --username=${{secrets.DOCKER_USERNAME}} --password=${{secrets.DOCKER_ACCESS_TOKEN}}
 
     - name: Push image
