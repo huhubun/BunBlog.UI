@@ -8,7 +8,7 @@ on:
 
 env:
   IMAGE_NAME: huhubun/bunblog.ui
-  IMAGE_VERSION: v0.1-test
+  IMAGE_VERSION: v0.2-test
 
 jobs:
 
