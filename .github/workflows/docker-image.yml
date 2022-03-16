@@ -22,7 +22,7 @@ jobs:
       run: docker build . --file Dockerfile --tag $IMAGE_NAME:$IMAGE_VERSION
 
     - name: Login to tencent cloud registry
-      run: docker login ccr.ccs.tencentyun.com --username=${{secrets.TENCENT_CLOUD_REGISTERY_USERNAME}} --password=${{secrets.TENCENT_CLOUD_REGISTERY_PASSWORD}}
+      run: docker login --username=${{secrets.DOCKER_USERNAME}} --password=${{secrets.DOCKER_ACCESS_TOKEN}}
 
     - name: Push image
       run: docker push $IMAGE_NAME:$IMAGE_VERSION
