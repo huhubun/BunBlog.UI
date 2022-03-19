@@ -1,0 +1,27 @@
+name: Docker Image CI - Test
+
+on:
+  push:
+    branches: [ build-docker-image ]
+
+env:
+  IMAGE_NAME: huhubun/bunblog.ui
+  IMAGE_VERSION: v0.3.5-test-4
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME:$IMAGE_VERSION
+
+    - name: Login
+      run: docker login --username=${{secrets.DOCKER_USERNAME}} --password=${{secrets.DOCKER_ACCESS_TOKEN}}
+
+    - name: Push image
+      run: docker push $IMAGE_NAME:$IMAGE_VERSION
