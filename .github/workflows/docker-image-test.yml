@@ -2,7 +2,7 @@ name: Docker Image CI - Test
 
 on:
   push:
-    branches: [ build-docker-image ]
+    branches: [ docker-image ]
 
 env:
   IMAGE_NAME: huhubun/bunblog.ui
