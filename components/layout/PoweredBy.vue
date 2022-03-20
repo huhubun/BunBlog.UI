@@ -55,6 +55,9 @@ export default {
     os() {
       return this.$store.state.apiInformation.os
     },
+    isOnKubernetes() {
+      return this.$store.state.apiInformation.isOnKubernetes
+    },
     runtimeFramework() {
       return this.$store.state.apiInformation.runtimeFramework
     },
@@ -75,10 +78,10 @@ export default {
         }
       ]
 
-      if (this.os) {
+      if (this.isOnKubernetes || this.os) {
         result.push({
           icon: 'mdi-console',
-          text: `${this.runtimeFramework} on ${this.os}`,
+          text: `${this.runtimeFramework} on ${this.isOnKubernetes ? 'Kubernetes' : this.os}`,
           shortText: this.runtimeFramework,
           url: 'https://dot.net/'
         })
