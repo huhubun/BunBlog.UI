@@ -87,40 +87,7 @@ export default {
   data() {
     return {
       clipped: true,
-      drawer: false,
-      items: [
-        {
-          icon: 'mdi-home-outline',
-          title: '首页',
-          to: '/'
-        },
-        {
-          icon: 'mdi-file-document-outline',
-          title: '文档',
-          href: 'https://github.com/huhubun/DDNSSharp'
-        },
-        {
-          icon: 'mdi-history',
-          title: '更新记录',
-          href: 'https://github.com/huhubun/DDNSSharp/releases'
-        },
-        {
-          icon: 'mdi-keyboard-return',
-          title: 'BUN.DEV',
-          href: 'https://bun.dev/'
-        }
-      ],
-      title: 'DDNSSharp',
-      footers: [
-        {
-          text: '源代码',
-          href: 'https://github.com/huhubun/DDNSSharp'
-        },
-        {
-          text: 'bun.dev 旗下作品',
-          href: 'https://bun.dev'
-        }
-      ]
+      drawer: false
     }
   },
   methods: {

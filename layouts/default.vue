@@ -68,7 +68,6 @@
 import PoweredBy from '~/components/layout/PoweredBy.vue'
 import Copyright from '~/components/layout/Copyright.vue'
 import Certifications from '~/components/layout/Certifications.vue'
-import SiteLinks from '~/components/layout/SiteLinks.vue'
 
 export default {
   data() {
@@ -82,6 +81,11 @@ export default {
           to: '/'
         },
         {
+          icon: 'mdi-link',
+          title: '链接',
+          to: '/links'
+        },
+        {
           icon: 'mdi-keyboard-return',
           title: '关于',
           to: '/about'
@@ -92,8 +96,7 @@ export default {
   components: {
     PoweredBy,
     Copyright,
-    Certifications,
-    SiteLinks
+    Certifications
   }
 }
 </script>
