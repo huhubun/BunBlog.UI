@@ -5,7 +5,7 @@
   "author": "huhubun",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "nodemon server/index.js --watch server",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
