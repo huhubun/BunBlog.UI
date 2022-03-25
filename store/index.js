@@ -1,14 +1,5 @@
 export const actions = {
   async nuxtServerInit({ commit }, { $bunblog }) {
-    let siteLinkPromise = $bunblog.siteLink
-      .getList()
-      .then(siteLinks => {
-        commit('siteLinks/set', siteLinks)
-      })
-      .catch(e => {
-        console.error('获取友情链接时出错', e)
-      })
-
     let apiInfoPromise = $bunblog.informations.get().then(apiInfo => {
       commit('apiInformation/set', apiInfo)
     }).catch(e => {
@@ -21,6 +12,6 @@ export const actions = {
       console.error('获取 settings 时出错', e)
     })
 
-    await Promise.all([siteLinkPromise, apiInfoPromise, settingsPromise])
+    await Promise.all([apiInfoPromise, settingsPromise])
   }
 }
