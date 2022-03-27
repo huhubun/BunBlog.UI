@@ -1,17 +1,6 @@
 <template>
-  <article class="blue-grey lighten-5" style="height: 100%">
-    <header class="blog-header">
-      <v-card flat tile class="blue-grey darken-1 white--text">
-        <v-container
-          class="d-flex justify-center align-center"
-          :style="{ height: '260px' }"
-        >
-          <v-card-title class="text-h4 text-md-h3 text-lg-h2">
-            友情链接
-          </v-card-title>
-        </v-container>
-      </v-card>
-    </header>
+  <article >
+    <mini-header :title="title" />
 
     <v-container>
       <v-row>
@@ -34,6 +23,8 @@
 </template>
 
 <script>
+import MiniHeader from '@/components/layout/MiniHeader.vue'
+
 export default {
   async asyncData({ $bunblog }) {
     const links = await $bunblog.siteLink.getList()
@@ -41,23 +32,26 @@ export default {
     return { links }
   },
   data() {
-    return {}
+    return {
+      title: '友情链接'
+    }
+  },
+  components: {
+    MiniHeader
   },
   head() {
     return {
-      title: '友情链接',
+      title: this.title,
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content:
-            '呼呼小笼包博客的友情链接页面，记录了各位小伙伴的站点地址。'
+          content: '呼呼小笼包博客的友情链接页面，记录了各位小伙伴的站点地址。'
         },
         {
           hid: 'keywords',
           name: 'keywords',
-          content:
-            '呼呼小笼包,huhubun,bun,bun.plus,博客,友情链接'
+          content: '呼呼小笼包,huhubun,bun,bun.plus,博客,友情链接'
         }
       ]
     }
