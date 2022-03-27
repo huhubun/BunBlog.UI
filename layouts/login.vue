@@ -8,7 +8,6 @@
       <v-footer color="blue-grey darken-4 ">
         <v-row justify="center" no-gutters>
           <v-col class="text-center" cols="12">
-            <site-links />
             <powered-by />
             <certifications />
             <copyright />
