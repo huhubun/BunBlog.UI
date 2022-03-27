@@ -42,6 +42,25 @@ export default {
   },
   data() {
     return {}
+  },
+  head() {
+    return {
+      title: '友情链接',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            '呼呼小笼包博客的友情链接页面，记录了各位小伙伴的站点地址。'
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content:
+            '呼呼小笼包,huhubun,bun,bun.plus,博客,友情链接'
+        }
+      ]
+    }
   }
 }
 </script>
