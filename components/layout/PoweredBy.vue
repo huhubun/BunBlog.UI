@@ -79,10 +79,19 @@ export default {
       ]
 
       if (this.isOnKubernetes || this.os) {
+        var text = `${this.runtimeFramework} on ${
+          this.isOnKubernetes ? 'Kubernetes' : this.os
+        }`
+        var shortText = this.runtimeFramework
+
+        if (this.isOnKubernetes) {
+          shortText = text
+        }
+
         result.push({
           icon: 'mdi-console',
-          text: `${this.runtimeFramework} on ${this.isOnKubernetes ? 'Kubernetes' : this.os}`,
-          shortText: this.runtimeFramework,
+          text: text,
+          shortText: shortText,
           url: 'https://dot.net/'
         })
       }
