@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> BunBlog has been discontinued. You can use the [Migration Tool](https://github.com/huhubun/BunBlogMigrationTool) to migrate existing content to [Bammemo](https://github.com/huhubun/bammemo).
+
 # BunBlog.UI
 
 [![GitHub package.json version](https://img.shields.io/github/package-json/v/huhubun/BunBlog.UI)](https://github.com/huhubun/BunBlog.UI)
